@@ -1,0 +1,10 @@
+Vehicle Bases:
+[X] Log Base
+[ ] Chicken Leg Base
+[ ] Basic Base
+[ ] Racing Base
+
+Wheels:
+[ ] Wagon Wheel
+[ ] Tire
+[ ] Pepperoni
