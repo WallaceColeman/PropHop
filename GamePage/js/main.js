@@ -6,25 +6,55 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize (window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
  
-
-
 camera.position.z= 100;
 
-loader.load( 'Models/Log_Base.glb', function ( gltf ) {
 
-	scene.add( gltf.scene );
+//GLTF loader code provided by Three.js
+//https://threejs.org/docs/#examples/en/loaders/GLTFLoader
+var loader = new THREE.GLTFLoader();
+loader.load(
+	// resource URL
+	'https://mypages.valdosta.edu/wlcoleman/Log_Base.glTF',
+	// called when the resource is loaded
+	function ( gltf ) {
 
-}, undefined, function ( error ) {
+		scene.add( gltf.scene );
 
-	console.error( error );
+		gltf.animations; // Array<THREE.AnimationClip>
+		gltf.scene; // THREE.Scene
+		gltf.scenes; // Array<THREE.Scene>
+		gltf.cameras; // Array<THREE.Camera>
+		gltf.asset; // Object
 
-});
+	},
+	// called while loading is progressing
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+
+	}
+);
+
+// loader.load('Models/Log_Base.glTF', function ( gltf ) {
+
+// 	scene.add( gltf.scene );
+
+// }, undefined, function ( error ) {
+
+// 	console.error( error );
+
+// });
 
 function render(){
   requestAnimationFrame (render);
 
   renderer.render (scene, camera);
 }
-
 
 render();
