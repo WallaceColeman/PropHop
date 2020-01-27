@@ -4,6 +4,7 @@ var camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeigh
  
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize (window.innerWidth, window.innerHeight);
+renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
  
 camera.position.z= 10;
@@ -12,23 +13,25 @@ scene.add( light );
 
 //GLTF loader code provided by Three.js
 //https://threejs.org/docs/#examples/en/loaders/GLTFLoader
+//Accessed: 01/25/2020
 var loader = new THREE.GLTFLoader();
 
 loader.load(
 	// resource URL
-	'js/Models/Log_Base.glTF',
+	'js/Models/Log.glb',
 	// called when the resource is loaded
 	function ( gltf ) {
 
 		scene.add( gltf.scene );
 		
-		model = gltf.scene;
+		model = gltf.scene;//!!!! saves the model into a varible for manipulation
 		
-		gltf.animations; // Array<THREE.AnimationClip>
-		gltf.scene; // THREE.Scene
-		gltf.scenes; // Array<THREE.Scene>
-		gltf.cameras; // Array<THREE.Camera>
-		gltf.asset; // Object
+		
+		// gltf.animations; // Array<THREE.AnimationClip>
+		// gltf.scene; // THREE.Scene
+		// gltf.scenes; // Array<THREE.Scene>
+		// gltf.cameras; // Array<THREE.Camera>
+		// gltf.asset; // Object
 
 	},
 	// called while loading is progressing
@@ -45,19 +48,10 @@ loader.load(
 	}
 );
 
-// loader.load('Models/Log_Base.glTF', function ( gltf ) {
-
-// 	scene.add( gltf.scene );
-
-// }, undefined, function ( error ) {
-
-// 	console.error( error );
-
-// });
 
 function render(){
   requestAnimationFrame (render);
-  	model.rotation.y += 0.05;
+  	model.rotation.y += 0.025;
   renderer.render (scene, camera);
 }
 
