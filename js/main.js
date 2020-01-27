@@ -6,20 +6,24 @@ var renderer = new THREE.WebGLRenderer();
 renderer.setSize (window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
  
-camera.position.z= 100;
-
+camera.position.z= 10;
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
 
 //GLTF loader code provided by Three.js
 //https://threejs.org/docs/#examples/en/loaders/GLTFLoader
 var loader = new THREE.GLTFLoader();
+
 loader.load(
 	// resource URL
-	'http://localhost:8000/Log_Base.glTF',
+	'js/Models/Log_Base.glTF',
 	// called when the resource is loaded
 	function ( gltf ) {
 
 		scene.add( gltf.scene );
-
+		
+		model = gltf.scene;
+		
 		gltf.animations; // Array<THREE.AnimationClip>
 		gltf.scene; // THREE.Scene
 		gltf.scenes; // Array<THREE.Scene>
@@ -53,7 +57,7 @@ loader.load(
 
 function render(){
   requestAnimationFrame (render);
-
+  	model.rotation.y += 0.05;
   renderer.render (scene, camera);
 }
 
