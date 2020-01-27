@@ -1,0 +1,12 @@
+
+{
+    "name": "prop-hop",
+    "version": "1.0.0",
+    "description": "https://stackoverflow.com/questions/10551273/is-it-possible-to-upload-a-simple-html-and-javascript-file-structure-to-heroku; Harlan T Wood; Posted: 10/14/2016 Accessed: 01/26/2019",
+    "scripts": {
+      "start": "harp server --port $PORT"
+    },
+    "dependencies": {
+      "harp": "*"
+    }
+  }
