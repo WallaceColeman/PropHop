@@ -14,7 +14,7 @@ camera.position.z= 100;
 var loader = new THREE.GLTFLoader();
 loader.load(
 	// resource URL
-	'https://mypages.valdosta.edu/wlcoleman/Log_Base.glTF',
+	'Models/Log_Base.glTF',
 	// called when the resource is loaded
 	function ( gltf ) {
 
