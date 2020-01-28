@@ -8,7 +8,7 @@ renderer.outputEncoding = THREE.sRGBEncoding;
 document.body.appendChild(renderer.domElement);
  
 camera.position.z= 10;
-var light = new THREE.AmbientLight( 0x404040 ); // soft white light
+var light = new THREE.AmbientLight( 0x404040, 10.0 ); // soft white light
 scene.add( light );
 
 //GLTF loader code provided by Three.js
@@ -25,6 +25,39 @@ loader.load(
 		scene.add( gltf.scene );
 		
 		model = gltf.scene;//!!!! saves the model into a varible for manipulation
+		
+		
+		// gltf.animations; // Array<THREE.AnimationClip>
+		// gltf.scene; // THREE.Scene
+		// gltf.scenes; // Array<THREE.Scene>
+		// gltf.cameras; // Array<THREE.Camera>
+		// gltf.asset; // Object
+
+	},
+	// called while loading is progressing
+	function ( xhr ) {
+
+		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+	},
+	// called when loading has errors
+	function ( error ) {
+
+		console.log( 'An error happened' );
+
+	}
+);
+
+loader.load(
+	// resource URL
+	'js/Models/podium.gltf',
+	// called when the resource is loaded
+	function ( gltf ) {
+
+		scene.add( gltf.scene );
+		
+		model2 = gltf.scene;//!!!! saves the model into a varible for manipulation
+		model2.position.y = (-2);
 		
 		
 		// gltf.animations; // Array<THREE.AnimationClip>
