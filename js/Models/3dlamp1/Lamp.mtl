@@ -1,0 +1,68 @@
+# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
+# File Created: 09.12.2019 14:51:04
+
+newmtl _111clear_window
+	Ns 30.0000
+	Ni 1.5000
+	d 0.8000
+	Tr 0.8000
+	Tf 0.8000 0.8000 0.8000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.5765 0.6235 0.7373
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.1441 0.1559 0.1843
+
+newmtl _111mat_steklo
+	Ns 30.0000
+	Ni 1.5000
+	d 0.5000
+	Tr 0.5000
+	Tf 0.5000 0.5000 0.5000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.7882 0.7451 0.7059
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.1971 0.1863 0.1765
+
+newmtl _111st_gold
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.9451 0.7725 0.4078
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\New folder 2\Metal G6.jpg
+	map_Kd D:\New folder 2\Metal G6.jpg
+
+newmtl _111standart_metal
+	Ns 43.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.7373 0.6941 0.9098
+	Ks 0.6660 0.6660 0.6660
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\New folder 2\Metal 6.jpg
+	map_Kd D:\New folder 2\Metal 6.jpg
+
+newmtl _111blue
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.6627 0.8431 0.9686
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\New folder 2\ттт\4_blues.jpg
+	map_Kd D:\New folder 2\ттт\4_blues.jpg
