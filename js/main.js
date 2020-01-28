@@ -11,25 +11,28 @@ camera.position.z= 10;
 var light = new THREE.AmbientLight( 0x404040, 10.0 ); // soft white light
 scene.add( light );
 
-
+//red light
 var pLightR = new THREE.PointLight( 0xff0000, 10.0, 100 );
 pLightR.position.x = 50;
 pLightR.position.y = 50;
 pLightR.position.z = 10;
 scene.add( pLightR );
 
+//yellow light
 var pLightY = new THREE.PointLight( 0xffff00, 10.0, 100 );
 pLightY.position.x = -50;
 pLightY.position.y = 50;
 pLightY.position.z = 10;
 scene.add( pLightY );
 
+//blue light
 var pLightB = new THREE.PointLight( 0x0000ff, 10.0, 100 );
 pLightB.position.x = -50;
 pLightB.position.y = -50;
 pLightB.position.z = 10;
 scene.add( pLightB );
 
+//white light
 var pLightW = new THREE.PointLight( 0xffffff, 10.0, 100 );
 pLightW.position.x = 50;
 pLightW.position.y = -50;
