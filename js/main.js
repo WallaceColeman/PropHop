@@ -46,7 +46,7 @@ var loader = new THREE.GLTFLoader();
 
 loader.load(
 	// resource URL
-	'js/Models/Log.glb',
+	'../../Models/Player_Models/Log.glb',
 	// called when the resource is loaded
 	function ( gltf ) {
 
@@ -77,7 +77,7 @@ loader.load(
 );
 
 loader.load(
-	'js/Models/podium.gltf',
+	'../../Models/Player_Models/podium.gltf',
 	function ( gltf ) {
 
 		scene.add( gltf.scene );
