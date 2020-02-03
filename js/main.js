@@ -18,10 +18,12 @@ scene.add( light );
 var loader = new THREE.GLTFLoader();
 
 loader.load(
-	'../../Models/Player_Models/Log.glb',
+	'../../Models/Levels/CityScape.glb',
 	function ( gltf ) {
 		scene.add( gltf.scene );
 		model = gltf.scene;//!!!! saves the model into a varible for manipulation
+		model.scale.set(100,100,100);
+		model.position.y = -5;
 		// gltf.animations; // Array<THREE.AnimationClip>
 		// gltf.scene; // THREE.Scene
 		// gltf.scenes; // Array<THREE.Scene>
@@ -36,19 +38,19 @@ loader.load(
 	}
 );
 
-loader.load(
-	'../../Models/Player_Models/podium.gltf',
-	function ( gltf ) {
-		scene.add( gltf.scene );
-		model2 = gltf.scene;//!!!! saves the model into a varible for manipulation
-	},
-	function ( xhr ) {
-		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-	},
-	function ( error ) {
-		console.log( 'An error happened' );
-	}
-);
+// loader.load(
+// 	'../../Models/Player_Models/podium.gltf',
+// 	function ( gltf ) {
+// 		scene.add( gltf.scene );
+// 		model2 = gltf.scene;//!!!! saves the model into a varible for manipulation
+// 	},
+// 	function ( xhr ) {
+// 		console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+// 	},
+// 	function ( error ) {
+// 		console.log( 'An error happened' );
+// 	}
+// );
 
 function render(){
   requestAnimationFrame (render);
