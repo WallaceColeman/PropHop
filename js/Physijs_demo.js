@@ -1,3 +1,4 @@
+
 'use strict';
 	
 	Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
@@ -9,7 +10,12 @@
     var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 
     var renderer = new THREE.WebGLRenderer();
+    
 
+    //Based heavily on code by: Happy Chuck Programming
+    //Location: https://www.youtube.com/watch?v=ARXYPRCNB14&t=33s&ab_channel=HappyChuckProgramming
+    //Posted:   02/19/2019
+    //Accessed: 02/03/2020
     var red = "rgb(255,0,0)";
     var green = "rgb(10,200,10)";
     var black = "rgb(0,0,0)";
@@ -23,6 +29,7 @@
 
     var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -0.5*Math.PI;
+    plane.rotation.y = 0.125*Math.PI;
     scene.add(plane);
 
 
@@ -45,7 +52,9 @@
     camera.position.y = 30;
     camera.position.z = 100;
     camera.lookAt(scene.position);
-
+    //End of code based on Happy Chuck Programming
+    
+    
     function renderScene(){
 
         scene.simulate();
@@ -55,41 +64,3 @@
 
     document.body.appendChild(renderer.domElement);
     renderScene();
-    /*
-	var initScene, render, renderer, scene, camera, box;
-	
-	initScene = function() {
-		renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.getElementById( 'viewport' ).appendChild( renderer.domElement );
-		
-		scene = new Physijs.Scene;
-		
-		camera = new THREE.PerspectiveCamera(
-			35,
-			window.innerWidth / window.innerHeight,
-			1,
-			1000
-		);
-		camera.position.set( 60, 50, 60 );
-		camera.lookAt( scene.position );
-		scene.add( camera );
-		
-		// Box
-		box = new Physijs.BoxMesh(
-			new THREE.CubeGeometry( 5, 5, 5 ),
-			new THREE.MeshBasicMaterial({ color: 0x888888 })
-		);
-		scene.add( box );
-		
-		requestAnimationFrame( render );
-	};
-	
-	render = function() {
-		scene.simulate(); // run physics
-		renderer.render( scene, camera); // render the scene
-		requestAnimationFrame( render );
-	};
-	
-    window.onload = initScene();
-    */
