@@ -19,6 +19,7 @@
     var red = "rgb(255,0,0)";
     var green = "rgb(10,200,10)";
     var black = "rgb(0,0,0)";
+    var blue = "rgb(0,64,255)"
 
     renderer.setClearColor(black);
     renderer.setSize(window.innerWidth-20, window.innerHeight-20);
@@ -29,17 +30,26 @@
 
     var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -0.5*Math.PI;
-    plane.rotation.y = 0.125*Math.PI;
+    plane.rotation.y = (0.125)*Math.PI;
     scene.add(plane);
 
+    //2nd Plane
+    planeGeometry = new THREE.PlaneGeometry(70,30,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color:blue});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -0.5*Math.PI;
+    plane.position.x = 30;
+    plane.position.y = -15
+    scene.add(plane);
 
     //Cube
     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
     //var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
     var cubeMaterial = Physijs.createMaterial(
         new THREE.MeshBasicMaterial({ color:red}),
-        0.1,
-        1.0
+        0.5,
+        0.5
     );
     var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.position.x = -10;
@@ -65,19 +75,19 @@
         var keyCode = event.which;
         //var velocity = new THREE.Vector3();
         var velocity = scene.getObjectById(player).getLinearVelocity()
-        if (keyCode == 87) {
+        if (keyCode == 87) {//w
             //scene.getObjectById(player).se
-            velocity.y =  0.5; 
-        } else if (keyCode == 83) {
+            velocity.z -= 0.5; 
+        } else if (keyCode == 83) {//s
             //scene.getObjectById(player).position.y -= ySpeed;
-            velocity.y -= 0.5; 
-        } else if (keyCode == 65) {
+            velocity.z += 0.5; 
+        } else if (keyCode == 65) {//a
             //scene.getObjectById(player).position.x -= xSpeed;
             velocity.x -= 0.5; 
-        } else if (keyCode == 68) {
+        } else if (keyCode == 68) {//d
             //scene.getObjectById(player).position.x += xSpeed;
             velocity.x += 0.5; 
-        } else if (keyCode == 32) {
+        } else if (keyCode == 32) {//Space Bar
             scene.getObjectById(player).position.set(0, 30, 0);
         }
         scene.getObjectById(player).setLinearVelocity(velocity);
