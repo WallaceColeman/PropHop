@@ -5,7 +5,7 @@
 	Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
     
     var scene = new Physijs.Scene;
-    scene.setGravity(new THREE.Vector3(0,-10,0));
+    scene.setGravity(new THREE.Vector3(0,-25,0));
 
     var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 
@@ -35,7 +35,12 @@
 
     //Cube
     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
-    var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
+    //var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
+    var cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshBasicMaterial({ color:red}),
+        0.1,
+        1.0
+    );
     var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.position.x = -10;
     cube.position.y = 30;
@@ -54,7 +59,30 @@
     camera.lookAt(scene.position);
     //End of code based on Happy Chuck Programming
     
-    
+    var player = cube.id;
+    document.addEventListener("keydown", onDocumentKeyDown, false);
+    function onDocumentKeyDown(event) {
+        var keyCode = event.which;
+        //var velocity = new THREE.Vector3();
+        var velocity = scene.getObjectById(player).getLinearVelocity()
+        if (keyCode == 87) {
+            //scene.getObjectById(player).se
+            velocity.y =  0.5; 
+        } else if (keyCode == 83) {
+            //scene.getObjectById(player).position.y -= ySpeed;
+            velocity.y -= 0.5; 
+        } else if (keyCode == 65) {
+            //scene.getObjectById(player).position.x -= xSpeed;
+            velocity.x -= 0.5; 
+        } else if (keyCode == 68) {
+            //scene.getObjectById(player).position.x += xSpeed;
+            velocity.x += 0.5; 
+        } else if (keyCode == 32) {
+            scene.getObjectById(player).position.set(0, 30, 0);
+        }
+        scene.getObjectById(player).setLinearVelocity(velocity);
+    };
+
     function renderScene(){
 
         scene.simulate();
