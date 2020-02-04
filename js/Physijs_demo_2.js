@@ -21,7 +21,7 @@
     renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
     //Plane
-    var planeGeometry = new THREE.PlaneGeometry(70,30,1,1);
+    var planeGeometry = new THREE.PlaneGeometry(100,70,1,1);
     var planeMaterial = new THREE.MeshBasicMaterial({color:green});
 
     var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
@@ -29,14 +29,19 @@
     scene.add(plane);
 
 
-    //Cube
-    var cubeGeometry = new THREE.CubeGeometry(6,6,6);
-    var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
-    var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-    cube.position.x = -10;
-    cube.position.y = 30;
-    scene.add(cube);
+		var friction = .8;
+		var restitution = 500;
 
+    //Sphere
+		var sphereGeometry = new THREE.SphereGeometry(5, 5, 5);
+		var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff});
+		var sphere = new Physijs.BoxMesh(sphereGeometry, sphereMaterial), friction, restitiution;
+//    var cubeGeometry = new THREE.CubeGeometry(6,6,6);
+//    var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
+//    var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial), friction, restitution;
+    sphere.position.x = -10;
+    sphere.position.y = 30;
+    scene.add(sphere);
 
     //SpotLight
     var spotLight = new THREE.SpotLight(0xffffff);
