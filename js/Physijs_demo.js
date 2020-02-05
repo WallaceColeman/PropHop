@@ -9,7 +9,7 @@
 
     var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
     
 
     //Based heavily on code by: Happy Chuck Programming
@@ -74,7 +74,7 @@
     function onDocumentKeyDown(event) {
         var keyCode = event.which;
         //var velocity = new THREE.Vector3();
-        var velocity = scene.getObjectById(player).getLinearVelocity()
+        var velocity = scene.getObjectById(player).getLinearVelocity();
         if (keyCode == 87) {//w
             //scene.getObjectById(player).se
             velocity.z -= 0.5; 
@@ -89,6 +89,7 @@
             velocity.x += 0.5; 
         } else if (keyCode == 32) {//Space Bar
             scene.getObjectById(player).position.set(0, 30, 0);
+            scene.getObjectById(player).__dirtyPosition = true;
         }
         scene.getObjectById(player).setLinearVelocity(velocity);
     };
@@ -97,6 +98,8 @@
 
         scene.simulate();
         requestAnimationFrame(renderScene);
+        camera.position.x = scene.getObjectById(player).position.x;
+        camera.position.y = scene.getObjectById(player).position.y+25;
         renderer.render(scene, camera);
     }
 
