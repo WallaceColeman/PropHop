@@ -90,6 +90,9 @@
         } else if (keyCode == 32) {//Space Bar
             scene.getObjectById(player).position.set(0, 30, 0);
             scene.getObjectById(player).__dirtyPosition = true;
+            velocity = new THREE.Vector3()
+            velocity.x = 15;
+            velocity.y = 20;
         }
         scene.getObjectById(player).setLinearVelocity(velocity);
     };
@@ -98,6 +101,7 @@
 
         scene.simulate();
         requestAnimationFrame(renderScene);
+        
         camera.position.x = scene.getObjectById(player).position.x;
         camera.position.y = scene.getObjectById(player).position.y+25;
         renderer.render(scene, camera);
