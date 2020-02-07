@@ -40,14 +40,27 @@
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -0.5*Math.PI;
     plane.position.x = 30;
-    plane.position.y = -15
+    plane.position.y = -15;
     scene.add(plane);
+
+    //3rd Plane
+    planeGeometry = new THREE.PlaneGeometry(70,30,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color:red});
+
+    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    //plane.rotation.x = -.5*Math.PI;
+    //plane.rotation.y = (-0.125)*Math.PI;
+    plane.position.x = 30;
+    plane.position.y = 0;
+    plane.position.z = -15;
+    scene.add(plane);
+
 
     //Cube
     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
     //var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
     var cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshBasicMaterial({ color:red}),
+        new THREE.MeshBasicMaterial({ color: 0x241BB6}),
         0.5,
         0.5
     );
