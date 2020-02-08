@@ -9,6 +9,11 @@ var scene;
 var camera;
 var player;
 
+//--------------------------------Loading Screen--------------------------------
+	//Based on: xSaucecode
+	//Loaction: https://www.youtube.com/watch?v=3umV-dEYttU&ab_channel=xSaucecode
+	//Posted:   08/05/2016
+	//Accessed: 02/08/2020
 var loading = {
 	scene: new THREE.Scene(),
 	camera: new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000),
@@ -17,9 +22,15 @@ var loading = {
 		new THREE.MeshBasicMaterial({color:"rgb(255,0,0)"})
 	)
 };
+//--------------------------------Loading Screen--------------------------------
 
 function setUp(){
 	
+	//--------------------------------Loading Screen--------------------------------
+	//Based on: xSaucecode
+	//Loaction: https://www.youtube.com/watch?v=3umV-dEYttU&ab_channel=xSaucecode
+	//Posted:   08/05/2016
+	//Accessed: 02/08/2020
 	loading.box.position.set(0,0,0);
 	loading.camera.lookAt(loading.box.position);
 	loading.camera.position.z=10;
@@ -31,12 +42,13 @@ function setUp(){
 
 	loadingManager.onProgress = function(item, loaded, total){
 		console.log(item, total, loaded);
-		amount_loaded = loaded/total*100;
+		amount_loaded = (loaded/31); //31 should be changed to the total number of things that needs to be loaded. this can be found in console after running the first time.
 	}
 	loadingManager.onLoad = function(){
 		console.log("Loaded");
 		LOADING_NOT_DONE = false;
 	}
+	//--------------------------------Loading Screen--------------------------------
 
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000);
@@ -84,7 +96,7 @@ function setUp(){
 	var loader = new THREE.GLTFLoader(loadingManager);
 	var log_done = false;
 	var pod_done = false;
-	loader.load(
+	loader.load(//Log
 		// resource URL
 		'../../Models/Player_Models/Log.glb',
 		// called when the resource is loaded
@@ -104,18 +116,18 @@ function setUp(){
 		// called while loading is progressing
 		function ( xhr ) {
 
-			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 
 		},
 		// called when loading has errors
 		function ( error ) {
 
-			console.log( 'An error happened' );
+			console.log( 'A log error happened' );
 
 		}
 	);
 
-	loader.load(
+	loader.load(//podium
 		'../../Models/Player_Models/podium.gltf',
 		function ( gltf ) {
 
@@ -128,12 +140,127 @@ function setUp(){
 		},
 		function ( xhr ) {
 
-			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
 
 		},
 		function ( error ) {
 
-			console.log( 'An error happened' );
+			console.log( 'A podium error happened' );
+
+		}
+	);
+
+	loader.load(//chairs
+		'../../Models/Player_Models/Chairs.gltf',
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let model3 = gltf.scene;//!!!! saves the model into a varible for manipulation
+			model3.position.x= (10);
+
+		},
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		function ( error ) {
+
+			console.log( 'A chair error happened' );
+
+		}
+	);
+
+	loader.load(//meatCleaver
+		'../../Models/Player_Models/Meat_Cleaver.gltf',
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let model4 = gltf.scene;//!!!! saves the model into a varible for manipulation
+			model4.position.x = (-5);
+
+		},
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		function ( error ) {
+
+			console.log( 'A cleaver error happened' );
+
+		}
+	);
+
+	loader.load(// mug
+		'../../Models/Player_Models/mug.gltf',
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let model5 = gltf.scene;//!!!! saves the model into a varible for manipulation
+			model5.position.y = (5);
+
+		},
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		function ( error ) {
+
+			console.log( 'A mug error happened' );
+
+		}
+	);
+	loader.load(// table
+		'../../Models/Player_Models/Table.gltf',
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let model6 = gltf.scene;//!!!! saves the model into a varible for manipulation
+			model6.position.y = (5);
+			model6.position.x = (10);
+
+		},
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		function ( error ) {
+
+			console.log( 'A Table error happened' );
+
+		}
+	);
+
+	loader.load(// table
+		'../../Models/Levels/Cityscape.glb',
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let model7 = gltf.scene;//!!!! saves the model into a varible for manipulation
+			model7.position.y = (2);
+			model7.position.x = (-10);
+			model7.scale.x = 100;
+			model7.scale.y = 100;
+			model7.scale.z = 100;
+
+
+		},
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		function ( error ) {
+
+			console.log( 'A Table error happened' );
 
 		}
 	);
@@ -146,11 +273,16 @@ function render(){
 }
 
 function loadingRenderer(){
+	//--------------------------------Loading Screen--------------------------------
+	//Based on: xSaucecode
+	//Loaction: https://www.youtube.com/watch?v=3umV-dEYttU&ab_channel=xSaucecode
+	//Posted:   08/05/2016
+	//Accessed: 02/08/2020
 	if(LOADING_NOT_DONE){
 		requestAnimationFrame (loadingRenderer);
-		loading.box.scale.x = amount_loaded;
+		loading.box.scale.x = amount_loaded*20;//*20 to make the bar take up more of the screen.
 		renderer.render (loading.scene, loading.camera);
-	}
+	}//--------------------------------Loading Screen--------------------------------
 	else{
 		render();
 	}
