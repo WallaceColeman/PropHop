@@ -40,6 +40,7 @@ var moveIn = false;
 var moveOut = false;
 var moveLeft = false;
 var moveRight = false;
+var reset = false;
 
 var player = cube.id;
 document.addEventListener("keydown", onDocumentKeyDown, false);
@@ -53,12 +54,6 @@ function onDocumentKeyDown(event) {
         moveLeft = true;
     } else if (keyCode == 68) {//d
         moveRight = true;
-    } else if (keyCode == 32) {//Space Bar
-        scene.getObjectById(player).position.set(0, 30, 0);
-        scene.getObjectById(player).__dirtyPosition = true;
-        velocity = new THREE.Vector3()
-        velocity.x = 15;
-        velocity.y = 20;
     }
     
 };
@@ -75,25 +70,105 @@ function onDocumentKeyUp(){
     } else if (keyCode == 68) {//d
         moveRight = false;
     }
+    else if(keyCode == 32) {//Space Bar
+        reset = true;
+    }
 }
 
-var vel = THREE.Vector3();
-function slide_controlls(){
-    var velocity = scene.getObjectById(player).getLinearVelocity();
-    if(moveIn && !moveOut){
-        velocity.z -= 0.5;
+var Semaphore = {
+    value: 1
+};
+function L(s){//Lock
+    if(s.value == 1){
+        s.value = 0;
+        return true;
     }
-    if(moveOut && !moveIn){
-        velocity.z += 0.5;
+    else{
+        return false;
     }
-    if(moveLeft && !moveRight){
-        velocity.x -= 0.5;
-    }
-    if(moveRight && !moveLeft){
-        velocity.x += 0.5;
-    }
-    scene.getObjectById(player).setLinearVelocity(velocity);
 }
+function R(s){//Release
+    s.value = 1;
+}
+
+function slide_controlls(){
+    if(L(Semaphore)){
+        var velocity = scene.getObjectById(player).getLinearVelocity();
+        if(moveIn && !moveOut){
+            velocity.z -= 0.5;
+            //scene.getObjectById(player).setLinearVelocity(velocity);
+            //console.log("in");
+        }
+        if(moveOut && !moveIn){
+            velocity.z += 0.5;
+            //scene.getObjectById(player).setLinearVelocity(velocity);
+            //console.log("out");
+        }
+        if(moveLeft && !moveRight){
+            velocity.x -= 0.5;
+            //scene.getObjectById(player).setLinearVelocity(velocity);
+            //console.log("right");
+        }
+        if(moveRight && !moveLeft){
+            velocity.x += 0.5;
+            //scene.getObjectById(player).setLinearVelocity(velocity);
+            //console.log("left");
+        }
+        if(reset){
+            
+            scene.getObjectById(player).__dirtyPosition = true;
+            scene.getObjectById(player).position.set(0, 30, 0);
+            //scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(15,20,0));
+            velocity = new THREE.Vector3();
+            velocity.x = 15;
+            velocity.y = 20;
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0, 0, 0));
+            reset = false;
+            //console.log("reset")
+        }
+        //console.log("none");
+        scene.getObjectById(player).setLinearVelocity(velocity);
+        R(Semaphore);
+    }
+    else{
+        console.log("blocked");
+    }
+    
+}
+
+// struct semaphore { 
+//     enum value(0, 1); 
+  
+//     // q contains all Process Control Blocks (PCBs) 
+//     // corresponding to processes got blocked 
+//     // while performing down operation. 
+//     Queue<process> q; 
+  
+// } P(semaphore s) 
+// { 
+//     if (s.value == 1) { 
+//         s.value = 0; 
+//     } 
+//     else { 
+//         // add the process to the waiting queue 
+//         q.push(P) 
+//             sleep(); 
+//     } 
+// } 
+// V(Semaphore s) 
+// { 
+//     if (s.q is empty) { 
+//         s.value = 1; 
+//     } 
+//     else { 
+  
+//         // select a process from waiting queue 
+//         q.pop(); 
+//         wakeup(); 
+//     } 
+// } 
+
+
 
 function renderScene(){
 
