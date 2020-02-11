@@ -1,121 +1,164 @@
-// this is a test to interact with physijs_demo without breaking the original
-
 
 'use strict';
-
+	
 	Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 	Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
-
+    
     var scene = new Physijs.Scene;
-    scene.setGravity(new THREE.Vector3(0,-10,0));
+    scene.setGravity(new THREE.Vector3(0,-25,0));
 
     var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 
-    var renderer = new THREE.WebGLRenderer();
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.shadowMap.enabled = true;
 
+    // Light code is based off of https://threejsfundamentals.org/threejs/lessons/threejs-shadows.html
+    // ambient light to dimly lit the scene, and add directional light
+ //   var am_light = new THREE.AmbientLight(0x444444 );
+//	scene.add(am_light);
+
+	// directional light
+//	var dir_light = new THREE.SpotLight(0xFFFFFF);
+ //   dir_light.position.set(-40,60,40);
+//	dir_light.target.position.copy(scene.position);
+//	dir_light.castShadow = true;
+//	dir_light.shadow.bias = -.001
+//	dir_light.shadow.mapSize.width = dir_light.shadow.mapSize.height = 2048;
+//	scene.add(dir_light);
+
+ 
+    
+
+    //Based heavily on code by: Happy Chuck Programming
+    //Location: https://www.youtube.com/watch?v=ARXYPRCNB14&t=33s&ab_channel=HappyChuckProgramming
+    //Posted:   02/19/2019
+    //Accessed: 02/03/2020
     var red = "rgb(255,0,0)";
     var green = "rgb(10,200,10)";
     var black = "rgb(0,0,0)";
+    var blue = "rgb(0,64,255)"
 
-    renderer.setClearColor(black);
+ //   renderer.setClearColor(black);
     renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
     //Plane
-    var planeGeometry = new THREE.PlaneGeometry(100,70,1,1);
+    var planeGeometry = new THREE.PlaneGeometry(70,30,1,1);
     var planeMaterial = new THREE.MeshBasicMaterial({color:green});
+    planeMaterial.receiveShadow = true;
 
     var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    //planeMaterial.receiveShadow = true;
+    plane.receiveShadow = true;
+    plane.castShadow = true;
     plane.rotation.x = -0.5*Math.PI;
+    plane.rotation.y = (0.125)*Math.PI;
     scene.add(plane);
 
+    //2nd Plane
+    planeGeometry = new THREE.PlaneGeometry(70,30,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color:blue});
+    planeMaterial.receiveShadow = true;
 
-		var friction = .8;
-		var restitution = 500;
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -0.5*Math.PI;
+    plane.position.x = 30;
+    plane.position.y = -15
+    plane.receiveShadow = true;
+    plane.castShadow = true;
+    scene.add(plane);
 
-    //Sphere
-		var sphereGeometry = new THREE.SphereGeometry(5, 5, 5);
-		var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff});
-		var sphere = new Physijs.BoxMesh(sphereGeometry, sphereMaterial), friction, restitiution;
-//    var cubeGeometry = new THREE.CubeGeometry(6,6,6);
-//    var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
-//    var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial), friction, restitution;
-    sphere.position.x = -10;
-    sphere.position.y = 30;
-    scene.add(sphere);
+    //Cube
+    var cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    //var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
+    var cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshBasicMaterial({ color:red}),
+        0.5,
+        0.5
+    );
+    var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+    cube.position.x = -10;
+    cube.position.y = 30;
+    cube.addEventListener( 'collision', function( objCollidedWith, linearVelOfCollision, angularVelOfCollision ) {
+});
+    
+//	});
+
+    scene.add(cube);
+
+//    mesh.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
+    // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
+//});
 
     //SpotLight
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-40,60,40);
-    scene.add(spotLight);
-
+ //   var spotLight = new THREE.SpotLight(0xffffff);
+  //  spotLight.position.set(-40,60,40);
+  //  spotLight.castShadow = true;
+  //  scene.add(spotLight);
+    
 
     camera.position.x = 0;
     camera.position.y = 30;
     camera.position.z = 100;
     camera.lookAt(scene.position);
+    //End of code based on Happy Chuck Programming
+
+
+
+
+
+    // https://gamedevelopment.tutsplus.com/tutorials/creating-a-simple-3d-physics-game-using-threejs-and-physijs--cms-29453
+    scene.addEventListener( 'update', function() {
+    //your code. physics calculations have done updating
+});
+
+
+    
+    var maxVelocity = 15;
+    var player = cube.id;
+    var ground = plane.position.y;
+    document.addEventListener("keydown", onDocumentKeyDown, false);
+    function onDocumentKeyDown(event) {
+        var keyCode = event.which;
+        //var velocity = new THREE.Vector3();
+        var velocity = scene.getObjectById(player).getLinearVelocity();
+        if (keyCode == 87) {//w
+            //scene.getObjectById(player).se
+            velocity.z -= 0.5; 
+        } else if (keyCode == 83) {//s
+            //scene.getObjectById(player).position.y -= ySpeed;
+            velocity.z += 0.5; 
+        } else if (keyCode == 65) {//a
+            //scene.getObjectById(player).position.x -= xSpeed;
+            velocity.x -= 0.5; 
+        } else if (keyCode == 68) {//d
+            //scene.getObjectById(player).position.x += xSpeed;
+            velocity.x += 0.5; 
+        } else if (keyCode == 82) {//Letter "r: to restart, might change later
+            scene.getObjectById(player).position.set(0, 30, 0);
+            scene.getObjectById(player).__dirtyPosition = true;
+            velocity = new THREE.Vector3()
+            velocity.x = 15;
+            velocity.y = 20;
+        } else if (keyCode == 32 && velocity.y <= maxVelocity) {//Space Bar, to jump
+             velocity.y += 15;
+        }
+        scene.getObjectById(player).setLinearVelocity(velocity);
+    };
+
+  //  const cameraHelper = new THREE.CameraHelper(dir_light.shadow.camera);
+  //  scene.add(cameraHelper);
+
 
     function renderScene(){
 
         scene.simulate();
         requestAnimationFrame(renderScene);
+        camera.position.x = scene.getObjectById(player).position.x;
+        camera.position.y = scene.getObjectById(player).position.y+25;
         renderer.render(scene, camera);
     }
 
     document.body.appendChild(renderer.domElement);
     renderScene();
-
-		function onDocumentMouseMove( event )
-		{
-			// the following line would stop any other event handler from firing
-			// (such as the mouse's TrackballControls)
-			// event.preventDefault();
-
-			// update the mouse variable
-			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-		}
-
-		function animate()
-		{
-		  requestAnimationFrame( animate );
-			render();
-			update();
-		}
-    /*
-	var initScene, render, renderer, scene, camera, box;
-
-	initScene = function() {
-		renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.getElementById( 'viewport' ).appendChild( renderer.domElement );
-
-		scene = new Physijs.Scene;
-
-		camera = new THREE.PerspectiveCamera(
-			35,
-			window.innerWidth / window.innerHeight,
-			1,
-			1000
-		);
-		camera.position.set( 60, 50, 60 );
-		camera.lookAt( scene.position );
-		scene.add( camera );
-
-		// Box
-		box = new Physijs.BoxMesh(
-			new THREE.CubeGeometry( 5, 5, 5 ),
-			new THREE.MeshBasicMaterial({ color: 0x888888 })
-		);
-		scene.add( box );
-
-		requestAnimationFrame( render );
-	};
-
-	render = function() {
-		scene.simulate(); // run physics
-		renderer.render( scene, camera); // render the scene
-		requestAnimationFrame( render );
-	};
-
-    window.onload = initScene();
-    */
