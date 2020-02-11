@@ -70,10 +70,10 @@
     scene.add(cube);
 
 
-    //SpotLight
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-40,60,40);
-    scene.add(spotLight);
+    // //SpotLight
+    // var spotLight = new THREE.SpotLight(0xffffff);
+    // spotLight.position.set(-40,60,40);
+    // scene.add(spotLight);
     
 
     camera.position.x = 0;
