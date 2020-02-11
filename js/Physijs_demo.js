@@ -10,7 +10,6 @@
     var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 
     var renderer = new THREE.WebGLRenderer({ antialias: true });
-    
 
     //Based heavily on code by: Happy Chuck Programming
     //Location: https://www.youtube.com/watch?v=ARXYPRCNB14&t=33s&ab_channel=HappyChuckProgramming
@@ -29,6 +28,8 @@
     var planeMaterial = new THREE.MeshBasicMaterial({color:green});
 
     var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    plane.receiveShadow = true;
+    plane.castShadow = true;
     plane.rotation.x = -0.5*Math.PI;
     plane.rotation.y = (0.125)*Math.PI;
     scene.add(plane);
@@ -41,6 +42,8 @@
     plane.rotation.x = -0.5*Math.PI;
     plane.position.x = 30;
     plane.position.y = -15
+    plane.receiveShadow = true;
+    plane.castShadow = true;
     scene.add(plane);
 
     //Cube
@@ -52,24 +55,30 @@
         0.5
     );
     var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.castShadow = true;
+    cube.receiveShadow = true;
     cube.position.x = -10;
     cube.position.y = 30;
     scene.add(cube);
-
+    cube.addEventListener('collision', function( objCollidedWith, linearVelOfCollision, angularVelOfCollision ) {
+});
 
     //SpotLight
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(-40,60,40);
+    spotLight.castShadow = true;
     scene.add(spotLight);
-    
 
     camera.position.x = 0;
     camera.position.y = 30;
     camera.position.z = 100;
     camera.lookAt(scene.position);
     //End of code based on Happy Chuck Programming
+
     
+    var maxVelocity = 15;
     var player = cube.id;
+    var ground = plane.position.y;
     document.addEventListener("keydown", onDocumentKeyDown, false);
     function onDocumentKeyDown(event) {
         var keyCode = event.which;
@@ -87,12 +96,14 @@
         } else if (keyCode == 68) {//d
             //scene.getObjectById(player).position.x += xSpeed;
             velocity.x += 0.5; 
-        } else if (keyCode == 32) {//Space Bar
+        } else if (keyCode == 82) {//Letter "r: to restart, might change later
             scene.getObjectById(player).position.set(0, 30, 0);
             scene.getObjectById(player).__dirtyPosition = true;
             velocity = new THREE.Vector3()
             velocity.x = 15;
             velocity.y = 20;
+        } else if (keyCode == 32 && velocity.y < maxVelocity) {//Space Bar, to jump
+             velocity.y += 15;
         }
         scene.getObjectById(player).setLinearVelocity(velocity);
     };
@@ -101,7 +112,6 @@
 
         scene.simulate();
         requestAnimationFrame(renderScene);
-        
         camera.position.x = scene.getObjectById(player).position.x;
         camera.position.y = scene.getObjectById(player).position.y+25;
         renderer.render(scene, camera);
