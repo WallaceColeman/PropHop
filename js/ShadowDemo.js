@@ -112,16 +112,11 @@
 
  //   scene.add(cube);
 
-//    mesh.addEventListener( 'collision', function( other_object, relative_velocity, relative_rotation, contact_normal ) {
-    // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
-//});
-
     //SpotLight
- //   var spotLight = new THREE.SpotLight(0xffffff);
-  //  spotLight.position.set(-40,60,40);
-  //  spotLight.castShadow = true;
-  //  scene.add(spotLight);
-    
+    var spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40,60,40);
+    spotLight.castShadow = true;
+    scene.add(spotLight);   
 
     camera.position.x = 0;
     camera.position.y = 30;
@@ -129,17 +124,11 @@
     camera.lookAt(scene.position);
     //End of code based on Happy Chuck Programming
 
-
-
-
-
     // https://gamedevelopment.tutsplus.com/tutorials/creating-a-simple-3d-physics-game-using-threejs-and-physijs--cms-29453
     scene.addEventListener( 'update', function() {
     //your code. physics calculations have done updating
 });
-
-
-    
+ 
     var maxVelocity = 15;
     var player = block.id;
     var ground = plane.position.y;
