@@ -22,8 +22,8 @@ var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
     new THREE.MeshBasicMaterial({ color:"rgb(10,10,200)"}),
-    1.0,
-    1.0
+    0.2,
+    0.2
 );
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.x = -0.5*Math.PI;
@@ -32,22 +32,29 @@ scene.add(plane);
 
 //markers
 for (let index = 0; index < 100; index++) {
-    let marker = new THREE.Mesh( new THREE.BoxGeometry( 1, 5, 1 ), new THREE.MeshBasicMaterial( {color: 0x00ff00} ) );
-    marker.position.x = index*10
+    //let marker = new THREE.Mesh( new THREE.BoxGeometry( 1, 5, 1 ), new THREE.MeshBasicMaterial( {color: 0x00ff00} ) );
+    let marker = new Physijs.BoxMesh( new THREE.CubeGeometry(1,10,1), Physijs.createMaterial(
+        new THREE.MeshBasicMaterial({ color:"rgb(10,200,10)"}),
+        1.0,
+        1.0
+    ));
+    marker.mass = 0;
+    marker.position.x = index*10;
     marker.position.y = 5;
     scene.add( marker );
     
 }
 
 //Cube
-var cubeGeometry = new THREE.CubeGeometry(6,6,6);
-var cubeMaterial = Physijs.createMaterial(
+let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+let cubeMaterial = Physijs.createMaterial(
     new THREE.MeshBasicMaterial({ color:"rgb(255,0,0)"}),
     1.0,
     1.0
 );
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-cube.position.y = 30;
+cube.position.y = 3;
+cube.position.x = -5
 scene.add(cube);
 
 var moveIn = false;
