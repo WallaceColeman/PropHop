@@ -6,6 +6,7 @@ Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.
 var scene = new Physijs.Scene;
 scene.setGravity(new THREE.Vector3(0,-25,0));
 
+
 var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
 camera.position.y = 30;
@@ -17,13 +18,22 @@ renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
 //plane
-var planeGeometry = new THREE.PlaneGeometry(100,50,1,1);
+var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
 var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.x = -0.5*Math.PI;
 //plane.rotation.y = (0.125)*Math.PI;
 scene.add(plane);
+
+//markers
+for (let index = 0; index < 100; index++) {
+    let marker = new THREE.Mesh( new THREE.BoxGeometry( 1, 5, 1 ), new THREE.MeshBasicMaterial( {color: 0x00ff00} ) );
+    marker.position.x = index*10
+    marker.position.y = 5;
+    scene.add( marker );
+    
+}
 
 //Cube
 var cubeGeometry = new THREE.CubeGeometry(6,6,6);
@@ -40,7 +50,10 @@ var moveIn = false;
 var moveOut = false;
 var moveLeft = false;
 var moveRight = false;
+
 var reset = false;
+
+//var lock = 0;
 
 var player = cube.id;
 document.addEventListener("keydown", onDocumentKeyDown, false);
@@ -70,113 +83,117 @@ function onDocumentKeyUp(){
     } else if (keyCode == 68) {//d
         moveRight = false;
     }
-    else if(keyCode == 32) {//Space Bar
+    else if(keyCode == 82) {//r
         reset = true;
+        // while(lock == 2){/*wait*/}
+        // lock = 1;
+        //console.log("AS");
+        var v = new THREE.Vector3(0,0,0);
+        scene.getObjectById(player).setLinearFactor(v);
+        scene.getObjectById(player).setAngularFactor(v);
+        // scene.getObjectById(player).setLinearVelocity(v);
+        // scene.getObjectById(player).setAngularVelocity(v);
+        
+        scene.getObjectById(player).__dirtyPosition = true;
+        scene.getObjectById(player).position.set(0, 30, 0);
+        v.x = 15;
+        v.y = 20;
+        v.z = 0;
+        scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
+        scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
+        scene.getObjectById(player).setLinearVelocity(v);
+        //console.log("AE");
+        // if(lock == 1){
+        //     lock=0;
+        // }
+        // else{
+        //     console.log("Broken spinlock");
+        // }
     }
 }
 
-var Semaphore = {
-    value: 1
-};
-function L(s){//Lock
-    if(s.value == 1){
-        s.value = 0;
-        return true;
+function slide_controlls(){//SWITCH TO applyCentralImpulse*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!**88
+    // while(lock == 1){/*wait*/}
+    // lock = 2;
+    // if(reset){
+    //     var v = new THREE.Vector3();
+    //     v.x = 0;
+    //     v.y = 0;
+    //     v.z = 0;
+    //     scene.getObjectById(player).setLinearVelocity(v);
+    //     scene.getObjectById(player).setAngularVelocity(v);
+        
+    //     scene.getObjectById(player).__dirtyPosition = true;
+    //     scene.getObjectById(player).__dirtyRotation = true;
+    //     scene.getObjectById(player).position.set(0, 30, 0);
+    //     scene.getObjectById(player).rotation.set(0, 0, 0);
+    //     v.x = 15;
+    //     v.y = 20;
+    //     v.z = 0;
+    //     scene.getObjectById(player).setLinearVelocity(v);
+    //     reset = false;
+    //     return;
+    // }
+    //console.log("BS");
+    if(reset){
+        // let t = new Date().getTime();
+        // while(new Date().getTime() - t < 1000){}
+        // reset = false;
+        // return;
     }
-    else{
-        return false;
+    let velocity = new THREE.Vector3();
+    let cv = scene.getObjectById(player).getLinearVelocity();
+    if(moveIn && cv.z > -50){
+        velocity.z -= 100;
+        //scene.getObjectById(player).applyCentralImpulse(velocity);
+        //console.log("in");
     }
+    if(moveOut && cv.z < 50){
+        velocity.z += 100;
+        //scene.getObjectById(player).setLinearVelocity(velocity);
+        //console.log("out");
+    }
+    if(moveLeft && cv.x > -50){
+        velocity.x -= 100;
+        //scene.getObjectById(player).setLinearVelocity(velocity);
+        //console.log("right");
+    }
+    if(moveRight && cv.x < 50){
+        velocity.x += 100;
+        //scene.getObjectById(player).setLinearVelocity(velocity);
+        //console.log("left");
+    }
+    //********************************************************************************************************
+    //********************************************************************************************************
+    //********************************************************************************************************
+    // every frame is calling the setlinearvelocity function, it's probaly screwing with the physics
+    //********************************************************************************************************
+    //********************************************************************************************************
+    //********************************************************************************************************
+    //scene.getObjectById(player).setLinearVelocity(velocity);
+    scene.getObjectById(player).applyCentralImpulse(velocity);
+    //console.log("BE");
+    // if(lock == 2){
+    //     lock=0;
+    // }
+    // else{
+    //     console.log("Broken spinlock");
+    // }
+        
+    //console.log("none");
+        
 }
-function R(s){//Release
-    s.value = 1;
-}
-
-function slide_controlls(){
-    if(L(Semaphore)){
-        var velocity = scene.getObjectById(player).getLinearVelocity();
-        if(moveIn && !moveOut){
-            velocity.z -= 0.5;
-            //scene.getObjectById(player).setLinearVelocity(velocity);
-            //console.log("in");
-        }
-        if(moveOut && !moveIn){
-            velocity.z += 0.5;
-            //scene.getObjectById(player).setLinearVelocity(velocity);
-            //console.log("out");
-        }
-        if(moveLeft && !moveRight){
-            velocity.x -= 0.5;
-            //scene.getObjectById(player).setLinearVelocity(velocity);
-            //console.log("right");
-        }
-        if(moveRight && !moveLeft){
-            velocity.x += 0.5;
-            //scene.getObjectById(player).setLinearVelocity(velocity);
-            //console.log("left");
-        }
-        if(reset){
-            
-            scene.getObjectById(player).__dirtyPosition = true;
-            scene.getObjectById(player).position.set(0, 30, 0);
-            //scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(15,20,0));
-            velocity = new THREE.Vector3();
-            velocity.x = 15;
-            velocity.y = 20;
-            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0, 0, 0));
-            reset = false;
-            //console.log("reset")
-        }
-        //console.log("none");
-        scene.getObjectById(player).setLinearVelocity(velocity);
-        R(Semaphore);
-    }
-    else{
-        console.log("blocked");
-    }
-    
-}
-
-// struct semaphore { 
-//     enum value(0, 1); 
-  
-//     // q contains all Process Control Blocks (PCBs) 
-//     // corresponding to processes got blocked 
-//     // while performing down operation. 
-//     Queue<process> q; 
-  
-// } P(semaphore s) 
-// { 
-//     if (s.value == 1) { 
-//         s.value = 0; 
-//     } 
-//     else { 
-//         // add the process to the waiting queue 
-//         q.push(P) 
-//             sleep(); 
-//     } 
-// } 
-// V(Semaphore s) 
-// { 
-//     if (s.q is empty) { 
-//         s.value = 1; 
-//     } 
-//     else { 
-  
-//         // select a process from waiting queue 
-//         q.pop(); 
-//         wakeup(); 
-//     } 
-// } 
-
-
 
 function renderScene(){
 
     scene.simulate();
     requestAnimationFrame(renderScene);
     slide_controlls();
+    camera.position.x = scene.getObjectById(player).position.x;
+    camera.position.y = scene.getObjectById(player).position.y+25;
     renderer.render(scene, camera);
 }
 
 document.body.appendChild(renderer.domElement);
+
 renderScene();
