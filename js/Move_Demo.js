@@ -19,8 +19,12 @@ renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
 //plane
 var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
-var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
-
+//var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+let planeMaterial = Physijs.createMaterial(
+    new THREE.MeshBasicMaterial({ color:"rgb(10,10,200)"}),
+    1.0,
+    1.0
+);
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.x = -0.5*Math.PI;
 //plane.rotation.y = (0.125)*Math.PI;
@@ -39,8 +43,8 @@ for (let index = 0; index < 100; index++) {
 var cubeGeometry = new THREE.CubeGeometry(6,6,6);
 var cubeMaterial = Physijs.createMaterial(
     new THREE.MeshBasicMaterial({ color:"rgb(255,0,0)"}),
-    0.5,
-    0.5
+    1.0,
+    1.0
 );
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.position.y = 30;
@@ -143,23 +147,43 @@ function slide_controlls(){//SWITCH TO applyCentralImpulse*!!!!!!!!!!!!!!!!!!!!!
     }
     let velocity = new THREE.Vector3();
     let cv = scene.getObjectById(player).getLinearVelocity();
-    if(moveIn && cv.z > -50){
-        velocity.z -= 100;
+    if(moveIn){
+        if(cv.z > 0){
+            velocity.z -= 1000;
+        }
+        else if(cv.z > -50){
+            velocity.z -= 100;
+        }
         //scene.getObjectById(player).applyCentralImpulse(velocity);
         //console.log("in");
     }
-    if(moveOut && cv.z < 50){
-        velocity.z += 100;
+    if(moveOut){
+        if(cv.z < 0){
+            velocity.z += 1000;
+        }
+        else if(cv.z < 50){
+            velocity.z += 100;
+        }
         //scene.getObjectById(player).setLinearVelocity(velocity);
         //console.log("out");
     }
-    if(moveLeft && cv.x > -50){
-        velocity.x -= 100;
+    if(moveLeft){
+        if(cv.x > 0){
+            velocity.x -= 1000;
+        }
+        else if(cv.x > -50){
+            velocity.x -= 100;
+        }
         //scene.getObjectById(player).setLinearVelocity(velocity);
         //console.log("right");
     }
-    if(moveRight && cv.x < 50){
-        velocity.x += 100;
+    if(moveRight){
+        if(cv.x < 0){
+            velocity.x += 1000;
+        }
+        else if(cv.x < 50){
+            velocity.x += 100;
+        }
         //scene.getObjectById(player).setLinearVelocity(velocity);
         //console.log("left");
     }
