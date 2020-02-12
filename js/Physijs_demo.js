@@ -63,19 +63,11 @@
     cube.addEventListener('collision', function( objCollidedWith, linearVelOfCollision, angularVelOfCollision ) {
 });
 
-<<<<<<< HEAD
     //SpotLight
     var spotLight = new THREE.SpotLight(0xffffff);
     spotLight.position.set(-40,60,40);
     spotLight.castShadow = true;
     scene.add(spotLight);
-=======
-    // //SpotLight
-    // var spotLight = new THREE.SpotLight(0xffffff);
-    // spotLight.position.set(-40,60,40);
-    // scene.add(spotLight);
-    
->>>>>>> ac7e45c5865e547196fd6cb99f1a63671835ebcb
 
     camera.position.x = 0;
     camera.position.y = 30;
