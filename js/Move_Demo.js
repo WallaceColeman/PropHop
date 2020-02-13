@@ -18,6 +18,17 @@ var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
+//light
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(-40,60,40);
+spotLight.castShadow = true;
+scene.add(spotLight);   
+
+camera.position.x = 0;
+camera.position.y = 30;
+camera.position.z = 100;
+camera.lookAt(scene.position);
+
 //plane
 var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
@@ -43,7 +54,6 @@ for (let index = 0; index < 100; index++) {
     marker.position.x = index*10;
     marker.position.y = 5;
     scene.add( marker );
-    
 }
 
 //Cube
