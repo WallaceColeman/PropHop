@@ -4,6 +4,7 @@ Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
 var scene = new Physijs.Scene;
+var loader = new THREE.TextureLoader();
 scene.setGravity(new THREE.Vector3(0,-25,0));
 
 
@@ -48,11 +49,15 @@ for (let index = 0; index < 100; index++) {
 //Cube
 let cubeGeometry = new THREE.CubeGeometry(6,6,6);
 let cubeMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial({ color:"rgb(255,0,0)"}),
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
     1.0,
     1.0
 );
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+cubeMaterial.castShadow = true;
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.receiveShadow = true;
 cube.position.y = 3;
 cube.position.x = -5
 scene.add(cube);
