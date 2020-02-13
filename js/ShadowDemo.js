@@ -62,17 +62,26 @@
     scene.add(plane);
 
     //2nd Plane
-    planeGeometry = new THREE.PlaneGeometry(100,50,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color:blue});
-    planeMaterial.receiveShadow = true;
+    // planeGeometry = new THREE.PlaneGeometry(100,50,1,1);
+    // planeMaterial = new THREE.MeshBasicMaterial({color:blue});
+    // planeMaterial.receiveShadow = true;
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5*Math.PI;
-    plane.position.x = 30;
-    plane.position.y = -15
+    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -0.5*Math.PI;
+    // plane.position.x = 30;
+    // plane.position.y = -15
+    // plane.receiveShadow = true;
+    // plane.castShadow = true;
+    // scene.add(plane);
+
+    plane_material = Physijs.createMaterial(
+        new THREE.MeshStandardMaterial( { color: blue } ), .3, .9 // low restitution
+    );
+    // Ground
+    plane = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 50, 1, 1),plane_material,0 // mass
+    );
     plane.receiveShadow = true;
-    plane.castShadow = true;
-    scene.add(plane);
+    scene.add( plane );
 
     //Cube - Code created by chandlerprall
     var block_material = Physijs.createMaterial(
@@ -90,8 +99,6 @@
 	block.castShadow = true;
 	scene.add(block);
 
-
-
     //Cube original code
 //     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
 //     //var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
@@ -107,9 +114,7 @@
 //     cube.position.y = 30;
 //     cube.addEventListener( 'collision', function( objCollidedWith, linearVelOfCollision, angularVelOfCollision ) {
 // });
-    
 //	});
-
  //   scene.add(cube);
 
     //SpotLight
