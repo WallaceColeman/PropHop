@@ -74,7 +74,7 @@
     // plane.castShadow = true;
     // scene.add(plane);
 
-    plane_material = Physijs.createMaterial(
+    var plane_material = Physijs.createMaterial(
         new THREE.MeshStandardMaterial( { color: blue } ), .3, .9 // low restitution
     );
     // Ground
@@ -84,20 +84,20 @@
     scene.add( plane );
 
     //Cube - Code created by chandlerprall
-    var block_material = Physijs.createMaterial(
+    var cube_material = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         .4, // medium friction
         .4 // medium restitution
     );
-    block_material.map.wrapS = block_material.map.wrapT = THREE.RepeatWrapping;
-    block_material.map.repeat.set( 1, .5 );
-    block_material.castShadow = true;
+    cube_material.map.wrapS = cube_material.map.wrapT = THREE.RepeatWrapping;
+    cube_material.map.repeat.set( 1, .5 );
+    cube_material.castShadow = true;
 
-    var blockGeometry = new THREE.BoxGeometry(6, 6, 6);
-    var block = new Physijs.BoxMesh(blockGeometry, block_material)
-    block.receiveShadow = true;
-	block.castShadow = true;
-	scene.add(block);
+    var cubeGeometry = new THREE.BoxGeometry(6, 6, 6);
+    var cube = new Physijs.BoxMesh(cubeGeometry, cube_material)
+    cube.receiveShadow = true;
+	cube.castShadow = true;
+	scene.add(cube);
 
     //Cube original code
 //     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
@@ -135,7 +135,7 @@
 });
  
     var maxVelocity = 15;
-    var player = block.id;
+    var player = cube.id;
     var ground = plane.position.y;
     document.addEventListener("keydown", onDocumentKeyDown, false);
     function onDocumentKeyDown(event) {
