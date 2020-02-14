@@ -19,6 +19,9 @@ renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 
 //light
+var light = new THREE.AmbientLight( 0x004040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+scene.add(light);
+
 var spotLight = new THREE.SpotLight(0xffffff);
 spotLight.position.set(-40,60,40);
 spotLight.castShadow = true;
