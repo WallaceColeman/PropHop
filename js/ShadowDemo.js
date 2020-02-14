@@ -62,35 +62,42 @@
     scene.add(plane);
 
     //2nd Plane
-    planeGeometry = new THREE.PlaneGeometry(100,50,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color:blue});
-    planeMaterial.receiveShadow = true;
+    // planeGeometry = new THREE.PlaneGeometry(100,50,1,1);
+    // planeMaterial = new THREE.MeshBasicMaterial({color:blue});
+    // planeMaterial.receiveShadow = true;
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5*Math.PI;
-    plane.position.x = 30;
-    plane.position.y = -15
+    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    // plane.rotation.x = -0.5*Math.PI;
+    // plane.position.x = 30;
+    // plane.position.y = -15
+    // plane.receiveShadow = true;
+    // plane.castShadow = true;
+    // scene.add(plane);
+
+    var plane_material = Physijs.createMaterial(
+        new THREE.MeshStandardMaterial( { color: blue } ), .3, .9 // low restitution
+    );
+    // Ground
+    plane = new Physijs.BoxMesh(new THREE.BoxGeometry(100, 50, 1, 1),plane_material,0 // mass
+    );
     plane.receiveShadow = true;
-    plane.castShadow = true;
-    scene.add(plane);
+    scene.add( plane );
 
     //Cube - Code created by chandlerprall
-    var block_material = Physijs.createMaterial(
+    var cube_material = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         .4, // medium friction
         .4 // medium restitution
     );
-    block_material.map.wrapS = block_material.map.wrapT = THREE.RepeatWrapping;
-    block_material.map.repeat.set( 1, .5 );
-    block_material.castShadow = true;
+    cube_material.map.wrapS = cube_material.map.wrapT = THREE.RepeatWrapping;
+    cube_material.map.repeat.set( 1, .5 );
+    cube_material.castShadow = true;
 
-    var blockGeometry = new THREE.BoxGeometry(6, 6, 6);
-    var block = new Physijs.BoxMesh(blockGeometry, block_material)
-    block.receiveShadow = true;
-	block.castShadow = true;
-	scene.add(block);
-
-
+    var cubeGeometry = new THREE.BoxGeometry(6, 6, 6);
+    var cube = new Physijs.BoxMesh(cubeGeometry, cube_material)
+    cube.receiveShadow = true;
+	cube.castShadow = true;
+	scene.add(cube);
 
     //Cube original code
 //     var cubeGeometry = new THREE.CubeGeometry(6,6,6);
@@ -107,9 +114,7 @@
 //     cube.position.y = 30;
 //     cube.addEventListener( 'collision', function( objCollidedWith, linearVelOfCollision, angularVelOfCollision ) {
 // });
-    
 //	});
-
  //   scene.add(cube);
 
     //SpotLight
@@ -130,7 +135,7 @@
 });
  
     var maxVelocity = 15;
-    var player = block.id;
+    var player = cube.id;
     var ground = plane.position.y;
     document.addEventListener("keydown", onDocumentKeyDown, false);
     function onDocumentKeyDown(event) {
