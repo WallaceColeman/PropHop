@@ -17,9 +17,12 @@ camera.lookAt(scene.position);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 //light
-var light = new THREE.AmbientLight( 0x004040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+light.castShadow = true;
 scene.add(light);
 
 var spotLight = new THREE.SpotLight(0xffffff);
@@ -36,11 +39,14 @@ camera.lookAt(scene.position);
 var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial({ color:"rgb(10,10,200)"}),
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.2,
     0.2
 );
+planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+planeMaterial.map.repeat.set( 1, .5 );
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+plane.receiveShadow = true;
 plane.rotation.x = -0.5*Math.PI;
 //plane.rotation.y = (0.125)*Math.PI;
 scene.add(plane);
@@ -68,9 +74,9 @@ let cubeMaterial = Physijs.createMaterial(
 );
 cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
 cubeMaterial.map.repeat.set( 1, .5 );
-cubeMaterial.castShadow = true;
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.receiveShadow = true;
+cube.castShadow = true;
 cube.position.y = 3;
 cube.position.x = -5
 scene.add(cube);
