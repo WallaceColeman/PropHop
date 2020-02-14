@@ -5,54 +5,67 @@ Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.
 
 var scene = new Physijs.Scene;
 scene.setGravity(new THREE.Vector3(0,-25,0));
+var loader = new THREE.TextureLoader();
 
 
 var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
 camera.position.x = 0;
 camera.position.y = 30;
-camera.position.z = 100;
+camera.position.z = 95;
 camera.lookAt(scene.position);
 
-//SpotLight
+//light
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+light.castShadow = true;
+scene.add(light);
+
 var spotLight = new THREE.SpotLight(0xffffff);
 spotLight.position.set(-40,60,40);
 spotLight.castShadow = true;
-scene.add(spotLight); 
+scene.add(spotLight);   
+
 
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-
-//floor
-
-var planeGeometry = new THREE.PlaneGeometry(250,150,1,1);
+//plane
+var planeGeometry = new THREE.PlaneGeometry(200,150,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial({ color:"rgb(10,10,200)"}),
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.2,
     0.2
 );
+planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+planeMaterial.map.repeat.set( 1, .5 );
+//floor
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.x = -.5*Math.PI;
 //plane.rotation.y = (0.125)*Math.PI;
+plane.receiveShadow = true;
 scene.add(plane);
 
 //front wall
 plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.x = -1*Math.PI;
 plane.position.z = 75;
+plane.receiveShadow = true;
 scene.add(plane);
 
 //back wall
 plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.position.z = -50;
+plane.receiveShadow = true;
 scene.add(plane);
 
 //left wall
 plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
 plane.rotation.y = .5*Math.PI;
 plane.position.x = -75;
+plane.receiveShadow = true;
 scene.add(plane);
 
 //right wall
