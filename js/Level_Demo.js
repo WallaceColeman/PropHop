@@ -305,9 +305,14 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         }
     }
     if(jump){
-        if(scene.getObjectById(player)._physijs.touches.length > 0 /*&& scene.getObjectById(player).getLinearVelocity().y < 10*/){
-            //console.log("jump");
-            velocity.y += 1500;
+        if(scene.getObjectById(player)._physijs.touches.length > 0 && scene.getObjectById(player).getLinearVelocity().y < 10){
+            //console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position);
+            console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]]);
+            if(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position.y < scene.getObjectById(player).position.y){
+                velocity.y += 1500;
+            }
+            //velocity.y += 5000;
+            //jump = false;
         }
     }
 
