@@ -14,7 +14,8 @@ camera.position.y = 30;
 camera.position.z = 100;
 camera.lookAt(scene.position);
 
-var renderer = new THREE.WebGLRenderer({ antialias: true });
+var renderer = new THREE.WebGLRenderer({performance, antialias: true });
+
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
@@ -36,7 +37,6 @@ camera.lookAt(scene.position);
 
 //plane
 var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
-//var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.2,
@@ -88,13 +88,13 @@ var moveIn = false;
 var moveOut = false;
 var moveLeft = false;
 var moveRight = false;
-var jump = false;
-var die = false;
+
 var reset = false;
 
 //var lock = 0;
 
 var player = cube.id;
+
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
@@ -106,8 +106,8 @@ function onDocumentKeyDown(event) {
         moveLeft = true;
     } else if (keyCode == 68) {//d
         moveRight = true;
-    } else if (keycode == 32) {//spacebar
-        jump = true;
+    // } else if (keycode == 32) {//spacebar
+    //     jump = true;
     }    
 };
 
@@ -128,10 +128,8 @@ function onDocumentKeyUp(){
         // lock = 1;
         //console.log("AS");
         var v = new THREE.Vector3(0,0,0);
-        //scene.getObjectById(player).setLinearFactor(v);
-        //scene.getObjectById(player).setAngularFactor(v);
-        scene.getObjectById(player).applyCentralImpulse(v);
-        
+        scene.getObjectById(player).setLinearFactor(v);
+        scene.getObjectById(player).setAngularFactor(v);
         scene.getObjectById(player).__dirtyPosition = true;
         scene.getObjectById(player).position.set(0, 30, 0);
         v.x = 15;
@@ -139,7 +137,8 @@ function onDocumentKeyUp(){
         v.z = 0;
         scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
         scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
-        scene.getObjectById(player).applyCentralImpulse(v);
+        scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
+        //scene.getObjectById(player).applyCentralImpulse(v);
         //console.log("AE");
         // if(lock == 1){
         //     lock=0;
@@ -200,10 +199,7 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         }
         //console.log("left");
     }
-    // if(scene.getObjectById(player).position.y < -2500){
-    //     velocity = (0, 0, 0);
-    //     reset = true;
-    // }
+
     scene.getObjectById(player).applyCentralImpulse(velocity);
     //console.log("BE");
     // if(lock == 2){
@@ -215,7 +211,20 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         
     //console.log("none");
     
-        
+    // Jenna: this doesn't work:
+    // scene.addEventListener(
+    //     'update',
+    //     function() {
+    //         scene.simulate(undefined, 1);
+    //         physicsStats.update();
+    //     }
+    // );
+    // physicsStats = new Stats();
+    // physicsStats.domElement.style.position = 'absolute';
+    // physicsStats.domElement.style.top = '50px';
+    // physicsStats.domElement.style.zIndex = 100;
+    // document.getElementById( 'viewport' ).appendChild(physicsStats.domElement );
+    
 }
 
 function renderScene(){
