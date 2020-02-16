@@ -4,6 +4,7 @@ Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
 var scene = new Physijs.Scene;
+var loader = new THREE.TextureLoader();
 scene.setGravity(new THREE.Vector3(0,-25,0));
 
 
@@ -16,44 +17,70 @@ camera.lookAt(scene.position);
 var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+renderer.shadowMap.enabled = true;
+//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+//light
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+scene.add(light);
+
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(-40,60,40);
+spotLight.castShadow = true;
+scene.add(spotLight);   
+
+camera.position.x = 0;
+camera.position.y = 30;
+camera.position.z = 100;
+camera.lookAt(scene.position);
 
 //plane
 var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial({ color:"rgb(10,10,200)"}),
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.2,
     0.2
 );
+planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+planeMaterial.map.repeat.set( 1, .5 );
 var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+plane.receiveShadow = true;
 plane.rotation.x = -0.5*Math.PI;
 //plane.rotation.y = (0.125)*Math.PI;
 scene.add(plane);
 
 //markers
 for (let index = 0; index < 100; index++) {
-    //let marker = new THREE.Mesh( new THREE.BoxGeometry( 1, 5, 1 ), new THREE.MeshBasicMaterial( {color: 0x00ff00} ) );
-    let marker = new Physijs.BoxMesh( new THREE.CubeGeometry(1,10,1), Physijs.createMaterial(
-        new THREE.MeshBasicMaterial({ color:"rgb(10,200,10)"}),
-        1.0,
-        1.0
-    ));
+    let marker = new Physijs.BoxMesh(
+        new THREE.BoxGeometry(1, 10, 1),
+            Physijs.createMaterial(
+                new THREE.MeshLambertMaterial({
+                color:"rgb(10,200,10)"}),
+                1.0,
+                1.0
+        ));
     marker.mass = 0;
     marker.position.x = index*10;
     marker.position.y = 5;
+    marker.receiveShadow = true;
+    marker.castShadow = true;
     scene.add( marker );
-    
 }
 
 //Cube
 let cubeGeometry = new THREE.CubeGeometry(6,6,6);
 let cubeMaterial = Physijs.createMaterial(
-    new THREE.MeshBasicMaterial({ color:"rgb(255,0,0)"}),
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
     1.0,
     1.0
 );
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.name = "player:slide"
+cube.receiveShadow = true;
+cube.castShadow = true;
 cube.position.y = 3;
 cube.position.x = -5;
 scene.add(cube);

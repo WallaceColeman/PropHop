@@ -264,6 +264,36 @@ function setUp(){
 
 		}
 	);
+
+	loader.load(//RoomTest
+		// resource URL
+		'../../Models/Levels/RoomTemplate.glb',
+		// called when the resource is loaded
+		function ( gltf ) {
+
+			scene.add( gltf.scene );
+			
+			let room = gltf.scene; //!!!!! saves for manipulation
+			room.position.y = 1;
+			room.position.x = 1;
+			room.scale.x = 100;
+			room.scale.y = 100;
+			room.scale.z = 100;
+
+		},
+		// called while loading is progressing
+		function ( xhr ) {
+
+			//console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+		},
+		// called when loading has errors
+		function ( error ) {
+
+			console.log( 'A room test error happened' );
+
+		}
+	);
 }
 
 function render(){
