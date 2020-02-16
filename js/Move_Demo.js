@@ -78,12 +78,26 @@ let cubeMaterial = Physijs.createMaterial(
 cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
 cubeMaterial.map.repeat.set( 1, .5 );
 var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.name = "player:slide"
 cube.receiveShadow = true;
 cube.castShadow = true;
 cube.position.y = 3;
-cube.position.x = -5
+cube.position.x = -5;
 scene.add(cube);
 
+//Cube 2
+cubeGeometry = new THREE.CubeGeometry(6,6,6);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshBasicMaterial({ color:"rgb(0,0,0)"}),
+    1.0,
+    1.0
+);
+cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+
+cube.position.y = 3;
+cube.position.x = -15;
+cube.name = "player:slide"
+scene.add(cube);
 var moveIn = false;
 var moveOut = false;
 var moveLeft = false;
@@ -242,13 +256,106 @@ function slide_controlls(){//SWITCH TO applyCentralImpulse*!!!!!!!!!!!!!!!!!!!!!
         
 }
 
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
+
+document.addEventListener('mousedown', onMouseDown, false);
+function onMouseDown(e){
+    console.log("click");
+    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // update the picking ray with the camera and mouse position
+	raycaster.setFromCamera( mouse, camera );
+
+	// calculate objects intersecting the picking ray
+	var intersects = raycaster.intersectObjects( scene.children );
+
+    if(intersects.length > 0){
+        console.log("Was: " + player);
+        if(intersects[0].object.name.split(":")[0] == "player"){
+            
+            player = intersects[0].object.id;
+            
+        }
+        console.log("Am now: " + player);
+    }
+
+	// for ( var i = 0; i < intersects.length && i < 1; i++ ) {
+    //     // if (intersects[i].object.name == "sun"){
+	// 	//     intersects[i].object.material.color.set( 0xff00ff );
+    //     // }
+    //     player = intersects[i].object.id;
+
+    // }
+    
+    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+};
+//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+function onMouseMove( event ) {
+
+	// calculate mouse position in normalized device coordinates
+	// (-1 to +1) for both components
+
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+}
+
+
+
+//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+window.addEventListener( 'mousemove', onMouseMove, false );
+
+var camLastPlayer = cube.id;
+function cam_update(){
+    if(camLastPlayer == player){
+        camera.position.x = scene.getObjectById(player).position.x;
+        camera.position.y = scene.getObjectById(player).position.y+25;
+    }
+    else{
+        let donex = false;
+        let doney = false;
+        if (camera.position.x > scene.getObjectById(player).position.x + 1){
+            camera.position.x -= 5;
+        }
+        else if(camera.position.x < scene.getObjectById(player).position.x - 1){
+            camera.position.x += 5;
+        }
+        else{
+            camera.position.x = scene.getObjectById(player).position.x;
+            donex = true;
+        }
+        
+        if (camera.position.y > scene.getObjectById(player).position.y + 26){
+            camera.position.y -= 5;
+        }
+        else if(camera.position.y < scene.getObjectById(player).position.y + 24){
+            camera.position.y += 5;
+        }
+        else{
+            camera.position.y = scene.getObjectById(player).position.y+25;
+            doney = true;
+        }
+        if(donex && doney){
+            camLastPlayer = player;
+        }
+    }
+    
+
+
+}
+
 function renderScene(){
 
     scene.simulate();
     requestAnimationFrame(renderScene);
     slide_controlls();
-    camera.position.x = scene.getObjectById(player).position.x;
-    camera.position.y = scene.getObjectById(player).position.y+25;
+    cam_update();
     renderer.render(scene, camera);
 }
 
