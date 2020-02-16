@@ -18,11 +18,10 @@ var renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 //light
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-light.castShadow = true;
 scene.add(light);
 
 var spotLight = new THREE.SpotLight(0xffffff);
@@ -53,15 +52,19 @@ scene.add(plane);
 
 //markers
 for (let index = 0; index < 100; index++) {
-    //let marker = new THREE.Mesh( new THREE.BoxGeometry( 1, 5, 1 ), new THREE.MeshBasicMaterial( {color: 0x00ff00} ) );
-    let marker = new Physijs.BoxMesh( new THREE.CubeGeometry(1,10,1), Physijs.createMaterial(
-        new THREE.MeshBasicMaterial({ color:"rgb(10,200,10)"}),
-        1.0,
-        1.0
-    ));
+    let marker = new Physijs.BoxMesh(
+        new THREE.BoxGeometry(1, 10, 1),
+            Physijs.createMaterial(
+                new THREE.MeshLambertMaterial({
+                color:"rgb(10,200,10)"}),
+                1.0,
+                1.0
+        ));
     marker.mass = 0;
     marker.position.x = index*10;
     marker.position.y = 5;
+    marker.receiveShadow = true;
+    marker.castShadow = true;
     scene.add( marker );
 }
 
