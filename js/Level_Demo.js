@@ -31,28 +31,28 @@ spotLight.castShadow = true;
 scene.add(spotLight);   
 
 
-//plane
-var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
-let planeMaterial = Physijs.createMaterial(
-    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
-    0.5,
-    0.2
-);
-planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
-planeMaterial.map.repeat.set( 1, .5 );
-var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-plane.receiveShadow = true;
-plane.rotation.x = -0.5*Math.PI;
-//plane.rotation.y = (0.125)*Math.PI;
-scene.add(plane);
+// //plane
+// var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
+// let planeMaterial = Physijs.createMaterial(
+//     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
+//     0.5,
+//     0.2
+// );
+// planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+// planeMaterial.map.repeat.set( 1, .5 );
+// var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+// plane.receiveShadow = true;
+// plane.rotation.x = -0.5*Math.PI;
+// //plane.rotation.y = (0.125)*Math.PI;
+// scene.add(plane);
 
 
 //Cube
 let cubeGeometry = new THREE.CubeGeometry(6,6,6);
 let cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-    1.0,
-    1.0
+    0.4,
+    0.5
 );
 cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
 cubeMaterial.map.repeat.set( 1, .5 );
@@ -60,17 +60,82 @@ var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.receiveShadow = true;
 cube.castShadow = true;
 cube.position.y = 3;
-cube.position.x = -5
+cube.position.x = 45
+cube.name = "player:slide";
+
+
+
 scene.add(cube);
-
-var moveIn = false;
-var moveOut = false;
-var moveLeft = false;
-var moveRight = false;
-
+//cube.setAngularFactor(new THREE.Vector3(0.5, 0.5, 0.5));
 var player = cube.id;
 
 
+//left side
+cubeGeometry = new THREE.CubeGeometry(50,10,25);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+    0.8,
+    0.2
+);
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.receiveShadow = true;
+cube.castShadow = true;
+cube.position.y = -5;
+cube.position.x = -5
+cube.mass = 0;
+scene.add(cube);
+
+//bridge
+cubeGeometry = new THREE.CubeGeometry(3,50,25);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
+    0.8,
+    0.2
+);
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.receiveShadow = true;
+cube.castShadow = true;
+cube.position.y = 25;
+cube.position.x = 15
+//cube.mass = 0;
+scene.add(cube);
+//rightside
+cubeGeometry = new THREE.CubeGeometry(50,10,25);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+    0.8,
+    0.2
+);
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.receiveShadow = true;
+cube.castShadow = true;
+cube.position.y = -5;
+cube.position.x = 90;
+cube.mass = 0;
+scene.add(cube);
+
+//lower area
+cubeGeometry = new THREE.CubeGeometry(75,10,25);
+// cubeMaterial = Physijs.createMaterial(
+//     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+//     0.8,
+//     0.2
+// );
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube.receiveShadow = true;
+cube.castShadow = true;
+cube.position.y = -25;
+cube.position.x = 40;
+cube.mass = 0;
+scene.add(cube);
 
 // var box_container = new Physijs.BoxMesh(
 //     new THREE.CubeGeometry( 1, 0.7, 1.5 ),
@@ -103,9 +168,9 @@ var GLTF_loader = new THREE.GLTFLoader();
 
             let geometry = new THREE.CylinderGeometry( 2, 2, 10, 16 );
             let material = Physijs.createMaterial(
-                new THREE.MeshBasicMaterial({ wireframe: true, opacity: 0.5 }),
+                new THREE.MeshBasicMaterial({ wireframe: true, opacity: 0.5 }/*{ transparent: true, opacity: 0.0 }*/),
                 1.0,
-                1.0
+                0.5
             );
             var cylinder = new Physijs.CylinderMesh( geometry, material );
             
@@ -147,6 +212,15 @@ var GLTF_loader = new THREE.GLTFLoader();
 		}
 	);
 
+
+//Controls
+var moveIn = false;
+var moveOut = false;
+var moveLeft = false;
+var moveRight = false;
+
+var jump = false;
+
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event) {
     var keyCode = event.which;
@@ -158,8 +232,12 @@ function onDocumentKeyDown(event) {
         moveLeft = true;
     } else if (keyCode == 68) {//d
         moveRight = true;
-    // } else if (keycode == 32) {//spacebar
-    //     jump = true;
+    } else if (keyCode == 32) {//spacebar
+        jump = true;
+        // console.log(scene.getObjectById(player)._physijs.touches);
+        // if(scene.getObjectById(player)._physijs.touches.length > 0){
+        //     console.log("jump");
+        // }
     }    
 };
 
@@ -174,17 +252,19 @@ function onDocumentKeyUp(){
         moveLeft = false;
     } else if (keyCode == 68) {//d
         moveRight = false;
+    } else if(keyCode == 32){//space bar
+        jump = false;
     } else if(keyCode == 82) {//r
         var v = new THREE.Vector3(0,0,0);
         scene.getObjectById(player).setLinearFactor(v);
-        scene.getObjectById(player).setAngularFactor(v);
+        //scene.getObjectById(player).setAngularFactor(v);
         scene.getObjectById(player).__dirtyPosition = true;
         scene.getObjectById(player).position.set(0, 30, 0);
         v.x = 15;
         v.y = 20;
         v.z = 0;
         scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
-        scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
+        //scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
         scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
     }
 }
@@ -224,6 +304,12 @@ function slide_controls(){//applyCentralImpulse is updated every render.
             velocity.x += 100;
         }
     }
+    if(jump){
+        if(scene.getObjectById(player)._physijs.touches.length > 0 /*&& scene.getObjectById(player).getLinearVelocity().y < 10*/){
+            //console.log("jump");
+            velocity.y += 1500;
+        }
+    }
 
     scene.getObjectById(player).applyCentralImpulse(velocity);
     
@@ -258,6 +344,8 @@ function onMouseDown(e){
     if(intersects.length > 0){
         console.log("Was: " + player);
         if(intersects[0].object.name.split(":")[0] == "player"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
             
             player = intersects[0].object.id;
             
