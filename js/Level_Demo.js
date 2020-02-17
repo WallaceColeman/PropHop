@@ -88,7 +88,7 @@ cube.mass = 0;
 scene.add(cube);
 
 //bridge
-cubeGeometry = new THREE.CubeGeometry(3,50,25);
+cubeGeometry = new THREE.CubeGeometry(5,50,25);
 cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.8,
@@ -101,12 +101,12 @@ bridge.receiveShadow = true;
 bridge.castShadow = true;
 bridge.position.y = 25;
 bridge.position.x = 15
-bridge.addEventListener("ready", function(){
-    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
+// bridge.addEventListener("ready", function(){
+//     bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
     
-});
+// });
 scene.add(bridge);
-//cube.mass = 0;
+//bridge.mass = 750;
 
 
 //rightside
@@ -163,22 +163,22 @@ cube.position.x = 40;
 cube.mass = 0;
 scene.add(cube);
 
-//second box
-cubeGeometry = new THREE.CubeGeometry(6,6,6);
-cubeMaterial = Physijs.createMaterial(
-    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-    0.4,
-    0.5
-);
-cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-cubeMaterial.map.repeat.set( 1, .5 );
-cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-cube.receiveShadow = true;
-cube.castShadow = true;
-cube.position.y = 5;
-cube.position.x = 5
-cube.name = "player:slide";
-scene.add(cube);
+// //second box
+// cubeGeometry = new THREE.CubeGeometry(6,6,6);
+// cubeMaterial = Physijs.createMaterial(
+//     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+//     0.4,
+//     0.5
+// );
+// cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+// cubeMaterial.map.repeat.set( 1, .5 );
+// cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+// cube.receiveShadow = true;
+// cube.castShadow = true;
+// cube.position.y = 5;
+// cube.position.x = 5
+// cube.name = "player:slide";
+// scene.add(cube);
 
 // var box_container = new Physijs.BoxMesh(
 //     new THREE.CubeGeometry( 1, 0.7, 1.5 ),
@@ -254,6 +254,8 @@ var GLTF_loader = new THREE.GLTFLoader();
 		}
 	);
 
+
+
 GLTF_loader.load(//ramp
     // resource URL
     '../../Models/Player_Models/Ramp.glb',
@@ -269,34 +271,38 @@ GLTF_loader.load(//ramp
         //build ramp
         let green = "rgb(10,200,10)";
         let blue = "rgb(10,10,200)";
-        var base = new Physijs.BoxMesh(new THREE.BoxGeometry(4,0.1,6),new THREE.MeshBasicMaterial({color:green}));
-        let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,3,6),new THREE.MeshBasicMaterial({color:blue}));
-        let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(5,0.1,6),new THREE.MeshBasicMaterial({color:green}));
+        var base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
+        let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
+        let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
 
         //base.rotation.x = .5 * Math.PI;
 
         base.add(side);
-        side.position.x += 2;
-        side.position.y += 1.5;
+        side.position.x += 4;
+        side.position.y += 3;
         //side.rotation.z = .5 * Math.PI;
         //side.rotation.y = .5 * Math.PI;
 
         base.add(ramp);
-        ramp.position.y = 1.5;
+        ramp.position.y = 3;
         ramp.rotation.z = Math.atan(3/4);
 
 
-        base.position.x = 50;
-        base.position.y = 10;
+        base.position.x = -20;
+        base.position.y = 5;
+        
         base.mass = 300;
 
         scene.add(base);
-        
+        side.name = "parent";
+        ramp.name = "parent";
+        rampModel.name = "parent";
         base.name = "player:slide";
 
         base.add( rampModel );
-        
-        
+        rampModel.position.y = 3;
+        rampModel.rotation.x = 0.5*Math.PI;
+        rampModel.scale.set(10.5,12.5,10.5);
 
     },
     function ( xhr ) {
@@ -311,6 +317,37 @@ GLTF_loader.load(//ramp
 
     }
 );
+
+
+GLTF_loader.load(//goal
+    // resource URL
+    '../../Models/Static_Models/Goal.glb',
+    // called when the resource is loaded
+    function ( gltf ) {
+
+        let goal = gltf.scene;
+
+        scene.add(goal);
+
+        goal.position.x = 100;
+        goal.position.y = 10;
+        goal.rotation.y = .5*Math.PI;
+        goal.scale.set(10,10,10);
+
+    },
+    function ( xhr ) {
+
+        //console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+    },
+    // called when loading has errors
+    function ( error ) {
+
+        console.log( 'A ramp error happened' );
+
+    }
+);
+
 
 //Controls
 var moveIn = false;
@@ -369,38 +406,39 @@ function onDocumentKeyUp(){
 }
 
 function slide_controls(){//applyCentralImpulse is updated every render.
+    let m = Math.floor(scene.getObjectById(player).mass/300) + .5;
     let velocity = new THREE.Vector3();
     let cv = scene.getObjectById(player).getLinearVelocity();
     if(moveIn){
         if(cv.z > 0){
-            velocity.z -= 1000;
+            velocity.z -= 1000*m;
         }
         else if(cv.z > -50){
-            velocity.z -= 100;
+            velocity.z -= 100*m;
         }
     }
     if(moveOut){
         if(cv.z < 0){
-            velocity.z += 1000;
+            velocity.z += 1000*m;
         }
         else if(cv.z < 50){
-            velocity.z += 100;
+            velocity.z += 100*m;
         }
     }
     if(moveLeft){
         if(cv.x > 0){
-            velocity.x -= 1000;
+            velocity.x -= 1000*m;
         }
         else if(cv.x > -50){
-            velocity.x -= 100;
+            velocity.x -= 100*m;
         }
     }
     if(moveRight){
         if(cv.x < 0){
-            velocity.x += 1000;
+            velocity.x += 1000*m;
         }
         else if(cv.x < 50){
-            velocity.x += 100;
+            velocity.x += 100*m;
         }
     }
     if(jump){//needs work
@@ -482,10 +520,12 @@ function onMouseDown(e){
 	raycaster.setFromCamera( mouse, camera );
 
 	// calculate objects intersecting the picking ray
-	var intersects = raycaster.intersectObjects( scene.children );
+	var intersects = raycaster.intersectObjects( scene.children, true );
 
     if(intersects.length > 0){
         console.log("Was: " + player);
+        console.log(intersects[0].object.name.split(":")[0]);
+        console.log(intersects[0].object);
         if(intersects[0].object.name.split(":")[0] == "player"){
             scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
             scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
@@ -493,6 +533,19 @@ function onMouseDown(e){
             player = intersects[0].object.id;
             
         }
+        else if( intersects[0].object.name == "parent"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+            player = intersects[0].object.parent.id;
+        }
+        else if(intersects[0].object.parent.name == "parent"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+            player = intersects[0].object.parent.parent.id;
+        }
+        
         console.log("Am now: " + player);
     }
 
