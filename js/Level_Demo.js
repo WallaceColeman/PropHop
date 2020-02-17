@@ -28,6 +28,7 @@ scene.add(light);
 var spotLight = new THREE.SpotLight(0xffffff);
 spotLight.position.set(-40,60,40);
 spotLight.castShadow = true;
+//spotLight.bias = 0.001;
 scene.add(spotLight);   
 
 
@@ -101,10 +102,10 @@ bridge.receiveShadow = true;
 bridge.castShadow = true;
 bridge.position.y = 25;
 bridge.position.x = 15
-// bridge.addEventListener("ready", function(){
-//     bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
+bridge.addEventListener("ready", function(){
+    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
     
-// });
+});
 scene.add(bridge);
 //bridge.mass = 750;
 
@@ -303,6 +304,30 @@ GLTF_loader.load(//ramp
         rampModel.position.y = 3;
         rampModel.rotation.x = 0.5*Math.PI;
         rampModel.scale.set(10.5,12.5,10.5);
+        
+        // base.receiveShadow = true;
+        // base.castShadow = true;
+        
+        // side.receiveShadow = true;
+        // side.castShadow = true;
+
+        // ramp.receiveShadow = true;
+        // ramp.castShadow = true;
+
+        // rampModel.child.receiveShadow = true;
+        // rampModel.child.castShadow = true;
+
+
+        rampModel.traverse( function( child ) { 
+
+            if ( child.isMesh ) {
+
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+            }
+
+        } );
 
     },
     function ( xhr ) {
@@ -406,7 +431,8 @@ function onDocumentKeyUp(){
 }
 
 function slide_controls(){//applyCentralImpulse is updated every render.
-    let m = Math.floor(scene.getObjectById(player).mass/300) + .5;
+    //let m = Math.floor(scene.getObjectById(player).mass/300) + .5;
+    let m = scene.getObjectById(player).mass/300;
     let velocity = new THREE.Vector3();
     let cv = scene.getObjectById(player).getLinearVelocity();
     if(moveIn){
