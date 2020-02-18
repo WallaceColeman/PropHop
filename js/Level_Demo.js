@@ -19,7 +19,7 @@ var renderer = new THREE.WebGLRenderer({performance, antialias: true });
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
-//renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 //light
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
@@ -211,11 +211,13 @@ var GLTF_loader = new THREE.GLTFLoader();
 
             let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
             let material = Physijs.createMaterial(
-                new THREE.MeshBasicMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
+                new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
                 1.0,
                 0.5
             );
             var cylinder = new Physijs.CylinderMesh( geometry, material );
+            //cylinder.castShadow = true;
+            //cylinder.receiveShadow = true;
             
             cylinder.rotation.x = -0.5*Math.PI;
             cylinder.position.y = 40;
@@ -239,6 +241,16 @@ var GLTF_loader = new THREE.GLTFLoader();
             log.scale.set(3,3,3);
             scene.add( cylinder );
             //cylinder.scale.set(3,3,3);
+            log.traverse( function( child ) { 
+
+                if ( child.isMesh ) {
+    
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    return;
+                }
+    
+            } );
 			
 
 		},
@@ -272,9 +284,9 @@ GLTF_loader.load(//ramp
         //build ramp
         let green = "rgb(10,200,10)";
         let blue = "rgb(10,10,200)";
-        var base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
-        let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
-        let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0 }));
+        var base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
         //base.rotation.x = .5 * Math.PI;
 
@@ -328,6 +340,7 @@ GLTF_loader.load(//ramp
             }
 
         } );
+
 
     },
     function ( xhr ) {
@@ -416,17 +429,17 @@ function onDocumentKeyUp(){
     } else if(keyCode == 32){//space bar
         jump = false;
     } else if(keyCode == 82) {//r
-        var v = new THREE.Vector3(0,0,0);
-        scene.getObjectById(player).setLinearFactor(v);
-        //scene.getObjectById(player).setAngularFactor(v);
-        scene.getObjectById(player).__dirtyPosition = true;
-        scene.getObjectById(player).position.set(0, 30, 0);
-        v.x = 15;
-        v.y = 20;
-        v.z = 0;
-        scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
-        //scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
-        scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
+        // var v = new THREE.Vector3(0,0,0);
+        // scene.getObjectById(player).setLinearFactor(v);
+        // //scene.getObjectById(player).setAngularFactor(v);
+        // scene.getObjectById(player).__dirtyPosition = true;
+        // scene.getObjectById(player).position.set(0, 30, 0);
+        // v.x = 15;
+        // v.y = 20;
+        // v.z = 0;
+        // scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
+        // //scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
+        // scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
     }
 }
 
