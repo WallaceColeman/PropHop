@@ -239,7 +239,7 @@ var GLTF_loader = new THREE.GLTFLoader();
 
             cylinder.name = "player:slide";
 
-			cylinder.add( gltf.scene );
+			cylinder.add( log );
             log.rotation.x = -0.5*Math.PI;
             log.scale.set(3,3,3);
             scene.add( cylinder );
@@ -272,16 +272,8 @@ var GLTF_loader = new THREE.GLTFLoader();
 
 
 
-GLTF_loader.load(//ramp
-    // resource URL
-    '../../Models/Player_Models/Ramp.glb',
-    // called when the resource is loaded
+GLTF_loader.load('../../Models/Player_Models/Ramp.glb',
     function ( gltf ) {
-
-        // this.get("mesh").object.addEventListener("ready", function(){
-        //     this.get("mesh").object.setAngularFactor(new THREE.Vector3(0, 0, 0));
-        // });
-
         let rampModel = gltf.scene;
 
         //build ramp
@@ -291,18 +283,13 @@ GLTF_loader.load(//ramp
         let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
         let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
-        //base.rotation.x = .5 * Math.PI;
-
         base.add(side);
         side.position.x += 4;
         side.position.y += 3;
-        //side.rotation.z = .5 * Math.PI;
-        //side.rotation.y = .5 * Math.PI;
 
         base.add(ramp);
         ramp.position.y = 3;
         ramp.rotation.z = Math.atan(3/4);
-
 
         base.position.x = -20;
         base.position.y = 5;
@@ -319,18 +306,6 @@ GLTF_loader.load(//ramp
         rampModel.position.y = 3;
         rampModel.rotation.x = 0.5*Math.PI;
         rampModel.scale.set(10.5,12.5,10.5);
-        
-        // base.receiveShadow = true;
-        // base.castShadow = true;
-        
-        // side.receiveShadow = true;
-        // side.castShadow = true;
-
-        // ramp.receiveShadow = true;
-        // ramp.castShadow = true;
-
-        // rampModel.child.receiveShadow = true;
-        // rampModel.child.castShadow = true;
 
 
         rampModel.traverse( function( child ) { 
@@ -484,7 +459,8 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         }
     }
     if(jump){//needs work
-
+        
+        //TRY jump cooldown timer
         /*
         if(scene.getObjectById(player)._physijs.touches.length > 0 && scene.getObjectById(player).getLinearVelocity().y < 10){
             //console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position);
@@ -497,37 +473,59 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         }
         */
         
-        // if(scene.getObjectById(player)._physijs.touches.length > 0){
-        //     let p = scene.getObjectById(player);
-        //     let c = scene._objects[scene.getObjectById(player)._physijs.touches[0]];
+        if(scene.getObjectById(player)._physijs.touches.length > 0){
+            let p = scene.getObjectById(player);
+            let c = scene._objects[scene.getObjectById(player)._physijs.touches[0]];
             
-        //     console.log("Rotation: " + c.rotation.z);
+            console.log("Rotation: " + c.rotation.z);
+            
+            let upperSide = "top";
+            let r = c.rotation.z
+            //r = r %  2*Math.PI;
+            
+            if(r < 0){
+                r = 2*Math.PI + r;
+                console.log("|Rotation|: " + r);
+            }
+            if ( r > 7 * Math.PI / 4 || r < Math.PI/4){
+                upperSide = "top";
+            }
+            else if (r > 5 * Math.PI / 4 && r <= 7 * Math.PI/4){
+                upperSide = "left side";
+            }
+            else if (r > 3 * Math.PI / 4 && r <= 5 * Math.PI/4){
+                upperSide = "bottom";
+            }
+            else{
+                upperSide = "right";
+            }
 
-        //     let slope = (Math.tan(c.rotation.z )%(2*Math.PI))%(.5*Math.PI);
-        //     console.log("Slope: " + slope);
+            console.log("upper side: " + upperSide );
 
-        //     let relativeDistatance = p.position.x - c.position.x;
-        //     console.log("Distance: " + relativeDistatance);
+            let slope = (Math.tan(c.rotation.z )%(2*Math.PI))%(.5*Math.PI);
+            console.log("Slope: " + slope);
 
-        //     let relativeHeight = p.position.y - c.position.y;
-        //     console.log("Height: " + relativeHeight);
+            let relativeDistatance = p.position.x - c.position.x;
+            console.log("Distance: " + relativeDistatance);
 
-        //     let expectedHeight = slope * relativeDistatance;
-        //     console.log("Expected Height: " + expectedHeight);
+            let relativeHeight = p.position.y - c.position.y;
+            console.log("Height: " + relativeHeight);
 
-        //     let goofy_height = slope * p.position.x - c.position.;
-        //     console.log("goofy: " + goofy_height);
-        //     // let collision_height = slope*(p.position.x - c.position.x);
-        //     // console.log("Required Relative Height: " + collision_height);
-        //     // console.log("Relative Box Height: " +  (p.position.y - c.position.y))
+            let expectedHeight = slope * relativeDistatance;
+            console.log("Expected Height: " + expectedHeight);
 
-        //     // collision_height = Math.tan(c.rotation.z)*(c.position.x - p.position.x);
-        //     // console.log("2: " + collision_height);
+            
+            // let collision_height = slope*(p.position.x - c.position.x);
+            // console.log("Required Relative Height: " + collision_height);
+            // console.log("Relative Box Height: " +  (p.position.y - c.position.y))
 
-        //     if(scene._objects[scene.getObjectById(player)._physijs.touches[0]]){
+            // collision_height = Math.tan(c.rotation.z)*(c.position.x - p.position.x);
+            // console.log("2: " + collision_height);
 
-        //     }
-        // }
+            if(scene._objects[scene.getObjectById(player)._physijs.touches[0]]){
+
+            }
+        }
         
         console.log(scene.getObjectById(player));
 
@@ -556,12 +554,11 @@ var mouse = new THREE.Vector2();
 
 document.addEventListener('mousedown', onMouseDown, false);
 function onMouseDown(e){
-    console.log("click");
+    //console.log("click");
     //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // update the picking ray with the camera and mouse position
 	raycaster.setFromCamera( mouse, camera );
 
-	// calculate objects intersecting the picking ray
 	var intersects = raycaster.intersectObjects( scene.children, true );
 
     if(intersects.length > 0){
@@ -590,36 +587,14 @@ function onMouseDown(e){
         
         console.log("Am now: " + player);
     }
-
-	// for ( var i = 0; i < intersects.length && i < 1; i++ ) {
-    //     // if (intersects[i].object.name == "sun"){
-	// 	//     intersects[i].object.material.color.set( 0xff00ff );
-    //     // }
-    //     player = intersects[i].object.id;
-
-    // }
-    
-    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 };
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 function onMouseMove( event ) {
-
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
-
-
-
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 window.addEventListener( 'mousemove', onMouseMove, false );
 
