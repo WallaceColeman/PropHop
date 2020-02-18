@@ -89,7 +89,7 @@ cube.mass = 0;
 scene.add(cube);
 
 //bridge
-cubeGeometry = new THREE.CubeGeometry(5,50,25);
+cubeGeometry = new THREE.CubeGeometry(8,50,25);
 cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.8,
@@ -101,13 +101,16 @@ let bridge = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 bridge.receiveShadow = true;
 bridge.castShadow = true;
 bridge.position.y = 25;
-bridge.position.x = 15
+bridge.position.x = 12
 bridge.addEventListener("ready", function(){
-    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
     
+    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
+    console.log("Bridge Mass: " + bridge.mass);
 });
+bridge.mass = 8000;
 scene.add(bridge);
-//bridge.mass = 750;
+console.log("Bridge Mass: " + bridge.mass);
+
 
 
 //rightside
@@ -128,7 +131,7 @@ cube.mass = 0;
 scene.add(cube);
 
 //upper left Side
-cubeGeometry = new THREE.CubeGeometry(30,2,25);
+cubeGeometry = new THREE.CubeGeometry(40,2,25);
 cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
     0.8,
@@ -140,7 +143,7 @@ cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.receiveShadow = true;
 cube.castShadow = true;
 cube.position.y = 35;
-cube.position.x = -35;
+cube.position.x = -40;
 cube.mass = 0;
 scene.add(cube);
 
