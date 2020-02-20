@@ -21,6 +21,12 @@ renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+var jumpCaster = new THREE.Raycaster();
+jumpCaster.far = 3.5;
+jumpCaster.set(new THREE.Vector3(0,0,0), new THREE.Vector3(0,-1,0));
+
+
+
 //light
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
 scene.add(light);
@@ -458,77 +464,21 @@ function slide_controls(){//applyCentralImpulse is updated every render.
             velocity.x += 100*m;
         }
     }
-    if(jump){//needs work
-        
-        //TRY jump cooldown timer
-        /*
-        if(scene.getObjectById(player)._physijs.touches.length > 0 && scene.getObjectById(player).getLinearVelocity().y < 10){
-            //console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position);
-            console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]]);
-            if(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position.y < scene.getObjectById(player).position.y){
-                velocity.y += 1500;
+    if(jump){
+        // if(scene.getObjectById(player)._physijs.touches.length > 0){
+        //     console.log("Touching Something");
+        //     let intersects = jumpCaster.intersectObjects( scene.children);
+        //     if(intersects.length >= 1){
+        //         console.log("onGround");
+        //         velocity.y += 1000;
+        //     }
+        // }
+        let intersects = jumpCaster.intersectObjects( scene.children);
+            console.log("Num intersects: " + intersects.length);
+            if(intersects.length >= 1){
+                console.log("onGround");
+                velocity.y += 1000*m;
             }
-            //velocity.y += 5000;
-            //jump = false;
-        }
-        */
-        
-        if(scene.getObjectById(player)._physijs.touches.length > 0){
-            let p = scene.getObjectById(player);
-            let c = scene._objects[scene.getObjectById(player)._physijs.touches[0]];
-            
-            console.log("Rotation: " + c.rotation.z);
-            
-            let upperSide = "top";
-            let r = c.rotation.z
-            //r = r %  2*Math.PI;
-            
-            if(r < 0){
-                r = 2*Math.PI + r;
-                console.log("|Rotation|: " + r);
-            }
-            if ( r > 7 * Math.PI / 4 || r < Math.PI/4){
-                upperSide = "top";
-            }
-            else if (r > 5 * Math.PI / 4 && r <= 7 * Math.PI/4){
-                upperSide = "left side";
-            }
-            else if (r > 3 * Math.PI / 4 && r <= 5 * Math.PI/4){
-                upperSide = "bottom";
-            }
-            else{
-                upperSide = "right";
-            }
-
-            console.log("upper side: " + upperSide );
-
-            let slope = (Math.tan(c.rotation.z )%(2*Math.PI))%(.5*Math.PI);
-            console.log("Slope: " + slope);
-
-            let relativeDistatance = p.position.x - c.position.x;
-            console.log("Distance: " + relativeDistatance);
-
-            let relativeHeight = p.position.y - c.position.y;
-            console.log("Height: " + relativeHeight);
-
-            let expectedHeight = slope * relativeDistatance;
-            console.log("Expected Height: " + expectedHeight);
-
-            
-            // let collision_height = slope*(p.position.x - c.position.x);
-            // console.log("Required Relative Height: " + collision_height);
-            // console.log("Relative Box Height: " +  (p.position.y - c.position.y))
-
-            // collision_height = Math.tan(c.rotation.z)*(c.position.x - p.position.x);
-            // console.log("2: " + collision_height);
-
-            if(scene._objects[scene.getObjectById(player)._physijs.touches[0]]){
-
-            }
-        }
-        
-        console.log(scene.getObjectById(player));
-
         
     }
 
@@ -559,7 +509,7 @@ function onMouseDown(e){
     // update the picking ray with the camera and mouse position
 	raycaster.setFromCamera( mouse, camera );
 
-	var intersects = raycaster.intersectObjects( scene.children, true );
+	let intersects = raycaster.intersectObjects( scene.children, true );
 
     if(intersects.length > 0){
         console.log("Was: " + player);
@@ -584,7 +534,21 @@ function onMouseDown(e){
             
             player = intersects[0].object.parent.parent.id;
         }
-        
+        console.log(scene.getObjectById(player).rotation.x);
+        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
+            
+            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + .5;
+                console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
+            }
+            else{
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + .5;
+                console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
+            }
+        }else{
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + .5;
+        }
+        console.log("jumpCaster Length: " + jumpCaster.far);
         console.log("Am now: " + player);
     }
 };
@@ -598,14 +562,21 @@ function onMouseMove( event ) {
 
 window.addEventListener( 'mousemove', onMouseMove, false );
 
-function renderScene(){
+function updateCamAndRaycaster(){
+    camera.position.x = scene.getObjectById(player).position.x;
+    camera.position.y = scene.getObjectById(player).position.y+25;
+    jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
+    
+    //console.log("Raycaster Length: " + jumpCaster.far)
 
+    camera.lookAt(scene.getObjectById(player).position);
+}
+
+function renderScene(){
     scene.simulate();
     requestAnimationFrame(renderScene);
     slide_controls();
-    camera.position.x = scene.getObjectById(player).position.x;
-    camera.position.y = scene.getObjectById(player).position.y+25;
-    camera.lookAt(scene.getObjectById(player).position);
+    updateCamAndRaycaster();
     renderer.render(scene, camera);
 }
 
