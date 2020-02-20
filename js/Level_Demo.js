@@ -473,13 +473,30 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         //         velocity.y += 1000;
         //     }
         // }
-        let intersects = jumpCaster.intersectObjects( scene.children);
-            console.log("Num intersects: " + intersects.length);
-            if(intersects.length >= 1){
-                console.log("onGround");
-                velocity.y += 1000*m;
+
+        //******************************Mostly Working Version******************************
+        // let intersects = jumpCaster.intersectObjects( scene.children);
+        // console.log(intersects[0].object.parent.id);
+            
+        //     if(intersects.length >= 1){
+        //         velocity.y += 1000*m;
+        //     }
+
+
+        //******************************Experimental Version******************************
+        let intersects = jumpCaster.intersectObjects( scene.children, true);
+        //console.log(intersects[0].object.parent.id);
+            try{
+                if(intersects[0].object.parent.parent != undefined){
+                    if(intersects.length >= 2){
+                        velocity.y += 1000*m;
+                    }
+                }
+                else if(intersects.length >= 1){
+                    velocity.y += 1000*m;
+                }
             }
-        
+            catch{}
     }
 
     scene.getObjectById(player).applyCentralImpulse(velocity);
@@ -535,18 +552,18 @@ function onMouseDown(e){
             player = intersects[0].object.parent.parent.id;
         }
         console.log(scene.getObjectById(player).rotation.x);
+        let dr = 0.5;
         if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
-            
             if(scene.getObjectById(player).geometry.parameters.depth != undefined){
-                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + .5;
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
                 console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
             }
             else{
-                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + .5;
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
                 console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
             }
         }else{
-            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + .5;
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
         }
         console.log("jumpCaster Length: " + jumpCaster.far);
         console.log("Am now: " + player);
