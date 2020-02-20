@@ -21,6 +21,12 @@ renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+var jumpCaster = new THREE.Raycaster();
+jumpCaster.far = 3.5;
+jumpCaster.set(new THREE.Vector3(0,0,0), new THREE.Vector3(0,-1,0));
+
+
+
 //light
 var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
 scene.add(light);
@@ -89,7 +95,7 @@ cube.mass = 0;
 scene.add(cube);
 
 //bridge
-cubeGeometry = new THREE.CubeGeometry(5,50,25);
+cubeGeometry = new THREE.CubeGeometry(8,50,25);
 cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
     0.8,
@@ -101,13 +107,16 @@ let bridge = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 bridge.receiveShadow = true;
 bridge.castShadow = true;
 bridge.position.y = 25;
-bridge.position.x = 15
+bridge.position.x = 12
 bridge.addEventListener("ready", function(){
-    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
     
+    bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
+    console.log("Bridge Mass: " + bridge.mass);
 });
+bridge.mass = 8000;
 scene.add(bridge);
-//bridge.mass = 750;
+console.log("Bridge Mass: " + bridge.mass);
+
 
 
 //rightside
@@ -128,7 +137,7 @@ cube.mass = 0;
 scene.add(cube);
 
 //upper left Side
-cubeGeometry = new THREE.CubeGeometry(30,2,25);
+cubeGeometry = new THREE.CubeGeometry(40,2,25);
 cubeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
     0.8,
@@ -140,7 +149,7 @@ cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 cube.receiveShadow = true;
 cube.castShadow = true;
 cube.position.y = 35;
-cube.position.x = -35;
+cube.position.x = -40;
 cube.mass = 0;
 scene.add(cube);
 
@@ -236,7 +245,7 @@ var GLTF_loader = new THREE.GLTFLoader();
 
             cylinder.name = "player:slide";
 
-			cylinder.add( gltf.scene );
+			cylinder.add( log );
             log.rotation.x = -0.5*Math.PI;
             log.scale.set(3,3,3);
             scene.add( cylinder );
@@ -269,16 +278,8 @@ var GLTF_loader = new THREE.GLTFLoader();
 
 
 
-GLTF_loader.load(//ramp
-    // resource URL
-    '../../Models/Player_Models/Ramp.glb',
-    // called when the resource is loaded
+GLTF_loader.load('../../Models/Player_Models/Ramp.glb',
     function ( gltf ) {
-
-        // this.get("mesh").object.addEventListener("ready", function(){
-        //     this.get("mesh").object.setAngularFactor(new THREE.Vector3(0, 0, 0));
-        // });
-
         let rampModel = gltf.scene;
 
         //build ramp
@@ -288,18 +289,13 @@ GLTF_loader.load(//ramp
         let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
         let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
-        //base.rotation.x = .5 * Math.PI;
-
         base.add(side);
         side.position.x += 4;
         side.position.y += 3;
-        //side.rotation.z = .5 * Math.PI;
-        //side.rotation.y = .5 * Math.PI;
 
         base.add(ramp);
         ramp.position.y = 3;
         ramp.rotation.z = Math.atan(3/4);
-
 
         base.position.x = -20;
         base.position.y = 5;
@@ -316,18 +312,6 @@ GLTF_loader.load(//ramp
         rampModel.position.y = 3;
         rampModel.rotation.x = 0.5*Math.PI;
         rampModel.scale.set(10.5,12.5,10.5);
-        
-        // base.receiveShadow = true;
-        // base.castShadow = true;
-        
-        // side.receiveShadow = true;
-        // side.castShadow = true;
-
-        // ramp.receiveShadow = true;
-        // ramp.castShadow = true;
-
-        // rampModel.child.receiveShadow = true;
-        // rampModel.child.castShadow = true;
 
 
         rampModel.traverse( function( child ) { 
@@ -480,54 +464,21 @@ function slide_controls(){//applyCentralImpulse is updated every render.
             velocity.x += 100*m;
         }
     }
-    if(jump){//needs work
-
-        /*
-        if(scene.getObjectById(player)._physijs.touches.length > 0 && scene.getObjectById(player).getLinearVelocity().y < 10){
-            //console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position);
-            console.log(scene._objects[scene.getObjectById(player)._physijs.touches[0]]);
-            if(scene._objects[scene.getObjectById(player)._physijs.touches[0]].position.y < scene.getObjectById(player).position.y){
-                velocity.y += 1500;
-            }
-            //velocity.y += 5000;
-            //jump = false;
-        }
-        */
-        
+    if(jump){
         // if(scene.getObjectById(player)._physijs.touches.length > 0){
-        //     let p = scene.getObjectById(player);
-        //     let c = scene._objects[scene.getObjectById(player)._physijs.touches[0]];
-            
-        //     console.log("Rotation: " + c.rotation.z);
-
-        //     let slope = (Math.tan(c.rotation.z )%(2*Math.PI))%(.5*Math.PI);
-        //     console.log("Slope: " + slope);
-
-        //     let relativeDistatance = p.position.x - c.position.x;
-        //     console.log("Distance: " + relativeDistatance);
-
-        //     let relativeHeight = p.position.y - c.position.y;
-        //     console.log("Height: " + relativeHeight);
-
-        //     let expectedHeight = slope * relativeDistatance;
-        //     console.log("Expected Height: " + expectedHeight);
-
-        //     let goofy_height = slope * p.position.x - c.position.;
-        //     console.log("goofy: " + goofy_height);
-        //     // let collision_height = slope*(p.position.x - c.position.x);
-        //     // console.log("Required Relative Height: " + collision_height);
-        //     // console.log("Relative Box Height: " +  (p.position.y - c.position.y))
-
-        //     // collision_height = Math.tan(c.rotation.z)*(c.position.x - p.position.x);
-        //     // console.log("2: " + collision_height);
-
-        //     if(scene._objects[scene.getObjectById(player)._physijs.touches[0]]){
-
+        //     console.log("Touching Something");
+        //     let intersects = jumpCaster.intersectObjects( scene.children);
+        //     if(intersects.length >= 1){
+        //         console.log("onGround");
+        //         velocity.y += 1000;
         //     }
         // }
-        
-        console.log(scene.getObjectById(player));
-
+        let intersects = jumpCaster.intersectObjects( scene.children);
+            console.log("Num intersects: " + intersects.length);
+            if(intersects.length >= 1){
+                console.log("onGround");
+                velocity.y += 1000*m;
+            }
         
     }
 
@@ -553,13 +504,12 @@ var mouse = new THREE.Vector2();
 
 document.addEventListener('mousedown', onMouseDown, false);
 function onMouseDown(e){
-    console.log("click");
+    //console.log("click");
     //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // update the picking ray with the camera and mouse position
 	raycaster.setFromCamera( mouse, camera );
 
-	// calculate objects intersecting the picking ray
-	var intersects = raycaster.intersectObjects( scene.children, true );
+	let intersects = raycaster.intersectObjects( scene.children, true );
 
     if(intersects.length > 0){
         console.log("Was: " + player);
@@ -584,50 +534,49 @@ function onMouseDown(e){
             
             player = intersects[0].object.parent.parent.id;
         }
-        
+        console.log(scene.getObjectById(player).rotation.x);
+        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
+            
+            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + .5;
+                console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
+            }
+            else{
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + .5;
+                console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
+            }
+        }else{
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + .5;
+        }
+        console.log("jumpCaster Length: " + jumpCaster.far);
         console.log("Am now: " + player);
     }
-
-	// for ( var i = 0; i < intersects.length && i < 1; i++ ) {
-    //     // if (intersects[i].object.name == "sun"){
-	// 	//     intersects[i].object.material.color.set( 0xff00ff );
-    //     // }
-    //     player = intersects[i].object.id;
-
-    // }
-    
-    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 };
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 function onMouseMove( event ) {
-
-	// calculate mouse position in normalized device coordinates
-	// (-1 to +1) for both components
 
 	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 }
 
-
-
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 window.addEventListener( 'mousemove', onMouseMove, false );
 
-function renderScene(){
+function updateCamAndRaycaster(){
+    camera.position.x = scene.getObjectById(player).position.x;
+    camera.position.y = scene.getObjectById(player).position.y+25;
+    jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
+    
+    //console.log("Raycaster Length: " + jumpCaster.far)
 
+    camera.lookAt(scene.getObjectById(player).position);
+}
+
+function renderScene(){
     scene.simulate();
     requestAnimationFrame(renderScene);
     slide_controls();
-    camera.position.x = scene.getObjectById(player).position.x;
-    camera.position.y = scene.getObjectById(player).position.y+25;
-    camera.lookAt(scene.getObjectById(player).position);
+    updateCamAndRaycaster();
     renderer.render(scene, camera);
 }
 
