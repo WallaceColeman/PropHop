@@ -509,7 +509,7 @@ function wheel(){
     if(direction < 0 && camera.fov < 100){
         camera.fov += 5;
     }
-    else if(camera.fov > 5){
+    else if(direction > 0 && camera.fov > 5){
         camera.fov -= 5;
     }
     camera.updateProjectionMatrix();
