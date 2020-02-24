@@ -3,160 +3,176 @@
 Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
-var levels = new Levels();
+let LOADING_NOT_DONE = true;
+let loadingManager = null;
+let amount_loaded = 0.0;
+let requested_level = 0;
+let go_to_menu = false;
 
+let enable_controls = false;
 
-var scene = levels.get_level_demo_scene();
-
-var player = scene.getObjectByName("player:slide:start").id;
-
-var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.x = 0;
-camera.position.y = 30;
-camera.position.z = 100;
-//camera.lookAt(scene.position);
-
-var renderer = new THREE.WebGLRenderer({performance, antialias: true });
+let renderer = new THREE.WebGLRenderer({performance, antialias: true });
 
 renderer.setClearColor("rgb(135,206,235)");//skyblue
 renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-var jumpCaster = new THREE.Raycaster();
+let loading = {
+	scene: new THREE.Scene(),
+	camera: new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000),
+	box: new THREE.Mesh(
+		new THREE.BoxGeometry(1,1,1),
+		new THREE.MeshBasicMaterial({color:"rgb(255,0,0)"})
+	)
+};
+
+loading.box.position.set(0,0,0);
+loading.camera.lookAt(loading.box.position);
+loading.camera.position.z=10;
+loading.scene.add(loading.box);
+loading.scene.add(loading.camera);
+loading.scene.add( new THREE.AmbientLight( 0x404040) );
+
+loadingManager = new THREE.LoadingManager();
+
+loadingManager.onProgress = function(item, loaded, total){
+	console.log(item, total, loaded);
+	amount_loaded = (loaded/levels.get_level_size());
+}
+loadingManager.onLoad = function(){
+	console.log("Loaded");
+	LOADING_NOT_DONE = false;
+}
+
+let levels = new Levels(loadingManager, renderer);
+
+let scene = levels.get_level(-1);
+
+let player = scene.getObjectByName("player:slide:start").id;
+
+let camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.x = 0;
+camera.position.y = 30;
+camera.position.z = 100;
+//camera.lookAt(scene.position);
+
+
+
+let jumpCaster = new THREE.Raycaster();
 jumpCaster.far = 3.5;
 jumpCaster.set(new THREE.Vector3(0,0,0), new THREE.Vector3(0,-1,0));
 
 //Controls
-var moveIn = false;
-var moveOut = false;
-var moveLeft = false;
-var moveRight = false;
+let moveIn = false;
+let moveOut = false;
+let moveLeft = false;
+let moveRight = false;
 
-var jump = false;
+let jump = false;
 
 document.addEventListener("keydown", onDocumentKeyDown, false);
 function onDocumentKeyDown(event) {
-    var keyCode = event.which;
-    if (keyCode == 87) {//w
-        moveIn = true;
-    } else if (keyCode == 83) {//s
-        moveOut = true;
-    } else if (keyCode == 65) {//a
-        moveLeft = true;
-    } else if (keyCode == 68) {//d
-        moveRight = true;
-    } else if (keyCode == 32) {//spacebar
-        jump = true;
-        // console.log(scene.getObjectById(player)._physijs.touches);
-        // if(scene.getObjectById(player)._physijs.touches.length > 0){
-        //     console.log("jump");
-        // }
-    }    
+	if(enable_controls){
+		let keyCode = event.which;
+		if (keyCode == 87) {//w
+			moveIn = true;
+		} else if (keyCode == 83) {//s
+			moveOut = true;
+		} else if (keyCode == 65) {//a
+			moveLeft = true;
+		} else if (keyCode == 68) {//d
+			moveRight = true;
+		} else if (keyCode == 32) {//spacebar
+			jump = true;
+			// console.log(scene.getObjectById(player)._physijs.touches);
+			// if(scene.getObjectById(player)._physijs.touches.length > 0){
+			//     console.log("jump");
+			// }
+		} 
+	}
+       
 };
 
 document.addEventListener("keyup", onDocumentKeyUp, false);
 function onDocumentKeyUp(){
-    var keyCode = event.which;
-    if (keyCode == 87) {//w
-        moveIn = false;
-    } else if (keyCode == 83) {//s
-        moveOut = false;
-    } else if (keyCode == 65) {//a
-        moveLeft = false;
-    } else if (keyCode == 68) {//d
-        moveRight = false;
-    } else if(keyCode == 32){//space bar
-        jump = false;
-    } else if(keyCode == 82) {//r
-        // var v = new THREE.Vector3(0,0,0);
-        // scene.getObjectById(player).setLinearFactor(v);
-        // //scene.getObjectById(player).setAngularFactor(v);
-        // scene.getObjectById(player).__dirtyPosition = true;
-        // scene.getObjectById(player).position.set(0, 30, 0);
-        // v.x = 15;
-        // v.y = 20;
-        // v.z = 0;
-        // scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
-        // //scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
-        // scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
-    }
+	if(enable_controls){
+		let keyCode = event.which;
+		if (keyCode == 87) {//w
+			moveIn = false;
+		} else if (keyCode == 83) {//s
+			moveOut = false;
+		} else if (keyCode == 65) {//a
+			moveLeft = false;
+		} else if (keyCode == 68) {//d
+			moveRight = false;
+		} else if(keyCode == 32){//space bar
+			jump = false;
+		} else if(keyCode == 82) {//r
+			
+		} else if(keyCode == 27){
+			if(levels.current_level != 9){
+				go_to_menu = true;
+				enable_controls = false;
+			}
+		}
+	}
 }
 
 function slide_controls(){//applyCentralImpulse is updated every render.
-    //let m = Math.floor(scene.getObjectById(player).mass/300) + .5;
-    let m = scene.getObjectById(player).mass/300;
-    let velocity = new THREE.Vector3();
-    let cv = scene.getObjectById(player).getLinearVelocity();
-    if(moveIn){
-        if(cv.z > 0){
-            velocity.z -= 1000*m;
-        }
-        else if(cv.z > -50){
-            velocity.z -= 100*m;
-        }
-    }
-    if(moveOut){
-        if(cv.z < 0){
-            velocity.z += 1000*m;
-        }
-        else if(cv.z < 50){
-            velocity.z += 100*m;
-        }
-    }
-    if(moveLeft){
-        if(cv.x > 0){
-            velocity.x -= 1000*m;
-        }
-        else if(cv.x > -50){
-            velocity.x -= 100*m;
-        }
-    }
-    if(moveRight){
-        if(cv.x < 0){
-            velocity.x += 1000*m;
-        }
-        else if(cv.x < 50){
-            velocity.x += 100*m;
-        }
-    }
-    if(jump){
-        // if(scene.getObjectById(player)._physijs.touches.length > 0){
-        //     console.log("Touching Something");
-        //     let intersects = jumpCaster.intersectObjects( scene.children);
-        //     if(intersects.length >= 1){
-        //         console.log("onGround");
-        //         velocity.y += 1000;
-        //     }
-        // }
-
-        //******************************Mostly Working Version******************************
-        // let intersects = jumpCaster.intersectObjects( scene.children);
-        // console.log(intersects[0].object.parent.id);
-            
-        //     if(intersects.length >= 1){
-        //         velocity.y += 1000*m;
-        //     }
-
-
-        //******************************Experimental Version******************************
-        let intersects = jumpCaster.intersectObjects( scene.children, true);
-        //console.log(intersects[0].object.parent.id);
-            try{
-                if(intersects[0].object.parent.parent != undefined){
-                    if(intersects.length >= 2){
-                        velocity.y += 1000*m;
-                    }
-                }
-                else if(intersects.length >= 1){
-                    velocity.y += 1000*m;
-                }
-            }
-            catch{}
-    }
-
-    scene.getObjectById(player).applyCentralImpulse(velocity);
-    
+    if(enable_controls){
+		let m = scene.getObjectById(player).mass/300;
+		let velocity = new THREE.Vector3();
+		let cv = scene.getObjectById(player).getLinearVelocity();
+		if(moveIn){
+			if(cv.z > 0){
+				velocity.z -= 1000*m;
+			}
+			else if(cv.z > -50){
+				velocity.z -= 100*m;
+			}
+		}
+		if(moveOut){
+			if(cv.z < 0){
+				velocity.z += 1000*m;
+			}
+			else if(cv.z < 50){
+				velocity.z += 100*m;
+			}
+		}
+		if(moveLeft){
+			if(cv.x > 0){
+				velocity.x -= 1000*m;
+			}
+			else if(cv.x > -50){
+				velocity.x -= 100*m;
+			}
+		}
+		if(moveRight){
+			if(cv.x < 0){
+				velocity.x += 1000*m;
+			}
+			else if(cv.x < 50){
+				velocity.x += 100*m;
+			}
+		}
+		if(jump){
+			let intersects = jumpCaster.intersectObjects( scene.children, true);
+				try{
+					if(intersects[0].object.parent.parent != undefined){
+						if(intersects.length >= 2){
+							velocity.y += 1000*m;
+						}
+					}
+					else if(intersects.length >= 1){
+						velocity.y += 1000*m;
+					}
+				}
+				catch{}
+		}
+	
+		scene.getObjectById(player).applyCentralImpulse(velocity);
+	}
 }
 
 
@@ -172,8 +188,8 @@ function wheel(){
 }
 document.addEventListener("wheel", wheel, true);
 
-var raycaster = new THREE.Raycaster();
-var mouse = new THREE.Vector2();
+let raycaster = new THREE.Raycaster();
+let mouse = new THREE.Vector2();
 
 document.addEventListener('mousedown', onMouseDown, false);
 function onMouseDown(e){
@@ -246,13 +262,53 @@ function updateCamAndRaycaster(){
 }
 
 function renderScene(){
-    scene.simulate();
-    requestAnimationFrame(renderScene);
-    slide_controls();
-    updateCamAndRaycaster();
-    renderer.render(scene, camera);
+	if(go_to_menu){
+		enable_controls = false;
+		scene = levels.get_level(0);
+		LOADING_NOT_DONE = true;
+		// loadingManager = new THREE.LoadingManager();
+		// loadingManager.onProgress = function(item, loaded, total){
+		// 	console.log(item, total, loaded);
+		// 	amount_loaded = (loaded/levels.get_level_size());
+		// }
+		// loadingManager.onLoad = function(){
+		// 	console.log("Loaded");
+		// 	LOADING_NOT_DONE = false;
+		// }
+		// levels.new_loading_manager(loadingManager);
+		amount_loaded = 0;
+		go_to_menu = false;
+		player = scene.getObjectByName("player:slide:start").id;
+		
+		loadingRenderer();
+	}
+	else{
+		scene.simulate();
+		requestAnimationFrame(renderScene);
+		slide_controls();
+		updateCamAndRaycaster();
+		renderer.render(scene, camera);
+	}
 }
 
 document.body.appendChild(renderer.domElement);
 
-renderScene();
+  
+function loadingRenderer(){
+	//--------------------------------Loading Screen--------------------------------
+	//Based on: xSaucecode
+	//Loaction: https://www.youtube.com/watch?v=3umV-dEYttU&ab_channel=xSaucecode
+	//Posted:   08/05/2016
+	//Accessed: 02/08/2020
+	if(LOADING_NOT_DONE){
+		requestAnimationFrame (loadingRenderer);
+		loading.box.scale.x = amount_loaded*20;//*20 to make the bar take up more of the screen.
+		renderer.render (loading.scene, loading.camera);
+	}//--------------------------------Loading Screen--------------------------------
+	else{
+		enable_controls = true;
+		renderScene();
+	}
+}
+
+loadingRenderer();
