@@ -2,6 +2,7 @@
 
 Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
+var EventDispatcher = 'https://github.com/mrdoob/eventdispatcher.js';
 
 var scene = new Physijs.Scene;
 var loader = new THREE.TextureLoader();
@@ -11,7 +12,6 @@ var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight
 camera.position.x = 0;
 camera.position.y = 30;
 camera.position.z = 100;
-//camera.lookAt(scene.position);
 
 var renderer = new THREE.WebGLRenderer({performance, antialias: true });
 
@@ -39,7 +39,7 @@ camera.position.z = 100;
 camera.lookAt(scene.position);
 
 //plane
-var planeGeometry = new THREE.PlaneGeometry(2000,50,1,1);
+var planeGeometry = new THREE.PlaneGeometry(2000,150,1,1);
 //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
 let planeMaterial = Physijs.createMaterial(
     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
@@ -97,25 +97,49 @@ cubeMaterial = Physijs.createMaterial(
     1.0
 );
 var cube2 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-
 cube2.position.y = 3;
 cube2.position.x = -15;
 cube2.name = "player:slide"
+cube2.castShadow = true;
+cube2.receiveshadow = true;
 scene.add(cube2);
 
-// Wall?
-cubeGeometry = new THREE.CylinderGeometry(2,2,2);
+// Goal
+cubeGeometry = new THREE.CubeGeometry(3,3,25);
 cubeMaterial = Physijs.createMaterial(
-    new THREE.MeshLambertMaterial({ color:"rgb(0,0,0)"}),
+    new THREE.MeshLambertMaterial({ color:"rgb(0,0,100)"}),
     1.0,
     1.0
 );
-var wall = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+var net = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 
-wall.position.y = 3;
-wall.position.x = -35;
-scene.add(wall);
+net.position.y = 0;
+net.position.x = -100;
+net.mass = 0;
+net.castShadow = true;
+net.addEventListener('collision', function(puck, linear_velocity, angular_velocity){
+	alert("Goal!");
+});
+scene.add(net);
 
+var readyHandler = function() {
+};
+
+// Hockey puck
+cubeGeometry = new THREE.CylinderGeometry(2,2,2);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ color:"rgb(0,0,10)"}),
+    1.0,
+    1.0
+);
+var puck = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+
+puck.position.y = 3;
+puck.position.x = -35;
+puck.name = 'puck';
+puck.castShadow = true;
+puck.addEventListener( 'ready', readyHandler );
+scene.add(puck);
 
 var moveIn = false;
 var moveOut = false;
@@ -333,7 +357,8 @@ function renderScene(){
     scene.simulate();
     requestAnimationFrame(renderScene);
     slide_controls();
-    updateCamAndRaycaster();
+	updateCamAndRaycaster();
+	//checkpoints();
     renderer.render(scene, camera);
 }
 
