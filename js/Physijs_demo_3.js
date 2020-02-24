@@ -2,7 +2,6 @@
 
 Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
-var EventDispatcher = 'https://github.com/mrdoob/eventdispatcher.js';
 
 var scene = new Physijs.Scene;
 var loader = new THREE.TextureLoader();
@@ -117,8 +116,9 @@ net.position.y = 0;
 net.position.x = -100;
 net.mass = 0;
 net.castShadow = true;
-net.addEventListener('collision', function(puck, linear_velocity, angular_velocity){
-	alert("Goal!");
+net.addEventListener('collision', function(obj, linear_velocity, angular_velocity){
+	if (obj == scene.getObjectByName("puck"))
+		alert("Goal!");
 });
 scene.add(net);
 
@@ -138,7 +138,6 @@ puck.position.y = 3;
 puck.position.x = -35;
 puck.name = 'puck';
 puck.castShadow = true;
-puck.addEventListener( 'ready', readyHandler );
 scene.add(puck);
 
 var moveIn = false;
@@ -147,38 +146,6 @@ var moveLeft = false;
 var moveRight = false;
 
 var jump = false;
-
-
-//function createPointToPoint() {
-// var obj1 = new THREE.SphereGeometry(2);
-// var obj2 = new THREE.SphereGeometry(2);
-// var objectOne = new 
-//     	Physijs.SphereMesh(obj1,Physijs.createMaterial(
-// 			new THREE.MeshPhongMaterial({color: 0xff4444, transparent:
-// 			true, opacity:0.7}),0,0));
-// 	objectOne.position.z=20; 
-// 	objectOne.position.x=0;
-// 	objectOne.position.y=10;
-// 	scene.add(objectOne);
-// 	var objectTwo = new
-// 		Physijs.SphereMesh(obj2,Physijs.createMaterial(
-// 		new THREE.MeshPhongMaterial({color: 0xff4444, transparent:
-// 		true, opacity:0.7}),0,0));
-// 	objectTwo.position.z=-5; objectTwo.position.x=0;
-// 	objectTwo.position.y=20;
-// 	scene.add(objectTwo);
-// var constraint = new Physijs.PointConstraint(objectOne,
-// 		objectTwo, objectTwo.position);
-// 	scene.addConstraint(constraint);
-//}
-
-
-//Constraint
-// var constraint = new Physijs.SliderConstraint(sliderMesh, 
-// 	new THREE.Vector(0, 2, 0), new THREE.vector3(0, 1, 0));
-// scene.addConstraint(constraint);
-// constraint.setLimits(-10, 10, 0, 0);
-// constraint, setRestitution(0.1, 0.1);
 
 var player = cube1.id;
 document.addEventListener("keydown", onDocumentKeyDown, false);
@@ -358,7 +325,6 @@ function renderScene(){
     requestAnimationFrame(renderScene);
     slide_controls();
 	updateCamAndRaycaster();
-	//checkpoints();
     renderer.render(scene, camera);
 }
 
