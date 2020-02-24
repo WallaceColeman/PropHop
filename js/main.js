@@ -266,16 +266,16 @@ function renderScene(){
 		enable_controls = false;
 		scene = levels.get_level(0);
 		LOADING_NOT_DONE = true;
-		// loadingManager = new THREE.LoadingManager();
-		// loadingManager.onProgress = function(item, loaded, total){
-		// 	console.log(item, total, loaded);
-		// 	amount_loaded = (loaded/levels.get_level_size());
-		// }
-		// loadingManager.onLoad = function(){
-		// 	console.log("Loaded");
-		// 	LOADING_NOT_DONE = false;
-		// }
-		// levels.new_loading_manager(loadingManager);
+		loadingManager = new THREE.LoadingManager();
+		loadingManager.onProgress = function(item, loaded, total){
+			console.log(item, total, loaded);
+			amount_loaded = (loaded/levels.get_level_size());
+		}
+		loadingManager.onLoad = function(){
+			console.log("Loaded");
+			LOADING_NOT_DONE = false;
+		}
+		levels.new_loading_manager(loadingManager);
 		amount_loaded = 0;
 		go_to_menu = false;
 		player = scene.getObjectByName("player:slide:start").id;
