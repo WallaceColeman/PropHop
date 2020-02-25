@@ -8,6 +8,7 @@ let loadingManager = null;
 let amount_loaded = 0.0;
 let requested_level = 0;
 let go_to_menu = false;
+let on_main_menu = false;
 
 let enable_controls = false;
 
@@ -200,7 +201,31 @@ function onMouseDown(e){
 
 	let intersects = raycaster.intersectObjects( scene.children, true );
 
-    if(intersects.length > 0){
+	if (on_main_menu){
+		if (intersects[0].object.name == "start"){
+
+		}
+		else if (intersects[0].object.name == "level_select"){
+			
+		}
+		else if (intersects[0].object.name == "credits"){
+
+		}
+		else if (intersects[0].object.name == "level_1"){
+
+		}
+		else if (intersects[0].object.name == "level_2"){
+
+		}
+		else if (intersects[0].object.name == "level_3"){
+
+		}
+		else if (intersects[0].object.name == "level_4"){
+
+		}
+		
+	}
+	else if(intersects.length > 0){
         console.log("Was: " + player);
         console.log(intersects[0].object.name.split(":")[0]);
         console.log(intersects[0].object);
@@ -292,7 +317,6 @@ function renderScene(){
 }
 
 document.body.appendChild(renderer.domElement);
-
   
 function loadingRenderer(){
 	//--------------------------------Loading Screen--------------------------------
