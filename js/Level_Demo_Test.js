@@ -3,23 +3,11 @@
 Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
-var scene = new Physijs.Scene;
+import camera from '.js/Imports.js';
+Imports.camera();
+
 var loader = new THREE.TextureLoader();
-scene.setGravity(new THREE.Vector3(0,-25,0));
 
-
-var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
-camera.position.x = 0;
-camera.position.y = 30;
-camera.position.z = 100;
-//camera.lookAt(scene.position);
-
-var renderer = new THREE.WebGLRenderer({performance, antialias: true });
-
-renderer.setClearColor("rgb(135,206,235)");//skyblue
-renderer.setSize(window.innerWidth-20, window.innerHeight-20);
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 var jumpCaster = new THREE.Raycaster();
 jumpCaster.far = 3.5;
@@ -473,30 +461,13 @@ function slide_controls(){//applyCentralImpulse is updated every render.
         //         velocity.y += 1000;
         //     }
         // }
-
-        //******************************Mostly Working Version******************************
-        // let intersects = jumpCaster.intersectObjects( scene.children);
-        // console.log(intersects[0].object.parent.id);
-            
-        //     if(intersects.length >= 1){
-        //         velocity.y += 1000*m;
-        //     }
-
-
-        //******************************Experimental Version******************************
-        let intersects = jumpCaster.intersectObjects( scene.children, true);
-        //console.log(intersects[0].object.parent.id);
-            try{
-                if(intersects[0].object.parent.parent != undefined){
-                    if(intersects.length >= 2){
-                        velocity.y += 1000*m;
-                    }
-                }
-                else if(intersects.length >= 1){
-                    velocity.y += 1000*m;
-                }
+        let intersects = jumpCaster.intersectObjects( scene.children);
+            console.log("Num intersects: " + intersects.length);
+            if(intersects.length >= 1){
+                console.log("onGround");
+                velocity.y += 1000*m;
             }
-            catch{}
+        
     }
 
     scene.getObjectById(player).applyCentralImpulse(velocity);
@@ -509,7 +480,7 @@ function wheel(){
     if(direction < 0 && camera.fov < 100){
         camera.fov += 5;
     }
-    else if(direction > 0 && camera.fov > 5){
+    else if(camera.fov > 5){
         camera.fov -= 5;
     }
     camera.updateProjectionMatrix();
@@ -552,18 +523,18 @@ function onMouseDown(e){
             player = intersects[0].object.parent.parent.id;
         }
         console.log(scene.getObjectById(player).rotation.x);
-        let dr = 0.5;
         if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
+            
             if(scene.getObjectById(player).geometry.parameters.depth != undefined){
-                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + .5;
                 console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
             }
             else{
-                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + .5;
                 console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
             }
         }else{
-            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + .5;
         }
         console.log("jumpCaster Length: " + jumpCaster.far);
         console.log("Am now: " + player);
