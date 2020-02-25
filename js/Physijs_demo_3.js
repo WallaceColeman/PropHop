@@ -118,7 +118,8 @@ net.mass = 0;
 net.castShadow = true;
 net.addEventListener('collision', function(obj, linear_velocity, angular_velocity){
 	if (obj == scene.getObjectByName("puck"))
-		alert("Goal!");
+        alert("Goal!");
+        
 });
 scene.add(net);
 
