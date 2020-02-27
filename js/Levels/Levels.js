@@ -76,9 +76,9 @@ class Levels {
     //     0.5
     // );
 
-    let cubeGeometry = new THREE.CubeGeometry(5,5,5);
+    let cubeGeometry = new THREE.CubeGeometry(0.1,0.1,0.1);
     let cubeMaterial = Physijs.createMaterial(
-      new THREE.MeshBasicMaterial({transparent: true, opacity: 0.0}),
+      new THREE.MeshBasicMaterial(/*{transparent: true, opacity: 0.0}*/ {color: 0x241BB6}),
       0.5,
       0.5
     );
@@ -88,12 +88,50 @@ class Levels {
     cube.name = "player:slide:start";
     scene.add(cube);
 
-    // geometry = new THREE.PlaneGeometry( 5, 20, 32 );
-    // material = new THREE.MeshBasicMaterial( {color: 0xffff00} );
-    // plane = new THREE.Mesh( geometry, material );
-    // scene.add( plane );
-      return scene;
-    }
+    //title
+    let planeGeometry = new THREE.PlaneGeometry(90,20,1,1);
+    let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    //plane.rotation.x = .5*Math.PI;
+    plane.position.y = 40;
+
+    scene.add( plane );
+    
+    //start
+    planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    //plane.rotation.x = .5*Math.PI;
+    plane.position.y = 10;
+
+    scene.add( plane );
+
+    //level select
+    planeGeometry = new THREE.PlaneGeometry(75,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    //plane.rotation.x = .5*Math.PI;
+    plane.position.y = -10;
+
+    scene.add( plane );
+
+    //controlls
+    planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    plane.position.y = -30;
+
+    scene.add( plane );
+    return scene;
+  }
   
   get_level_1_scene(){
 
