@@ -1,121 +1,334 @@
-// this is a test to interact with physijs_demo without breaking the original
+"use strict";
 
+Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
+Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
-'use strict';
+var scene = new Physijs.Scene;
+var loader = new THREE.TextureLoader();
+scene.setGravity(new THREE.Vector3(0,-25,0));
 
-	Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
-	Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
+var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.x = 0;
+camera.position.y = 30;
+camera.position.z = 100;
 
-    var scene = new Physijs.Scene;
-    scene.setGravity(new THREE.Vector3(0,-20,0));
+var renderer = new THREE.WebGLRenderer({performance, antialias: true });
 
-    var camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.1, 1000);
+renderer.setClearColor("rgb(135,206,235)");//skyblue
+renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    var renderer = new THREE.WebGLRenderer();
+var jumpCaster = new THREE.Raycaster();
+jumpCaster.far = 3.5;
+jumpCaster.set(new THREE.Vector3(0,0,0), new THREE.Vector3(0,-1,0));
 
-    var red = "rgb(255,0,0)";
-    var green = "rgb(10,200,10)";
-    var black = "rgb(0,0,0)";
+//light
+var light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+scene.add(light);
 
-    renderer.setClearColor(black);
-    renderer.setSize(window.innerWidth-20, window.innerHeight-20);
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(-40,60,40);
+spotLight.castShadow = true;
+scene.add(spotLight);   
 
-    //Plane
-    var planeGeometry = new THREE.PlaneGeometry(100,70,1,1);
-    var planeMaterial = new THREE.MeshBasicMaterial({color:green});
+camera.position.x = 0;
+camera.position.y = 30;
+camera.position.z = 100;
+camera.lookAt(scene.position);
 
-    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    plane.rotation.x = -0.5*Math.PI;
-    scene.add(plane);
+//plane
+var planeGeometry = new THREE.PlaneGeometry(2000,150,1,1);
+//var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+let planeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
+    0.2,
+    0.2
+);
+planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+planeMaterial.map.repeat.set( 1, .5 );
+var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+plane.receiveShadow = true;
+plane.rotation.x = -0.5*Math.PI;
+//plane.rotation.y = (0.125)*Math.PI;
+scene.add(plane);
 
+//markers
+for (let index = 0; index < 100; index++) {
+    let marker = new Physijs.BoxMesh(
+        new THREE.BoxGeometry(1, 10, 1),
+            Physijs.createMaterial(
+                new THREE.MeshLambertMaterial({
+                color:"rgb(10,200,10)"}),
+                1.0,
+                1.0
+        ));
+    marker.mass = 0;
+    marker.position.x = index*10;
+    marker.position.y = 5;
+    marker.receiveShadow = true;
+    marker.castShadow = true;
+    scene.add( marker );
+}
 
-		var friction = 0.0001; // 0.0001
-		var restitution = 1; // 0.3
+//Cube
+let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+let cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+    1.0,
+    1.0
+);
+cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+cubeMaterial.map.repeat.set( 1, .5 );
+var cube1 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube1.name = "player:slide"
+cube1.receiveShadow = true;
+cube1.castShadow = true;
+cube1.position.y = 3;
+cube1.position.x = -5;
+scene.add(cube1);
 
-    //Sphere
-		var sphereGeometry = new THREE.SphereGeometry(3, 30, 30);
-		var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x00ffff});
-		var sphere = new Physijs.BoxMesh(sphereGeometry, sphereMaterial, restitution);
-//    var cubeGeometry = new THREE.CubeGeometry(6,6,6);
-//    var cubeMaterial = new THREE.MeshLambertMaterial({color:red});
-//    var cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial), friction, restitution;
-    sphere.position.x = -10;
-    sphere.position.y = 30;
-    scene.add(sphere);
+//Cube 2
+cubeGeometry = new THREE.CubeGeometry(6,6,6);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ color:"rgb(250,50,150)"}),
+    1.0,
+    1.0
+);
+var cube2 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+cube2.position.y = 3;
+cube2.position.x = -15;
+cube2.name = "player:slide"
+cube2.castShadow = true;
+cube2.receiveshadow = true;
+scene.add(cube2);
 
-    //SpotLight
-    var spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-40,60,40);
-    scene.add(spotLight);
+// Goal
+cubeGeometry = new THREE.CubeGeometry(3,3,25);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ color:"rgb(0,0,100)"}),
+    1.0,
+    1.0
+);
+var net = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 
+net.position.y = 0;
+net.position.x = -100;
+net.mass = 0;
+net.castShadow = true;
+net.addEventListener('collision', function(obj, linear_velocity, angular_velocity){
+	if (obj == scene.getObjectByName("puck"))
+        alert("Goal!");
+        
+});
+scene.add(net);
 
-    camera.position.x = 0;
-    camera.position.y = 30;
-    camera.position.z = 100;
-    camera.lookAt(scene.position);
+var readyHandler = function() {
+};
 
-    function renderScene(){
+// Hockey puck
+cubeGeometry = new THREE.CylinderGeometry(2,2,2);
+cubeMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ color:"rgb(0,0,10)"}),
+    1.0,
+    1.0
+);
+var puck = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
 
-        scene.simulate();
-        requestAnimationFrame(renderScene);
-        renderer.render(scene, camera);
+puck.position.y = 3;
+puck.position.x = -35;
+puck.name = 'puck';
+puck.castShadow = true;
+scene.add(puck);
+
+var moveIn = false;
+var moveOut = false;
+var moveLeft = false;
+var moveRight = false;
+
+var jump = false;
+
+var player = cube1.id;
+document.addEventListener("keydown", onDocumentKeyDown, false);
+function onDocumentKeyDown(event) {
+    var keyCode = event.which;
+    if (keyCode == 87) {//w
+        moveIn = true;
+    } else if (keyCode == 83) {//s
+        moveOut = true;
+    } else if (keyCode == 65) {//a
+        moveLeft = true;
+    } else if (keyCode == 68) {//d
+        moveRight = true;
+    } else if (keyCode == 32) {//spacebar
+        jump = true;
+    }   
+    
+};
+
+document.addEventListener("keyup", onDocumentKeyUp, false);
+function onDocumentKeyUp(){
+    var keyCode = event.which;
+    if (keyCode == 87) {//w
+        moveIn = false;
+    } else if (keyCode == 83) {//s
+        moveOut = false;
+    } else if (keyCode == 65) {//a
+        moveLeft = false;
+    } else if (keyCode == 68) {//d
+        moveRight = false;
+    } else if(keyCode == 32){//space bar
+        jump = false;
+    } else if(keyCode == 82) {//r
+        var v = new THREE.Vector3(0,0,0);
+        scene.getObjectById(player).setLinearFactor(v);
+        //scene.getObjectById(player).setAngularFactor(v);
+        scene.getObjectById(player).__dirtyPosition = true;
+        scene.getObjectById(player).position.set(0, 30, 0);
+        v.x = 15;
+        v.y = 20;
+        v.z = 0;
+        scene.getObjectById(player).setLinearFactor(new THREE.Vector3(1,1,1));
+        //scene.getObjectById(player).setAngularFactor(new THREE.Vector3(1,1,1));
+        scene.getObjectById(player).setLinearVelocity(v); //remove this if you want obj to fall after respawn
     }
+}
 
-    document.body.appendChild(renderer.domElement);
-    renderScene();
+function slide_controls(){//applyCentralImpulse is updated every render.
+    //let m = Math.floor(scene.getObjectById(player).mass/300) + .5;
+    let m = scene.getObjectById(player).mass/300;
+    let velocity = new THREE.Vector3();
+    let cv = scene.getObjectById(player).getLinearVelocity();
+    if(moveIn){
+        if(cv.z > 0){
+            velocity.z -= 1000*m;
+        }
+        else if(cv.z > -50){
+            velocity.z -= 100*m;
+        }
+    }
+    if(moveOut){
+        if(cv.z < 0){
+            velocity.z += 1000*m;
+        }
+        else if(cv.z < 50){
+            velocity.z += 100*m;
+        }
+    }
+    if(moveLeft){
+        if(cv.x > 0){
+            velocity.x -= 1000*m;
+        }
+        else if(cv.x > -50){
+            velocity.x -= 100*m;
+        }
+    }
+    if(moveRight){
+        if(cv.x < 0){
+            velocity.x += 1000*m;
+        }
+        else if(cv.x < 50){
+            velocity.x += 100*m;
+        }
+    }
+    if(jump){
+        let intersects = jumpCaster.intersectObjects( scene.children);
+            console.log("Num intersects: " + intersects.length);
+            if(intersects.length >= 1){
+                console.log("onGround");
+                velocity.y += 1000*m;
+            }
+    }
+    scene.getObjectById(player).applyCentralImpulse(velocity);
+}
 
-		function onDocumentMouseMove( event )
-		{
-			// the following line would stop any other event handler from firing
-			// (such as the mouse's TrackballControls)
-			// event.preventDefault();
+function wheel(){
+    let direction = event.wheelDelta;
+    if(direction < 0 && camera.fov < 100){
+        camera.fov += 5;
+    }
+    else if(camera.fov > 5){
+        camera.fov -= 5;
+    }
+    camera.updateProjectionMatrix();
+}
+document.addEventListener("wheel", wheel, true);
 
-			// update the mouse variable
-			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-		}
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
 
-		function animate()
-		{
-		  requestAnimationFrame( animate );
-			render();
-			update();
-		}
-    /*
-	var initScene, render, renderer, scene, camera, box;
+document.addEventListener('mousedown', onMouseDown, false);
+function onMouseDown(e){
+    // update the picking ray with the camera and mouse position
+	raycaster.setFromCamera( mouse, camera );
 
-	initScene = function() {
-		renderer = new THREE.WebGLRenderer({ antialias: true });
-		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.getElementById( 'viewport' ).appendChild( renderer.domElement );
+	let intersects = raycaster.intersectObjects( scene.children, true );
 
-		scene = new Physijs.Scene;
+    if(intersects.length > 0){
+        console.log("Was: " + player);
+        console.log(intersects[0].object.name.split(":")[0]);
+        console.log(intersects[0].object);
+        if(intersects[0].object.name.split(":")[0] == "player"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+            player = intersects[0].object.id;
+            
+        }
+        else if( intersects[0].object.name == "parent"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+            player = intersects[0].object.parent.id;
+        }
+        else if(intersects[0].object.parent.name == "parent"){
+            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+            player = intersects[0].object.parent.parent.id;
+        }
+        console.log(scene.getObjectById(player).rotation.x);
+        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
+            
+            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + .5;
+                console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
+            }
+            else{
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + .5;
+                console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
+            }
+        }else{
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + .5;
+        }
+        console.log("jumpCaster Length: " + jumpCaster.far);
+        console.log("Am now: " + player);
+    }
+};
 
-		camera = new THREE.PerspectiveCamera(
-			35,
-			window.innerWidth / window.innerHeight,
-			1,
-			1000
-		);
-		camera.position.set( 60, 50, 60 );
-		camera.lookAt( scene.position );
-		scene.add( camera );
+function onMouseMove( event ) {
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
 
-		// Box
-		box = new Physijs.BoxMesh(
-			new THREE.CubeGeometry( 5, 5, 5 ),
-			new THREE.MeshBasicMaterial({ color: 0x888888 })
-		);
-		scene.add( box );
+window.addEventListener( 'mousemove', onMouseMove, false );
 
-		requestAnimationFrame( render );
-	};
+function updateCamAndRaycaster(){
+    camera.position.x = scene.getObjectById(player).position.x;
+    camera.position.y = scene.getObjectById(player).position.y+25;
+    jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
+    //console.log("Raycaster Length: " + jumpCaster.far)
+    camera.lookAt(scene.getObjectById(player).position);
+}
 
-	render = function() {
-		scene.simulate(); // run physics
-		renderer.render( scene, camera); // render the scene
-		requestAnimationFrame( render );
-	};
+function renderScene(){
+    scene.simulate();
+    requestAnimationFrame(renderScene);
+    slide_controls();
+	updateCamAndRaycaster();
+    renderer.render(scene, camera);
+}
 
-    window.onload = initScene();
-    */
+document.body.appendChild(renderer.domElement);
+
+renderScene();
