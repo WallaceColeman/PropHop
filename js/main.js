@@ -7,8 +7,8 @@ let LOADING_NOT_DONE = true;
 let loadingManager = null;
 let amount_loaded = 0.0;
 let requested_level = 0;
-let go_to_menu = false;
-let on_main_menu = false;
+let go_to_load = false;
+let on_main_menu = true;
 
 let enable_controls = false;
 
@@ -38,7 +38,7 @@ loading.scene.add( new THREE.AmbientLight( 0x404040) );
 loadingManager = new THREE.LoadingManager();
 
 loadingManager.onProgress = function(item, loaded, total){
-	console.log(item, total, loaded);
+	//console.log(item, total, loaded);
 	amount_loaded = (loaded/levels.get_level_size());
 }
 loadingManager.onLoad = function(){
@@ -48,7 +48,7 @@ loadingManager.onLoad = function(){
 
 let levels = new Levels(loadingManager, renderer);
 
-let scene = levels.get_level(-1);
+let scene = levels.get_level(0);
 
 let player = scene.getObjectByName("player:slide:start").id;
 
@@ -113,7 +113,8 @@ function onDocumentKeyUp(){
 			
 		} else if(keyCode == 27){
 			if(levels.current_level != 9){
-				go_to_menu = true;
+				go_to_load = true;
+				requested_level = 0;
 				enable_controls = false;
 			}
 		}
@@ -158,18 +159,33 @@ function slide_controls(){//applyCentralImpulse is updated every render.
 			}
 		}
 		if(jump){
+			//console.log("Jump");
+			//console.log(jumpCaster.position);
+			//console.log(scene.getObjectById(player));
 			let intersects = jumpCaster.intersectObjects( scene.children, true);
 				try{
+					console.log(1);
 					if(intersects[0].object.parent.parent != undefined){
+						console.log(2);
 						if(intersects.length >= 2){
+							console.log(3);
 							velocity.y += 1000*m;
+						}
+						else{
+							console.log(3.1);
 						}
 					}
 					else if(intersects.length >= 1){
+						console.log(4);
 						velocity.y += 1000*m;
 					}
+					else{
+						console.log(5);
+					}
 				}
-				catch{}
+				catch{
+					//console.log("jump failed");
+				}
 		}
 	
 		scene.getObjectById(player).applyCentralImpulse(velocity);
@@ -203,7 +219,10 @@ function onMouseDown(e){
 
 	if (on_main_menu){
 		if (intersects[0].object.name == "start"){
-
+			console.log("Clicked Start");
+			on_main_menu = false;
+			requested_level = -1;
+			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
 			
@@ -211,24 +230,51 @@ function onMouseDown(e){
 		else if (intersects[0].object.name == "credits"){
 
 		}
-		else if (intersects[0].object.name == "level_1"){
-
+		else{
+			on_main_menu = false;
+			switch(intersects[0].object.name.split("_")[1]){
+				case "1":
+					requested_level = -1;
+					go_to_load = true;
+					break;
+				case "2":
+					requested_level = 2;
+					go_to_load = true;
+					break;
+				case "3":
+					requested_level = 3;
+					go_to_load = true;
+					break;
+				case "4":
+					requested_level = 4;
+					go_to_load = true;
+					break;
+				
+				default:
+					on_main_menu = true;
+			}
+			console.log(on_main_menu);
 		}
-		else if (intersects[0].object.name == "level_2"){
-
-		}
-		else if (intersects[0].object.name == "level_3"){
-
-		}
-		else if (intersects[0].object.name == "level_4"){
-
-		}
+		
+		// if (intersects[0].object.name == "level_1"){
+		// 	on_main_menu = false;
+		// }
+		// else if (intersects[0].object.name == "level_2"){
+		// 	on_main_menu = false;
+		// }
+		// else if (intersects[0].object.name == "level_3"){
+		// 	on_main_menu = false;
+		// }
+		// else if (intersects[0].object.name == "level_4"){
+		// 	on_main_menu = false;
+		// }
+		
 		
 	}
 	else if(intersects.length > 0){
-        console.log("Was: " + player);
-        console.log(intersects[0].object.name.split(":")[0]);
-        console.log(intersects[0].object);
+        // console.log("Was: " + player);
+        // console.log(intersects[0].object.name.split(":")[0]);
+        // console.log(intersects[0].object);
         if(intersects[0].object.name.split(":")[0] == "player"){
             scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
             scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
@@ -248,22 +294,22 @@ function onMouseDown(e){
             
             player = intersects[0].object.parent.parent.id;
         }
-        console.log(scene.getObjectById(player).rotation.x);
+        // console.log(scene.getObjectById(player).rotation.x);
         let dr = 0.5;
         if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
             if(scene.getObjectById(player).geometry.parameters.depth != undefined){
                 jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
-                console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
+               // console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
             }
             else{
                 jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
-                console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
+                //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
             }
         }else{
             jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
         }
-        console.log("jumpCaster Length: " + jumpCaster.far);
-        console.log("Am now: " + player);
+        //console.log("jumpCaster Length: " + jumpCaster.far);
+        //console.log("Am now: " + player);
     }
 };
 
@@ -277,8 +323,13 @@ function onMouseMove( event ) {
 window.addEventListener( 'mousemove', onMouseMove, false );
 
 function updateCamAndRaycaster(){
-    camera.position.x = scene.getObjectById(player).position.x;
-    camera.position.y = scene.getObjectById(player).position.y+25;
+	camera.position.x = scene.getObjectById(player).position.x;
+	if(on_main_menu){
+		camera.position.y = scene.getObjectById(player).position.y;
+	}
+	else{
+		camera.position.y = scene.getObjectById(player).position.y+25;
+	}
     jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
     
     //console.log("Raycaster Length: " + jumpCaster.far)
@@ -287,24 +338,43 @@ function updateCamAndRaycaster(){
 }
 
 function renderScene(){
-	if(go_to_menu){
+	if(go_to_load){
 		enable_controls = false;
-		scene = levels.get_level(0);
+		scene = levels.get_level(requested_level);
+		if(requested_level == 0){
+			on_main_menu = true;
+		}
 		LOADING_NOT_DONE = true;
 		loadingManager = new THREE.LoadingManager();
 		loadingManager.onProgress = function(item, loaded, total){
-			console.log(item, total, loaded);
+			//console.log(item, total, loaded);
 			amount_loaded = (loaded/levels.get_level_size());
 		}
 		loadingManager.onLoad = function(){
-			console.log("Loaded");
+			//console.log("Loaded");
 			LOADING_NOT_DONE = false;
 		}
 		levels.new_loading_manager(loadingManager);
 		amount_loaded = 0;
-		go_to_menu = false;
+		
+		
 		player = scene.getObjectByName("player:slide:start").id;
 		
+		let dr = 0.5;
+        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
+            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
+                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
+               // console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
+            }
+            else{
+                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
+                //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
+            }
+        }else{
+            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
+        }
+
+		go_to_load = false;
 		loadingRenderer();
 	}
 	else{

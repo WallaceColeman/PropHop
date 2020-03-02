@@ -68,7 +68,7 @@ class Levels {
     //light
     scene.add(new THREE.AmbientLight( 0x404040 ));
 
-    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )})
+    
 
     // let cubeMaterial = Physijs.createMaterial(
     //     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
@@ -89,8 +89,9 @@ class Levels {
     scene.add(cube);
 
     //title
-    let planeGeometry = new THREE.PlaneGeometry(90,20,1,1);
-    let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+    let planeGeometry = new THREE.PlaneGeometry(90,30,1,1);
+    //let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+    let planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/PropHopSkin.jpg' )});
 
     let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
@@ -101,23 +102,24 @@ class Levels {
     
     //start
     planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/StartSkin.jpg' )});
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    //plane.rotation.x = .5*Math.PI;
     plane.position.y = 10;
+    plane.name = "start";
 
     scene.add( plane );
 
     //level select
     planeGeometry = new THREE.PlaneGeometry(75,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     //plane.rotation.x = .5*Math.PI;
     plane.position.y = -10;
+    plane.name = "level_select";
 
     scene.add( plane );
 
@@ -130,6 +132,61 @@ class Levels {
     plane.position.y = -30;
 
     scene.add( plane );
+
+    //Level Select Screen****************************************************
+    //Level Select Title
+    planeGeometry = new THREE.PlaneGeometry(90,30,1,1);
+    //let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    //plane.rotation.x = .5*Math.PI;
+    plane.position.y = 40;
+    plane.position.x = 1000;
+
+    scene.add( plane );
+    
+    //level 1
+    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    plane.position.x = 900;
+
+    scene.add( plane );
+
+    //level 2
+    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    plane.position.x = 925;
+
+    scene.add( plane );
+
+    //level 3
+    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    plane.position.x = 950;
+
+    scene.add( plane );
+
+    //level 4
+    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
+    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    
+    plane.position.x = 975;
+
+    scene.add( plane );
+
     return scene;
   }
   
@@ -209,11 +266,11 @@ class Levels {
     bridge.addEventListener("ready", function(){
         
         bridge.setAngularFactor(new THREE.Vector3(0, 0, 1));
-        console.log("Bridge Mass: " + bridge.mass);
+        
     });
     bridge.mass = 8000;
     scene.add(bridge);
-    console.log("Bridge Mass: " + bridge.mass);
+    
 
     //rightside
     cubeGeometry = new THREE.CubeGeometry(50,10,25);
