@@ -321,12 +321,12 @@ class Levels {
   }
 
   get_level_2_scene(){
-    // while(this.scene.children.length > 0){ 
-    //   this.scene.remove(this.scene.children[0]); 
-    // }
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
-    let white1 = "rbg(111, 127, 136)";
+    let white1 = "rgb(111, 127, 136)";
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
@@ -357,8 +357,8 @@ class Levels {
     cubeGeometry = new THREE.CubeGeometry(300,5,155,500);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-        0.8,
-        0.2
+        0.9,
+        0.9
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
     cubeMaterial.map.repeat.set( 1, 1 );
@@ -420,9 +420,9 @@ class Levels {
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
     let sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-      0.4,
-      0.5
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+      0.1,
+      1.5
     );
 
       sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
@@ -434,6 +434,41 @@ class Levels {
       sphere.position.x = 0
       sphere.name = "player:slide:start";
       scene.add(sphere);
+
+          // player
+      sphereGeometry = new THREE.SphereGeometry(6,36,36);
+      sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+      0.9,
+      0.1
+      );
+
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 25;
+      sphere.name = "player:slide";
+      scene.add(sphere);
+
+    // testing a hollow object
+    // let cylinderGeometry = new THREE.CylinderGeometry(3,3,15,16);
+    // let cylinderMaterial = Physijs.createMaterial(
+    //   new THREE.CylinderMesh({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+    //   0.1,
+    //   0.1
+    // );
+    // cylinderMaterial.map.wrapS = cylinderMaterial.map.wrapT = THREE.RepeatWrapping;
+    // cylinderMaterial.map.repeat.set( 1, .5 );
+    // let cylinder = new Physijs.ConcaveMesh(sphereGeometry, sphereMaterial);
+    // cylinder.receiveShadow = true;
+    // cylinder.castShadow = true;
+    // cylinder.position.y = -10;
+    // cylinder.position.x = 0
+    // cylinder.name = "player:slide";
+    // scene.add(cylinder);
 
     return scene;
   }
