@@ -25,9 +25,10 @@ class Levels {
         this.current_level = 0;
         return this.get_level_1_scene();
         break;
-      // case 2:
-      //    day = "Tuesday";
-      //   break;
+       case 2:
+        this.current_level = 2;
+        return this.get_level_2_scene();
+        break;
       // case 3:
       //   day = "Wednesday";
       //   break;
@@ -52,6 +53,9 @@ class Levels {
         break;
       case 1://level 1
         return -1;
+        break;
+      case 2://level 2 
+        return 2;
         break;
     }
   }
@@ -314,6 +318,124 @@ class Levels {
   
   get_level_1_scene(){
 
+  }
+
+  get_level_2_scene(){
+    // while(this.scene.children.length > 0){ 
+    //   this.scene.remove(this.scene.children[0]); 
+    // }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    let white1 = "rbg(111, 127, 136)";
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+
+    //light
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
+
+    let spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(0,50,15);
+    spotLight.castShadow = true;
+    scene.add(spotLight); 
+
+    //back wall
+    let cubeGeometry = new THREE.CubeGeometry(300,200,1,1);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
+        0.2
+    ));
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -2;
+    cube.position.x = 0;
+    cube.position.z = -50;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //floor
+    cubeGeometry = new THREE.CubeGeometry(300,5,155,500);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.8,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -100; //keep
+    cube.position.x = 0;
+    cube.position.z = 25;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //right wall
+    cubeGeometry = new THREE.CubeGeometry(3,200,155,1);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
+        0.2
+    ));
+    // cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    // cubeMaterial.map.repeat.set( 1, .5 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 0;
+    cube.position.x = 150;
+    cube.position.z = 25;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //left wall
+    cubeGeometry = new THREE.CubeGeometry(3,200,155,1);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
+        0.2
+    ));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 0;
+    cube.position.x = -150;
+    cube.position.z = 25;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //front wall
+    cubeGeometry = new THREE.CubeGeometry(300,100,5,1);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
+        0.2
+    ));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -100;
+    cube.position.x = 0;
+    cube.position.z = 105;
+    cube.mass = 0;
+    scene.add(cube);
+
+    // player
+    let sphereGeometry = new THREE.SphereGeometry(6,36,36);
+    let sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+      0.4,
+      0.5
+    );
+
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 0
+      sphere.name = "player:slide:start";
+      scene.add(sphere);
+
+    return scene;
   }
 
   get_level_demo_scene(){
