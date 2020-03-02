@@ -225,7 +225,8 @@ function onMouseDown(e){
 			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
-			
+			scene.getObjectById(player).__dirtyPosition = true;
+			scene.getObjectById(player).position.x = 1000;
 		}
 		else if (intersects[0].object.name == "credits"){
 

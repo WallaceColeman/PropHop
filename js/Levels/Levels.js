@@ -153,7 +153,7 @@ class Levels {
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    plane.position.x = 900;
+    plane.position.x = 970;
 
     scene.add( plane );
 
@@ -163,7 +163,7 @@ class Levels {
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    plane.position.x = 925;
+    plane.position.x = 990;
 
     scene.add( plane );
 
@@ -173,7 +173,7 @@ class Levels {
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    plane.position.x = 950;
+    plane.position.x = 1010;
 
     scene.add( plane );
 
@@ -183,7 +183,7 @@ class Levels {
 
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    plane.position.x = 975;
+    plane.position.x = 1030;
 
     scene.add( plane );
 
