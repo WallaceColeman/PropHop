@@ -191,7 +191,86 @@ class Levels {
   }
   
   get_level_1_scene(){
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+    //light
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
 
+    //Cube
+    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.4,
+        0.5
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 10;
+    cube.position.x = 0;
+    cube.name = "player:slide:start";
+
+    scene.add(cube);
+
+    //Floor
+    cubeGeometry = new THREE.CubeGeometry(250,250,150);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+        0.8,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = -125;
+    cube.mass = 0;
+    scene.add(cube);
+    
+    //Backwall
+    cubeGeometry = new THREE.CubeGeometry(150,50,1);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
+        0.2,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 25;
+    cube.position.z = -25
+    cube.mass = 0;
+    scene.add(cube);
+    
+    //Leftwall
+    cubeGeometry = new THREE.CubeGeometry(1,50,100);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
+        0.2,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.z = 25;
+    cube.position.y = 25;
+    cube.position.x = -75
+    cube.mass = 0;
+    scene.add(cube);
+
+    return scene;
   }
 
   get_level_demo_scene(){

@@ -221,7 +221,7 @@ function onMouseDown(e){
 		if (intersects[0].object.name == "start"){
 			console.log("Clicked Start");
 			on_main_menu = false;
-			requested_level = -1;
+			requested_level = 1;
 			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
