@@ -454,9 +454,37 @@ class Levels {
       scene.add(sphere);
 
     // testing a hollow object
+    let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+    GLTF_loader.load(// Basket test
+      // resource URL
+      '../../Models/Player_Models/HollowCylinder2.glb',
+      // called when the resource is loaded
+      function ( gltf ) {
+              let test = gltf.scene;
+              let geometry = new THREE.CylinderGeometry(5, 5, 15, 16);
+              let material = Physijs.createMaterial(
+                  new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.5 }),
+                  0.3,
+                  0.1
+              );
+              let cylinder = new Physijs.CylinderMesh( geometry, material );
+              //cylinder.rotation.x = -0.5*Math.PI;
+              cylinder.position.y = -10;
+              cylinder.position.x = -25;
+
+              cylinder.name = "player:slide";
+
+              cylinder.add( test );
+                //test.rotation.x = -0.5*Math.PI;
+              test.scale.set(25,25,25);
+              scene.add( cylinder );
+      });
+
+
+
     // let cylinderGeometry = new THREE.CylinderGeometry(3,3,15,16);
     // let cylinderMaterial = Physijs.createMaterial(
-    //   new THREE.CylinderMesh({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+    //   new THREE.CylinderMesh({ map: loader.load( 'Models/Images/HollowCylinder.glb' )}),
     //   0.1,
     //   0.1
     // );
