@@ -95,7 +95,7 @@ class Levels {
       scene.add(cube);
   
       //plane
-      var planeGeometry = new THREE.PlaneGeometry(200,200,1,1);
+      var planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
       //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
       let planeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
@@ -112,31 +112,31 @@ class Levels {
       scene.add(plane);
 
       //front wall
-plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-plane.rotation.x = -1*Math.PI;
-plane.position.z = 75;
-plane.receiveShadow = true;
-scene.add(plane);
+//plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+//plane.rotation.x = -1*Math.PI;
+//plane.position.z = 75;
+//plane.receiveShadow = true;
+//scene.add(plane);
 
 //back wall
-plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-plane.position.z = -50;
-plane.receiveShadow = true;
-scene.add(plane);
+//plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+//plane.position.z = -50;
+//plane.receiveShadow = true;
+//scene.add(plane);
 
 //left wall
-plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-plane.rotation.y = .5*Math.PI;
-plane.position.x = -75;
-plane.receiveShadow = true;
-scene.add(plane);
+//plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+//plane.rotation.y = .5*Math.PI;
+//plane.position.x = -75;
+//plane.receiveShadow = true;
+//scene.add(plane);
 
 //right wall
 
-plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-plane.rotation.y = -.5*Math.PI;
-plane.position.x = 75;
-scene.add(plane);
+//plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+//plane.rotation.y = -.5*Math.PI;
+//plane.position.x = 75;
+//scene.add(plane);
   
   
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);
@@ -158,7 +158,7 @@ scene.add(plane);
             let cylinder = new Physijs.CylinderMesh( geometry, material );
   
             cylinder.rotation.x = -0.5*Math.PI;
-            //cylinder.position.y = 40;
+            cylinder.position.y = 3;
             cylinder.position.x = -15;
             
             
@@ -198,16 +198,16 @@ scene.add(plane);
       GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
           function ( gltf ) {
               let chairModel = gltf.scene;
-              scene.add(chairModel);
-              chairModel.position.x = 45;
-              chairModel.position.z = 45;
-              chairModel.rotation.y = 1.25*Math.PI;
-              chairModel.scale.set(3,3,3);
+              //scene.add(chairModel);
+              //chairModel.position.x = 45;
+              //chairModel.position.z = 45;
+              //chairModel.rotation.y = 1.25*Math.PI;
+              //chairModel.scale.set(3,3,3);
   
               //build ramp
               //let green = "rgb(10,200,10)";
               //let blue = "rgb(10,10,200)";
-              //let base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+              let base = new Physijs.BoxMesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
               //let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
               //let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
   
@@ -219,33 +219,36 @@ scene.add(plane);
               //ramp.position.y = 3;
               //ramp.rotation.z = Math.atan(3/4);
   
-             // base.position.x = -20;
-              //base.position.y = 5;
+              //base.position.x = 45;
+              //base.position.z = 45;
+              base.position.y = 1.25*Math.PI;
               
-              //base.mass = 300;
+              base.mass = 300;
   
-              //scene.add(base);
+              scene.add(base);
               //side.name = "parent";
               //ramp.name = "parent";
-              //rampModel.name = "parent";
-              //base.name = "player:slide";
+              chairModel.name = "parent";
+              base.name = "player:slide";
   
-              //base.add( rampModel );
-              //rampModel.position.y = 3;
-              //rampModel.rotation.x = 0.5*Math.PI;
-              //rampModel.scale.set(10.5,12.5,10.5);
+              base.add( chairModel );
+              //chairModel.position.x = 45;
+              //chairModel.position.z = 45;
+              chairModel.rotation.y = 1.25*Math.PI;
+              chairModel.scale.set(3,3,3);
+              
   
   
-              //rampModel.traverse( function( child ) { 
+              chairModel.traverse( function( child ) { 
   
-                  //if ( child.isMesh ) {
+                  if ( child.isMesh ) {
   
-                      //child.castShadow = true;
-                      //child.receiveShadow = true;
-                      //return;
-                  //}
+                      child.castShadow = true;
+                      child.receiveShadow = true;
+                      return;
+                  }
   
-             // } );
+              } );
   
   
           }
