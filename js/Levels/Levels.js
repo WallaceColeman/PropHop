@@ -154,6 +154,7 @@ class Levels {
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     plane.position.x = 970;
+    plane.name = "Level_1";
 
     scene.add( plane );
 
@@ -164,6 +165,7 @@ class Levels {
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     plane.position.x = 990;
+    plane.name = "Level_2";
 
     scene.add( plane );
 
@@ -174,6 +176,7 @@ class Levels {
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     plane.position.x = 1010;
+    plane.name = "Level_3";
 
     scene.add( plane );
 
@@ -184,6 +187,7 @@ class Levels {
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     plane.position.x = 1030;
+    plane.name = "Level_4";
 
     scene.add( plane );
 
@@ -198,8 +202,13 @@ class Levels {
     let loader = new THREE.TextureLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
     //light
-    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    scene.add(light);
+    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    // scene.add(light);
+
+    let light = new THREE.PointLight( 0x404040, 1, 1000 );
+    light.position.set( -100, 100, 100 );
+    light.castShadow = true;
+    scene.add( light );
 
     //Cube
     let cubeGeometry = new THREE.CubeGeometry(6,6,6);

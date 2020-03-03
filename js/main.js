@@ -233,20 +233,20 @@ function onMouseDown(e){
 		}
 		else{
 			on_main_menu = false;
-			switch(intersects[0].object.name.split("_")[1]){
-				case "1":
+			switch(intersects[0].object.name){
+				case "Level_1":
+					requested_level = 1;
+					go_to_load = true;
+					break;
+				case "Level_2":
 					requested_level = -1;
 					go_to_load = true;
 					break;
-				case "2":
-					requested_level = 2;
-					go_to_load = true;
-					break;
-				case "3":
+				case "Level_3":
 					requested_level = 3;
 					go_to_load = true;
 					break;
-				case "4":
+				case "Level_4":
 					requested_level = 4;
 					go_to_load = true;
 					break;
