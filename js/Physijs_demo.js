@@ -41,7 +41,6 @@
     plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -0.5*Math.PI;
     plane.position.x = 30;
-<<<<<<< HEAD
     plane.position.y = -15;
     scene.add(plane);
 
@@ -81,11 +80,9 @@
     plane.position.x = -5;
     plane.position.y = 0;
     
-=======
     plane.position.y = -15
     plane.receiveShadow = true;
     plane.castShadow = true;
->>>>>>> e974772cb4664aa4d758a0f4fec50b678a3f6865
     scene.add(plane);
 
     //Cube
