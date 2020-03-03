@@ -163,6 +163,7 @@ function slide_controls(){//applyCentralImpulse is updated every render.
 			//console.log(jumpCaster.position);
 			//console.log(scene.getObjectById(player));
 			let intersects = jumpCaster.intersectObjects( scene.children, true);
+			console.log("intersects: " + intersects.length);
 				try{
 					console.log(1);
 					if(intersects[0].object.parent.parent != undefined){
@@ -239,11 +240,11 @@ function onMouseDown(e){
 					go_to_load = true;
 					break;
 				case "Level_2":
-					requested_level = -1;
+					requested_level = 2;
 					go_to_load = true;
 					break;
 				case "Level_3":
-					requested_level = 3;
+					requested_level = -1;
 					go_to_load = true;
 					break;
 				case "Level_4":
@@ -306,8 +307,15 @@ function onMouseDown(e){
                 jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
                 //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
             }
-        }else{
-            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
+        }else{//&& scene.getObjectById(player).height == undefined
+			if(scene.getObjectById(player).geometry.parameters.radius != undefined && scene.getObjectById(player).geometry.parameters.height == undefined){
+				console.log("it's a sphere");
+				jumpCaster.far = (scene.getObjectById(player).geometry.parameters.radius) + dr;
+			}
+			else{
+				jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
+			}
+			
         }
         //console.log("jumpCaster Length: " + jumpCaster.far);
         //console.log("Am now: " + player);
@@ -333,7 +341,7 @@ function updateCamAndRaycaster(){
 	}
     jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
     
-    //console.log("Raycaster Length: " + jumpCaster.far)
+    console.log("Raycaster Length: " + jumpCaster.far)
 
     camera.lookAt(scene.getObjectById(player).position);
 }
@@ -368,7 +376,14 @@ function renderScene(){
                // console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
             }
             else{
-                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
+				//jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
+				if(scene.getObjectById(player).geometry.parameters.radius != undefined && scene.getObjectById(player).geometry.parameters.height == undefined){
+					console.log("it's a sphere");
+					jumpCaster.far = (scene.getObjectById(player).geometry.parameters.radius) + dr;
+				}
+				else{
+					jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
+				}
                 //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
             }
         }else{
