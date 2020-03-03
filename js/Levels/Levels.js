@@ -428,9 +428,11 @@ class Levels {
       '../../Models/Player_Models/lamp.glb',
       // called when the resource is loaded
       function ( gltf ) {
-              let test = gltf.scene;
-              let geometry = new THREE.CylinderGeometry(3, 3, 15, 16);
-              //let geometry = new THREE.CylinderGeometry(3, 3, -15, 16, 1, true, 0, 230);
+              let lampmodel = gltf.scene;
+
+              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
+              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,25,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
+              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.0 }));
 
               //CylinderGeometry(radiusTop : Float,
               // radiusBottom : Float, 
@@ -438,25 +440,33 @@ class Levels {
               // Segments : Integer, 
               // heightSegments : Integer, openEnded : Boolean, thetaStart : Float, thetaLength : Float)
 
-               let material = Physijs.createMaterial(
-                   new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ wireframe: true, transparent: true, opacity: 0.5 }),
-                   0.3,
-                   0.1
-               );
+              lampbase.add(lamppole);
+              lampbase.castShadow = true;
+              lamppole.castShadow = true;
+              lamppole.position.y += 18;
 
-              //let material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-              let cylinder = new Physijs.CylinderMesh(geometry, material );
-              //let cylinder = new Physijs.ConcaveMesh(geometry, material);
-              //cylinder.rotation.x = -0.5*Math.PI;
-              cylinder.position.y = 0;
-              cylinder.position.x = 0;
+              lampbase.add(lampshade);
+              lampshade.castShadow = true;
+              lampshade.position.y += 25;
 
-              cylinder.name = "player:slide";
+              lampbase.position.y = -20;
+              lampbase.position.x = 0;
+              lampbase.position.z = -10;
 
-              cylinder.add( test );
-                //test.rotation.x = -0.5*Math.PI;
-              test.scale.set(5,5,5);
-              scene.add( cylinder );
+              lampmodel.name = "player:slide";
+              
+              lampbase.add(lampmodel);
+              lampbase.position.y += 1;
+              lampmodel.scale.set(5,5,5);
+
+              scene.add(lampbase);
+
+              //let pointLight = new THREE.PointLight( 0xff0000, 10, 10 );
+              //pointlight.position.set(10,10,10);
+              //pointLight.position.set(lampshade.position);
+              //scene.add( pointLight );
+              //pointlight.castShadow = true;
+             
 
       
           // Hollow Box
@@ -475,12 +485,7 @@ class Levels {
           // singleGeometry.position.y = -25;
           // singleGeometry.position.x = 25;
           // scene.add(singleGeometry);
-
-
-
-
-          
-      
+                
       });
 
 
@@ -696,7 +701,7 @@ class Levels {
             let base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
             let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
             let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-
+            
             base.add(side);
             side.position.x += 4;
             side.position.y += 3;
