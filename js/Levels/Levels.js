@@ -252,7 +252,7 @@ class Levels {
     cubeGeometry = new THREE.CubeGeometry(150,50,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0.2,
+        0,
         0.2
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
@@ -269,7 +269,7 @@ class Levels {
     cubeGeometry = new THREE.CubeGeometry(1,50,100);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0.2,
+        0,
         0.2
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
@@ -415,12 +415,12 @@ class Levels {
       sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
       sphere.receiveShadow = true;
       sphere.castShadow = true;
-      sphere.position.y = 0;
+      sphere.position.y = -20;
       sphere.position.x = 25;
       sphere.name = "player:slide";
       scene.add(sphere);
 
-    // testing a hollow object
+    // testing a lamp
     let GLTF_loader = new THREE.GLTFLoader(loadingManager);
     GLTF_loader.load(// lamp test
       // resource URL
@@ -430,24 +430,18 @@ class Levels {
       function ( gltf ) {
               let lampmodel = gltf.scene;
 
-              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
-              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,25,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
-              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.0 }));
-
-              //CylinderGeometry(radiusTop : Float,
-              // radiusBottom : Float, 
-              // height : Float, radial
-              // Segments : Integer, 
-              // heightSegments : Integer, openEnded : Boolean, thetaStart : Float, thetaLength : Float)
+              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.5 }));
+              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,15,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.5 }));
+              //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
 
               lampbase.add(lamppole);
               lampbase.castShadow = true;
               lamppole.castShadow = true;
               lamppole.position.y += 18;
 
-              lampbase.add(lampshade);
-              lampshade.castShadow = true;
-              lampshade.position.y += 25;
+              //lampbase.add(lampshade);
+              //lampshade.castShadow = true;
+              //lampshade.position.y += 25;
 
               lampbase.position.y = -20;
               lampbase.position.x = 0;
@@ -461,14 +455,16 @@ class Levels {
 
               scene.add(lampbase);
 
-              //let pointLight = new THREE.PointLight( 0xff0000, 10, 10 );
+              let pointLight = new THREE.PointLight(0xff0040, 10, 10);
+              //#eedd82 
+              lampbase.add(pointLight);
+              pointLight.position.y += 25
+              
               //pointlight.position.set(10,10,10);
               //pointLight.position.set(lampshade.position);
               //scene.add( pointLight );
               //pointlight.castShadow = true;
-             
-
-      
+            
           // Hollow Box
           // var singleGeometry = new THREE.Geometry();
           // cubeGeometry = new THREE.CubeGeometry(10, 1, 10);
@@ -485,26 +481,44 @@ class Levels {
           // singleGeometry.position.y = -25;
           // singleGeometry.position.x = 25;
           // scene.add(singleGeometry);
-                
       });
 
 
 
-    // let cylinderGeometry = new THREE.CylinderGeometry(3,3,15,16);
-    // let cylinderMaterial = Physijs.createMaterial(
-    //   new THREE.CylinderMesh({ map: loader.load( 'Models/Images/HollowCylinder.glb' )}),
-    //   0.1,
-    //   0.1
-    // );
-    // cylinderMaterial.map.wrapS = cylinderMaterial.map.wrapT = THREE.RepeatWrapping;
-    // cylinderMaterial.map.repeat.set( 1, .5 );
-    // let cylinder = new Physijs.ConcaveMesh(sphereGeometry, sphereMaterial);
-    // cylinder.receiveShadow = true;
-    // cylinder.castShadow = true;
-    // cylinder.position.y = -10;
-    // cylinder.position.x = 0
-    // cylinder.name = "player:slide";
-    // scene.add(cylinder);
+      // var geometry = new THREE.ConvexBufferGeometry(  arrayPoints);
+      // var material = new THREE.MeshBasicMaterial( { color: 0xf0fff0 , wireframe:true }   );
+      // var mesh = new THREE.Mesh( geometry, material );
+
+
+    let cylinderGeometry = new THREE.CylinderGeometry(10,10,15,16,1,true);
+    let cylinderMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({map:loader.load('/Models/Player_Models/HollowCylinder.glb'), wireframe: true, opacity: 0.5}),
+        //new THREE.MeshLambertMaterial({white1, wireframe: true, opacity: 0.5}),
+        0.1,
+        0.1
+     );
+
+     //({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+
+  //    let cylinderMaterial = Physijs.createMaterial(
+  //     new THREE.MeshLambertMaterial({color: 0xf0fff0, wireframe: true, opacity: 0.5}),
+  //     0.1,
+  //     0.1
+  //  );
+
+     
+    let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
+
+    //let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
+    //cylinderMaterial.map.wrapS = cylinderMaterial.map.wrapT = THREE.RepeatWrapping;
+    //cylinderMaterial.map.repeat.set( 1, .5 );
+    //let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
+    cylinder.receiveShadow = true;
+    cylinder.castShadow = true;
+    cylinder.position.y = -30;
+    cylinder.position.x = 0
+    cylinder.name = "player:slide";
+    scene.add(cylinder);
 
     return scene;
   }
