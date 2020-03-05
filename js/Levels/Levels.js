@@ -433,15 +433,16 @@ class Levels {
               let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.5 }));
               let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,15,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.5 }));
               //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
 
               lampbase.add(lamppole);
               lampbase.castShadow = true;
               lamppole.castShadow = true;
               lamppole.position.y += 18;
 
-              //lampbase.add(lampshade);
-              //lampshade.castShadow = true;
-              //lampshade.position.y += 25;
+              lampbase.add(lampshade);
+              lampshade.castShadow = true;
+              lampshade.position.y += 25;
 
               lampbase.position.y = -20;
               lampbase.position.x = 0;
@@ -455,10 +456,15 @@ class Levels {
 
               scene.add(lampbase);
 
-              let pointLight = new THREE.PointLight(0xff0040, 10, 10);
+              let pointLight = new THREE.PointLight(0xff0040, 10, 50);
+              pointLight.castShadow = true;
               //#eedd82 
               lampbase.add(pointLight);
-              pointLight.position.y += 25
+              pointLight.position.y += 15;
+              pointLight.position.x += 5;
+              lampbase.add(pointLight);
+              pointLight.position.y += 15;
+              pointLight.position.x += -5;
               
               //pointlight.position.set(10,10,10);
               //pointLight.position.set(lampshade.position);
