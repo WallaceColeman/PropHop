@@ -46,7 +46,7 @@ class Player {
 			}
 		}
 		if(jump){
-			let intersects = this.jumpCaster.intersectObjects( scene.children, true);
+			let intersects = jumpCaster.intersectObjects( scene.children, true);
 			//console.log("intersects: " + intersects.length);
 				try{
 					//console.log(1);

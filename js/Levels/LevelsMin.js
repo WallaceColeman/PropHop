@@ -402,6 +402,7 @@ class LevelsMin {
         sphere.position.y = 0;
         sphere.position.x = 0
         sphere.name = "player:slide:start";
+        sphere.userData = new Player(sphere, 6.5);
         scene.add(sphere);
   
             // player
@@ -420,69 +421,36 @@ class LevelsMin {
         sphere.position.y = 0;
         sphere.position.x = 25;
         sphere.name = "player:slide";
+        sphere.userData = new Player(sphere, 3.5);
         scene.add(sphere);
   
-      // testing a hollow object
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);
-      GLTF_loader.load(// lamp test
-        // resource URL
-        //'../../Models/Player_Models/HollowCylinder2.glb',
+      GLTF_loader.load(
         '../../Models/Player_Models/lamp.glb',
         // called when the resource is loaded
         function ( gltf ) {
-                let test = gltf.scene;
-                let geometry = new THREE.CylinderGeometry(3, 3, 15, 16);
-                //let geometry = new THREE.CylinderGeometry(3, 3, -15, 16, 1, true, 0, 230);
-  
-                //CylinderGeometry(radiusTop : Float,
-                // radiusBottom : Float, 
-                // height : Float, radial
-                // Segments : Integer, 
-                // heightSegments : Integer, openEnded : Boolean, thetaStart : Float, thetaLength : Float)
-  
-                 let material = Physijs.createMaterial(
-                     new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ wireframe: true, transparent: true, opacity: 0.5 }),
-                     0.3,
-                     0.1
-                 );
-  
-                //let material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
-                let cylinder = new Physijs.CylinderMesh(geometry, material );
-                //let cylinder = new Physijs.ConcaveMesh(geometry, material);
-                //cylinder.rotation.x = -0.5*Math.PI;
-                cylinder.position.y = 0;
-                cylinder.position.x = 0;
-  
-                cylinder.name = "player:slide";
-  
-                cylinder.add( test );
-                  //test.rotation.x = -0.5*Math.PI;
-                test.scale.set(5,5,5);
-                scene.add( cylinder );
-  
-        
-            // Hollow Box
-            // var singleGeometry = new THREE.Geometry();
-            // cubeGeometry = new THREE.CubeGeometry(10, 1, 10);
-            // cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(pink, 0.3, 0.2));
-            // let cubebottom = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-            // cubeGeometry = new THREE.CubeGeometry(10, 10, 1);
-            // let cubeback = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-            // cubeGeometry = new THREE.CubeGeometry(1, 10, 10);
-            // let cubeleft = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-            // let cuberight = new Phisijs.BoxMesh(cubeGeometry, cubeMaterial);
-            // let cubefront = cubeback;
-            // singleGeometry.merge(cubebottom);
-            // singleGeometry.name = "player:slide";
-            // singleGeometry.position.y = -25;
-            // singleGeometry.position.x = 25;
-            // scene.add(singleGeometry);
-  
-  
-  
-  
-            
-        
+          let test = gltf.scene;
+          let geometry = new THREE.CylinderGeometry(3, 3, 15, 16);  
+            let material = Physijs.createMaterial(
+                new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ wireframe: true, transparent: true, opacity: 0.5 }),
+                0.3,
+                0.1
+            );
+
+          //let material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+          let cylinder = new Physijs.CylinderMesh(geometry, material );
+          //let cylinder = new Physijs.ConcaveMesh(geometry, material);
+          //cylinder.rotation.x = -0.5*Math.PI;
+          cylinder.position.y = 0;
+          cylinder.position.x = 0;
+
+          cylinder.name = "player:slide";
+          cylinder.userData = new Player(cylinder, 8);
+
+          cylinder.add( test );
+            //test.rotation.x = -0.5*Math.PI;
+          test.scale.set(5,5,5);
+          scene.add( cylinder );      
         });
   
   
@@ -540,6 +508,8 @@ class LevelsMin {
       cube.position.y = -35;
       cube.position.x = 45
       cube.name = "player:slide:start";
+
+      cube.userData = new Player(cube, 3.5);
   
       scene.add(cube);
   
@@ -600,6 +570,7 @@ class LevelsMin {
       cube.position.x = 90;
       cube.mass = 0;
       scene.add(cube);
+      
   
       //upper left Side
       cubeGeometry = new THREE.CubeGeometry(40,2,25);
@@ -670,6 +641,7 @@ class LevelsMin {
                   cylinder.add( log );
                   log.rotation.x = -0.5*Math.PI;
                   log.scale.set(3,3,3);
+                  cylinder.userData = new Player(cylinder, 3.5);
                   scene.add( cylinder );
                   log.traverse( function( child ) { 
   
@@ -711,6 +683,7 @@ class LevelsMin {
               base.position.y = 5;
               
               base.mass = 300;
+              base.userData = new Player(base, .6);
   
               scene.add(base);
               side.name = "parent";

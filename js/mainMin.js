@@ -121,76 +121,10 @@ function onDocumentKeyUp(){
 	}
 }
 
-function slide_controls(){//applyCentralImpulse is updated every render.
+function controls(){//applyCentralImpulse is updated every render.
     if(enable_controls){
-		let m = scene.getObjectById(player).mass/300;
-		let velocity = new THREE.Vector3();
-		let cv = scene.getObjectById(player).getLinearVelocity();
-		if(moveIn){
-			if(cv.z > 0){
-				velocity.z -= 1000*m;
-			}
-			else if(cv.z > -50){
-				velocity.z -= 100*m;
-			}
-		}
-		if(moveOut){
-			if(cv.z < 0){
-				velocity.z += 1000*m;
-			}
-			else if(cv.z < 50){
-				velocity.z += 100*m;
-			}
-		}
-		if(moveLeft){
-			if(cv.x > 0){
-				velocity.x -= 1000*m;
-			}
-			else if(cv.x > -50){
-				velocity.x -= 100*m;
-			}
-		}
-		if(moveRight){
-			if(cv.x < 0){
-				velocity.x += 1000*m;
-			}
-			else if(cv.x < 50){
-				velocity.x += 100*m;
-			}
-		}
-		if(jump){
-			//console.log("Jump");
-			//console.log(jumpCaster.position);
-			//console.log(scene.getObjectById(player));
-			let intersects = jumpCaster.intersectObjects( scene.children, true);
-			console.log("intersects: " + intersects.length);
-				try{
-					console.log(1);
-					if(intersects[0].object.parent.parent != undefined){
-						console.log(2);
-						if(intersects.length >= 2){
-							console.log(3);
-							velocity.y += 1000*m;
-						}
-						else{
-							console.log(3.1);
-						}
-					}
-					else if(intersects.length >= 1){
-						console.log(4);
-						velocity.y += 1000*m;
-					}
-					else{
-						console.log(5);
-					}
-				}
-				catch{
-					//console.log("jump failed");
-				}
-		}
-	
-		scene.getObjectById(player).applyCentralImpulse(velocity);
-	}
+        scene.getObjectById(player).userData.movement(moveIn, moveOut, moveLeft, moveRight, jump, jumpCaster);
+    }
 }
 
 
@@ -356,7 +290,7 @@ function renderScene(){
 	else{
 		scene.simulate();
 		requestAnimationFrame(renderScene);
-		slide_controls();
+		controls();
 		updateCamAndRaycaster();
 		renderer.render(scene, camera);
 	}
