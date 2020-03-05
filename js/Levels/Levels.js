@@ -430,10 +430,10 @@ class Levels {
       function ( gltf ) {
               let lampmodel = gltf.scene;
 
-              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.5 }));
-              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,15,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.5 }));
+              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({wireframe: false, opacity: 0.5 }));
+              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,15,12),new THREE.MeshLambertMaterial({ wireframe: false, opacity: 0.5 }));
               //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
-              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: false, opacity: 0.0 }));
 
               lampbase.add(lamppole);
               lampbase.castShadow = true;
