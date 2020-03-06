@@ -1,4 +1,5 @@
 class Levels {
+  // colors https://www.w3schools.com/colors/colors_rgb.asp
   
   constructor(LM, R) {
     this.LoadingManager = LM;
@@ -370,7 +371,7 @@ class Levels {
     scene.add(cube);
 
     //front wall
-    cubeGeometry = new THREE.CubeGeometry(300,100,5,1);
+    cubeGeometry = new THREE.CubeGeometry(300,200,5,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial(white1,
         0.8,
@@ -386,90 +387,72 @@ class Levels {
 
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
-    let sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
-      0.1,
-      1.5
-    );
+    let sphereMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}), 0.1, 1.5);
 
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 0
-      sphere.name = "player:slide:start";
-      scene.add(sphere);
+    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+    sphereMaterial.map.repeat.set( 1, .5 );
+    let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+    sphere.receiveShadow = true;
+    sphere.castShadow = true;
+    sphere.position.y = 0;
+    sphere.position.x = 0
+    sphere.name = "player:slide:start";
+    scene.add(sphere);
 
           // player
-      sphereGeometry = new THREE.SphereGeometry(3,36,36);
-      sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
-      0.9,
-      0.1
-      );
+    sphereGeometry = new THREE.SphereGeometry(3,36,36);
+    sphereMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}), 0.9, 0.1 );
 
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = -20;
-      sphere.position.x = 25;
-      sphere.name = "player:slide";
-      scene.add(sphere);
+    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+    sphereMaterial.map.repeat.set( 1, .5 );
+    sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+    sphere.receiveShadow = true;
+    sphere.castShadow = true;
+    sphere.position.y = -20;
+    sphere.position.x = 25;
+    sphere.name = "player:slide";
+    scene.add(sphere);
 
-    // testing a lamp
-    let GLTF_loader = new THREE.GLTFLoader(loadingManager);
-    GLTF_loader.load(// lamp test
-      // resource URL
-      //'../../Models/Player_Models/HollowCylinder2.glb',
-      '../../Models/Player_Models/lamp.glb',
-      // called when the resource is loaded
-      function ( gltf ) {
-              let lampmodel = gltf.scene;
+    let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:5}));
+    let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:5}));
+    //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+    //opacity: 0.5, reflectivity:1
+    let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036'}));
+    lampshade.side = THREE.BackSide;
 
-              let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({wireframe: false, opacity: 0.5 }));
-              let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,15,12),new THREE.MeshLambertMaterial({ wireframe: false, opacity: 0.5 }));
-              //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
-              let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: false, opacity: 0.0 }));
+    lampbase.add(lamppole);
+    lampbase.castShadow = true;
+    lamppole.castShadow = true;
+    lamppole.position.y += 14;
 
-              lampbase.add(lamppole);
-              lampbase.castShadow = true;
-              lamppole.castShadow = true;
-              lamppole.position.y += 18;
+    lampbase.add(lampshade);
+    lampshade.castShadow = true;
+    lampshade.position.y += 25;
 
-              lampbase.add(lampshade);
-              lampshade.castShadow = true;
-              lampshade.position.y += 25;
+    lampbase.position.y = -30;
+    lampbase.position.x = 0;
+    lampbase.position.z = -10;
 
-              lampbase.position.y = -20;
-              lampbase.position.x = 0;
-              lampbase.position.z = -10;
-
-              lampmodel.name = "player:slide";
+    lampbase.name = "player:slide";
+    lampshade.name = "player:slide";
+    lamppole.name = "player:slide";
               
-              lampbase.add(lampmodel);
-              lampbase.position.y += 1;
-              lampmodel.scale.set(5,5,5);
+    lampbase.position.y += 1;
 
-              scene.add(lampbase);
+    let pointLight1 = new THREE.PointLight(0x404040, 5, 25);
+    let pointLight2 = new THREE.PointLight(0x404040, 5, 25);
+    pointLight1.castShadow = true;
+    pointLight2.castShadow = true;
 
-              let pointLight = new THREE.PointLight(0xff0040, 10, 50);
-              pointLight.castShadow = true;
-              //#eedd82 
-              lampbase.add(pointLight);
-              pointLight.position.y += 15;
-              pointLight.position.x += 5;
-              lampbase.add(pointLight);
-              pointLight.position.y += 15;
-              pointLight.position.x += -5;
-              
-              //pointlight.position.set(10,10,10);
-              //pointLight.position.set(lampshade.position);
-              //scene.add( pointLight );
-              //pointlight.castShadow = true;
+    lampshade.add(pointLight1);
+    lampshade.add(pointLight2);
+    pointLight1.position.x += 2;
+    pointLight1.position.y += 7;
+    pointLight2.position.x += -2;
+    pointLight2.position.y += 7;
+
+    scene.add(lampbase);
             
           // Hollow Box
           // var singleGeometry = new THREE.Geometry();
@@ -487,44 +470,34 @@ class Levels {
           // singleGeometry.position.y = -25;
           // singleGeometry.position.x = 25;
           // scene.add(singleGeometry);
-      });
 
 
-
-      // var geometry = new THREE.ConvexBufferGeometry(  arrayPoints);
-      // var material = new THREE.MeshBasicMaterial( { color: 0xf0fff0 , wireframe:true }   );
-      // var mesh = new THREE.Mesh( geometry, material );
-
-
-    let cylinderGeometry = new THREE.CylinderGeometry(10,10,15,16,1,true);
-    let cylinderMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({map:loader.load('/Models/Player_Models/HollowCylinder.glb'), wireframe: true, opacity: 0.5}),
-        //new THREE.MeshLambertMaterial({white1, wireframe: true, opacity: 0.5}),
-        0.1,
-        0.1
-     );
-
-     //({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+    // let cylinderGeometry = new THREE.CylinderGeometry(10,10,15,16,1,true);
+    // let cylinderMaterial = Physijs.createMaterial(
+    //     new THREE.MeshLambertMaterial({map:loader.load('/Models/Player_Models/HollowCylinder.glb'), wireframe: true, opacity: 0.5}),
+    //     //new THREE.MeshLambertMaterial({white1, wireframe: true, opacity: 0.5}),
+    //     0.1,
+    //     0.1
+    //  );
 
   //    let cylinderMaterial = Physijs.createMaterial(
   //     new THREE.MeshLambertMaterial({color: 0xf0fff0, wireframe: true, opacity: 0.5}),
   //     0.1,
   //     0.1
   //  );
-
      
-    let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
+    //let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
 
     //let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
     //cylinderMaterial.map.wrapS = cylinderMaterial.map.wrapT = THREE.RepeatWrapping;
     //cylinderMaterial.map.repeat.set( 1, .5 );
     //let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
-    cylinder.receiveShadow = true;
-    cylinder.castShadow = true;
-    cylinder.position.y = -30;
-    cylinder.position.x = 0
-    cylinder.name = "player:slide";
-    scene.add(cylinder);
+    //cylinder.receiveShadow = true;
+    //cylinder.castShadow = true;
+    //cylinder.position.y = -30;
+    //cylinder.position.x = 0
+    //cylinder.name = "player:slide";
+    //scene.add(cylinder);
 
     return scene;
   }
