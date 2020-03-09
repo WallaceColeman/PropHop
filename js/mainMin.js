@@ -46,7 +46,7 @@ loadingManager.onLoad = function(){
 	LOADING_NOT_DONE = false;
 }
 
-let levels = new Levels(loadingManager, renderer);
+let levels = new LevelsMin(loadingManager, renderer);
 
 let scene = levels.get_level(0);
 
@@ -121,76 +121,10 @@ function onDocumentKeyUp(){
 	}
 }
 
-function slide_controls(){//applyCentralImpulse is updated every render.
+function controls(){//applyCentralImpulse is updated every render.
     if(enable_controls){
-		let m = scene.getObjectById(player).mass/300;
-		let velocity = new THREE.Vector3();
-		let cv = scene.getObjectById(player).getLinearVelocity();
-		if(moveIn){
-			if(cv.z > 0){
-				velocity.z -= 1000*m;
-			}
-			else if(cv.z > -50){
-				velocity.z -= 100*m;
-			}
-		}
-		if(moveOut){
-			if(cv.z < 0){
-				velocity.z += 1000*m;
-			}
-			else if(cv.z < 50){
-				velocity.z += 100*m;
-			}
-		}
-		if(moveLeft){
-			if(cv.x > 0){
-				velocity.x -= 1000*m;
-			}
-			else if(cv.x > -50){
-				velocity.x -= 100*m;
-			}
-		}
-		if(moveRight){
-			if(cv.x < 0){
-				velocity.x += 1000*m;
-			}
-			else if(cv.x < 50){
-				velocity.x += 100*m;
-			}
-		}
-		if(jump){
-			//console.log("Jump");
-			//console.log(jumpCaster.position);
-			//console.log(scene.getObjectById(player));
-			let intersects = jumpCaster.intersectObjects( scene.children, true);
-			console.log("intersects: " + intersects.length);
-				try{
-					console.log(1);
-					if(intersects[0].object.parent.parent != undefined){
-						console.log(2);
-						if(intersects.length >= 2){
-							console.log(3);
-							velocity.y += 1000*m;
-						}
-						else{
-							console.log(3.1);
-						}
-					}
-					else if(intersects.length >= 1){
-						console.log(4);
-						velocity.y += 1000*m;
-					}
-					else{
-						console.log(5);
-					}
-				}
-				catch{
-					//console.log("jump failed");
-				}
-		}
-	
-		scene.getObjectById(player).applyCentralImpulse(velocity);
-	}
+        scene.getObjectById(player).userData.movement(moveIn, moveOut, moveLeft, moveRight, jump, jumpCaster);
+    }
 }
 
 
@@ -296,29 +230,8 @@ function onMouseDown(e){
             
             player = intersects[0].object.parent.parent.id;
         }
-        // console.log(scene.getObjectById(player).rotation.x);
-        let dr = 0.5;
-        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
-            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
-                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
-               // console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
-            }
-            else{
-                jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
-                //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
-            }
-        }else{//&& scene.getObjectById(player).height == undefined
-			if(scene.getObjectById(player).geometry.parameters.radius != undefined && scene.getObjectById(player).geometry.parameters.height == undefined){
-				console.log("it's a sphere");
-				jumpCaster.far = (scene.getObjectById(player).geometry.parameters.radius) + dr;
-			}
-			else{
-				jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
-			}
-			
-        }
-        //console.log("jumpCaster Length: " + jumpCaster.far);
-        //console.log("Am now: " + player);
+        jumpCaster.far = scene.getObjectById(player).userData.jumpCasterFar;
+
     }
 };
 
@@ -369,26 +282,7 @@ function renderScene(){
 		
 		player = scene.getObjectByName("player:slide:start").id;
 		
-		let dr = 0.5;
-        if(scene.getObjectById(player).rotation.x > ( Math.PI / 3) || (0 - scene.getObjectById(player).rotation.x) > ( Math.PI / 3)){
-            if(scene.getObjectById(player).geometry.parameters.depth != undefined){
-                jumpCaster.far = (scene.getObjectById(player).geometry.parameters.depth/2) + dr;
-               // console.log("depth: " + scene.getObjectById(player).geometry.parameters.depth);
-            }
-            else{
-				//jumpCaster.far = scene.getObjectById(player).geometry.parameters.radiusTop + dr;
-				if(scene.getObjectById(player).geometry.parameters.radius != undefined && scene.getObjectById(player).geometry.parameters.height == undefined){
-					console.log("it's a sphere");
-					jumpCaster.far = (scene.getObjectById(player).geometry.parameters.radius) + dr;
-				}
-				else{
-					jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
-				}
-                //console.log("radius: " + scene.getObjectById(player).geometry.parameters.radiusTop);
-            }
-        }else{
-            jumpCaster.far = (scene.getObjectById(player).geometry.parameters.height/2) + dr;
-        }
+		jumpCaster.far = scene.getObjectById(player).userData.jumpCasterFar;
 
 		go_to_load = false;
 		loadingRenderer();
@@ -396,7 +290,7 @@ function renderScene(){
 	else{
 		scene.simulate();
 		requestAnimationFrame(renderScene);
-		slide_controls();
+		controls();
 		updateCamAndRaycaster();
 		renderer.render(scene, camera);
 	}
