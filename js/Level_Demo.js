@@ -432,6 +432,9 @@ function slide_controls(){//applyCentralImpulse is updated every render.
     let m = scene.getObjectById(player).mass/300;
     let velocity = new THREE.Vector3();
     let cv = scene.getObjectById(player).getLinearVelocity();
+    
+    
+    
     if(moveIn){
         if(cv.z > 0){
             velocity.z -= 1000*m;
@@ -498,8 +501,11 @@ function slide_controls(){//applyCentralImpulse is updated every render.
             }
             catch{}
     }
+    let pos = new THREE.Vector3(0,2,0);
 
-    scene.getObjectById(player).applyCentralImpulse(velocity);
+    scene.getObjectById(player).applyImpulse(velocity,pos);
+    
+    //parent.applyImpulse(force,pos);
     
 }
 
