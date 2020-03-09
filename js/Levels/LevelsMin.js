@@ -99,13 +99,12 @@ class LevelsMin {
         });
 
         let text = new Physijs.BoxMesh(geometry,material);
-        let bbox = new THREE.BoundingBoxHelper(text, 0xffffff);
-        bbox.update();
+        
 
         text.position.y = 40
         scene.add( text );
         
-        text.add(bbox);
+        
         
       },
     
@@ -248,96 +247,178 @@ class LevelsMin {
 
     //scene.add( plane );
     
-    //start
+
+    // //controlls
     // planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    // planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/StartSkin.jpg' )});
+    // planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
 
     // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    // plane.position.y = 10;
-    // plane.name = "start";
+    // plane.position.y = -30;
 
     // scene.add( plane );
 
-    // //level select
-    // planeGeometry = new THREE.PlaneGeometry(75,15,1,1);
-    // planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
-
-    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    // //Level Select Screen****************************************************
     
-    // //plane.rotation.x = .5*Math.PI;
-    // plane.position.y = -10;
-    // plane.name = "level_select";
-
-    // scene.add( plane );
-
-    //controlls
-    planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    //Level Select Menu
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
     
-    plane.position.y = -30;
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        //console.log("here");
+        let shapes = font.generateShapes("<LEVEL SELECT>", 15);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        let yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    scene.add( plane );
+        let text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y += 40;
+        text.position.x = 1000;
 
-    //Level Select Screen****************************************************
-    //Level Select Title
-    planeGeometry = new THREE.PlaneGeometry(90,30,1,1);
-    //let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
+        scene.add( text );
+        
+        //Level 1
+        shapes = font.generateShapes("( I }", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    //plane.rotation.x = .5*Math.PI;
-    plane.position.y = 40;
-    plane.position.x = 1000;
-
-    scene.add( plane );
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 955;
+        plane.name = "Level_1";
+        text.name = "Level_1";
     
-    //level 1
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+        scene.add( plane );
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane.add( text );
+
+        //Level 2
+        shapes = font.generateShapes("(I I}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    plane.position.x = 970;
-    plane.name = "Level_1";
-
-    scene.add( plane );
-
-    //level 2
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 985;
+        plane.name = "Level_2";
+        text.name = "Level_2";
     
-    plane.position.x = 990;
-    plane.name = "Level_2";
+        scene.add( plane );
 
-    scene.add( plane );
+        plane.add( text );
 
-    //level 3
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+        //Level 3
+        shapes = font.generateShapes("(III}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    plane.position.x = 1010;
-    plane.name = "Level_3";
-
-    scene.add( plane );
-
-    //level 4
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 1015;
+        plane.name = "Level_3";
+        text.name = "Level_3";
     
-    plane.position.x = 1030;
-    plane.name = "Level_4";
+        scene.add( plane );
 
-    scene.add( plane );
+        plane.add( text );
+
+        //Level 4
+        shapes = font.generateShapes("(IV}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(22,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
+    
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 1045;
+        plane.name = "Level_4";
+        text.name = "Level_4";
+    
+        scene.add( plane );
+
+        plane.add( text );
+
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
 
     return scene;
   }
