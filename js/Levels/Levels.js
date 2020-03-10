@@ -241,22 +241,6 @@ class Levels {
     let planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/PropHopSkin.jpg' )});
 
     let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    
-    //plane.rotation.x = .5*Math.PI;
-    //plane.position.y = 40;
-
-    //scene.add( plane );
-    
-
-    // //controlls
-    // planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    // planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    
-    // plane.position.y = -30;
-
-    // scene.add( plane );
 
     // //Level Select Screen****************************************************
     
