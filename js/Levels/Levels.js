@@ -418,7 +418,7 @@ class Levels {
     // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
     // scene.add(light);
 
-    let light = new THREE.PointLight( 0x404040, 1, 1000 );
+    let light = new THREE.PointLight( 0x404040, 5, 1000 );
     light.position.set( -100, 100, 100 );
     light.castShadow = true;
     scene.add( light );
@@ -511,27 +511,70 @@ class Levels {
     scene.add(light);
 
     let spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(0,50,15);
+    spotLight.position.set(-50,75,-10);
+    spotLight.lookAt(0,0,0);
     spotLight.castShadow = true;
     scene.add(spotLight); 
 
     //back wall
-    let cubeGeometry = new THREE.CubeGeometry(300,200,1,1);
-    let cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial(white1,
-        0.8,
-        0.2
-    ));
+    let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
+    let cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
     cube.position.y = -2;
-    cube.position.x = 0;
-    cube.position.z = -50;
+    cube.position.x = 7;
+    cube.position.z = -46;
+    cube.mass = 0;
+    scene.add(cube);
+    cubeGeometry = new THREE.CubeGeometry(13,190,1,1);
+    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 5;
+    cube.position.x = -143;
+    cube.position.z = -46;
     cube.mass = 0;
     scene.add(cube);
 
+    let geometry = new THREE.CubeGeometry(11.5,10,1);
+    let material = new THREE.MeshLambertMaterial( {color: "rgb(255,255,255)"} ); // this is if we want the wall to blend completely
+    //let material = new THREE.MeshLambertMaterial( {color: white1} ); // this hidden door is a different color
+    cube = new THREE.Mesh(geometry, material);
+    cube.position.x = -142.7;
+    cube.position.y = -95;
+    cube.position.z = -46;
+    scene.add(cube);
+
+
+    // hidden corridor
+    cubeGeometry = new THREE.CubeGeometry(317,16,5,1);
+    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -90;
+    cube.position.x = 5;
+    cube.position.z = -55;
+    cube.mass = 0;
+    scene.add(cube);
+    cubeGeometry = new THREE.CubeGeometry(313,2,10,1);
+    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
+    let cube2 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial,0);
+    cube2.position.y = -83;
+    cube2.position.x = 7;
+    cube2.position.z = -55;
+    scene.add(cube2);
+    cube2.receiveShadow = true;
+    cubeGeometry = new THREE.CubeGeometry(2,15,13,1);
+    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
+    let cube3 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial,0);
+    cube3.position.y = -90;
+    cube3.position.x = 163;
+    cube3.position.z = -50;
+    scene.add(cube3);
+    cube3.receiveShadow = true;
+
     //floor
-    cubeGeometry = new THREE.CubeGeometry(300,5,155,500);
+    cubeGeometry = new THREE.CubeGeometry(607,5,160,500);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         0.9,
@@ -542,8 +585,8 @@ class Levels {
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
     cube.position.y = -100; //keep
-    cube.position.x = 0;
-    cube.position.z = 25;
+    cube.position.x = 150;
+    cube.position.z = 26;
     cube.mass = 0;
     scene.add(cube);
 
@@ -560,7 +603,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = 0;
     cube.position.x = 150;
-    cube.position.z = 25;
+    cube.position.z = 33;
     cube.mass = 0;
     scene.add(cube);
 
@@ -580,7 +623,7 @@ class Levels {
     scene.add(cube);
 
     //front wall
-    cubeGeometry = new THREE.CubeGeometry(300,100,5,1);
+    cubeGeometry = new THREE.CubeGeometry(600,100,5,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial(white1,
         0.8,
