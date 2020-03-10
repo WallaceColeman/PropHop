@@ -1,0 +1,23 @@
+              Set Name:   Living room Set info
+
+  Model---------Uved--------Poly/tri count---------Image---------Type
+
+Curtain 1        Yes           22/44              Yes            OBJ
+
+Curtain 2        Yes           88/176             Yes            OBJ
+
+Sofa             Yes           272/544            Yes            OBJ
+  
+Chair            Yes           156/312            Yes            OBJ
+ 
+Shelf            Yes           24/48              Yes            OBJ       
+
+Stand            Yes           39/78              Yes            OBJ
+
+Tv               Yes           64/136             Yes            OBJ
+
+Desk             Yes           202/392            Yes            OBJ
+
+DeskChair        Yes           379/758            Yes            OBJ
+
+Table            Yes           26/52              Yes            OBJ
