@@ -1,5 +1,4 @@
 class Levels {
-  // colors https://www.w3schools.com/colors/colors_rgb.asp
   
   constructor(LM, R) {
     this.LoadingManager = LM;
@@ -26,7 +25,7 @@ class Levels {
         this.current_level = 0;
         return this.get_level_1_scene();
         break;
-       case 2:
+      case 2:
         this.current_level = 2;
         return this.get_level_2_scene();
         break;
@@ -60,37 +59,180 @@ class Levels {
         break;
     }
   }
-  
+    
   get_main_menu(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
     }
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
+    let fontLoader = new THREE.FontLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
 
     //light
     scene.add(new THREE.AmbientLight( 0x404040 ));
-
-    
-
-    // let cubeMaterial = Physijs.createMaterial(
-    //     new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-    //     0.4,
-    //     0.5
-    // );
-
     let cubeGeometry = new THREE.CubeGeometry(0.1,0.1,0.1);
     let cubeMaterial = Physijs.createMaterial(
       new THREE.MeshBasicMaterial(/*{transparent: true, opacity: 0.0}*/ {color: 0x241BB6}),
       0.5,
       0.5
     );
+      
+    //title
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
+    
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        console.log("here");
+        let shapes = font.generateShapes("(Prop Hop}", 15);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
+        let text = new Physijs.BoxMesh(geometry,material);
+        
+
+        text.position.y = 40
+        scene.add( text );
+        
+        
+        
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    //start
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
+    
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        //console.log("here");
+        let shapes = font.generateShapes("<START>", 10);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        let yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        
+
+        text.position.y = 1.5;
+
+        //start
+        let planeGeometry = new THREE.PlaneGeometry(55,15,1,1);
+        let planeMaterial = new THREE.MeshLambertMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
+    
+        let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.y = 10;
+        //plane.position.z = 1;
+        plane.name = "start";
+        text.name = "start";
+    
+        scene.add( plane );
+
+        plane.add( text );
+        
+        
+        
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    //level select
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
+
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        //console.log("here");
+        let shapes = font.generateShapes("<Level Select>", 10);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        let yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        
+
+        text.position.y = 1.5;
+
+        //start
+        let planeGeometry = new THREE.PlaneGeometry(100,15,1,1);
+        let planeMaterial = new THREE.MeshLambertMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
+
+        let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.y = -10;
+        //plane.position.z = 1;
+        plane.name = "level_select";
+        text.name = "level_select";
+
+        scene.add( plane );
+
+        plane.add( text );
+        
+        
+        
+      },
+
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+    
     let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.mass = 0;
     cube.name = "player:slide:start";
+    cube.userData = new Player(cube,  1);
     scene.add(cube);
 
     //title
@@ -101,100 +243,182 @@ class Levels {
     let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
     //plane.rotation.x = .5*Math.PI;
-    plane.position.y = 40;
+    //plane.position.y = 40;
 
-    scene.add( plane );
+    //scene.add( plane );
     
-    //start
-    planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/StartSkin.jpg' )});
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    // //controlls
+    // planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
+    // planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+
+    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     
-    plane.position.y = 10;
-    plane.name = "start";
+    // plane.position.y = -30;
 
-    scene.add( plane );
+    // scene.add( plane );
 
-    //level select
-    planeGeometry = new THREE.PlaneGeometry(75,15,1,1);
-    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    // //Level Select Screen****************************************************
     
-    //plane.rotation.x = .5*Math.PI;
-    plane.position.y = -10;
-    plane.name = "level_select";
-
-    scene.add( plane );
-
-    //controlls
-    planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    //Level Select Menu
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
     
-    plane.position.y = -30;
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        //console.log("here");
+        let shapes = font.generateShapes("<LEVEL SELECT>", 15);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        let yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    scene.add( plane );
+        let text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y += 40;
+        text.position.x = 1000;
 
-    //Level Select Screen****************************************************
-    //Level Select Title
-    planeGeometry = new THREE.PlaneGeometry(90,30,1,1);
-    //let planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-    planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/LevelSelectSkin.jpg' )});
+        scene.add( text );
+        
+        //Level 1
+        shapes = font.generateShapes("( I }", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    //plane.rotation.x = .5*Math.PI;
-    plane.position.y = 40;
-    plane.position.x = 1000;
-
-    scene.add( plane );
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 955;
+        plane.name = "Level_1";
+        text.name = "Level_1";
     
-    //level 1
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+        scene.add( plane );
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane.add( text );
+
+        //Level 2
+        shapes = font.generateShapes("(I I}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    plane.position.x = 970;
-    plane.name = "Level_1";
-
-    scene.add( plane );
-
-    //level 2
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 985;
+        plane.name = "Level_2";
+        text.name = "Level_2";
     
-    plane.position.x = 990;
-    plane.name = "Level_2";
+        scene.add( plane );
 
-    scene.add( plane );
+        plane.add( text );
 
-    //level 3
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
+        //Level 3
+        shapes = font.generateShapes("(III}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
 
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(20,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
     
-    plane.position.x = 1010;
-    plane.name = "Level_3";
-
-    scene.add( plane );
-
-    //level 4
-    planeGeometry = new THREE.PlaneGeometry(15,15,1,1);
-    planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 1015;
+        plane.name = "Level_3";
+        text.name = "Level_3";
     
-    plane.position.x = 1030;
-    plane.name = "Level_4";
+        scene.add( plane );
 
-    scene.add( plane );
+        plane.add( text );
+
+        //Level 4
+        shapes = font.generateShapes("(IV}", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        yMid = -0.5 * (geometry.boundingBox.max.y);
+        geometry.translate(xMid, yMid, 0);
+        material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        text = new Physijs.BoxMesh(geometry,material);
+        
+        text.position.y = 1.5;
+
+        
+        planeGeometry = new THREE.PlaneGeometry(22,15,1,1);
+        planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.0 });
+    
+        plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 1045;
+        plane.name = "Level_4";
+        text.name = "Level_4";
+    
+        scene.add( plane );
+
+        plane.add( text );
+
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
 
     return scene;
   }
@@ -229,8 +453,9 @@ class Levels {
     cube.castShadow = true;
     cube.position.y = 10;
     cube.position.x = 0;
+    
     cube.name = "player:slide:start";
-
+    cube.userData = new Player(cube,  3.5);
     scene.add(cube);
 
     //Floor
@@ -253,7 +478,7 @@ class Levels {
     cubeGeometry = new THREE.CubeGeometry(150,50,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0,
+        0.2,
         0.2
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
@@ -270,7 +495,7 @@ class Levels {
     cubeGeometry = new THREE.CubeGeometry(1,50,100);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0,
+        0.2,
         0.2
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
@@ -371,7 +596,7 @@ class Levels {
     scene.add(cube);
 
     //front wall
-    cubeGeometry = new THREE.CubeGeometry(300,200,5,1);
+    cubeGeometry = new THREE.CubeGeometry(300,100,5,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial(white1,
         0.8,
@@ -387,121 +612,87 @@ class Levels {
 
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
-    let sphereMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}), 0.1, 1.5);
+    let sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+      0.1,
+      1.5
+    );
 
-    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-    sphereMaterial.map.repeat.set( 1, .5 );
-    let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-    sphere.receiveShadow = true;
-    sphere.castShadow = true;
-    sphere.position.y = 0;
-    sphere.position.x = 0
-    sphere.name = "player:slide:start";
-    scene.add(sphere);
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 0
+      sphere.name = "player:slide:start";
+      sphere.userData = new Player(sphere, 6.5);
+      scene.add(sphere);
 
           // player
-    sphereGeometry = new THREE.SphereGeometry(3,36,36);
-    sphereMaterial = Physijs.createMaterial(
-    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}), 0.9, 0.1 );
+      sphereGeometry = new THREE.SphereGeometry(3,36,36);
+      sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+      0.9,
+      0.1
+      );
 
-    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-    sphereMaterial.map.repeat.set( 1, .5 );
-    sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-    sphere.receiveShadow = true;
-    sphere.castShadow = true;
-    sphere.position.y = -20;
-    sphere.position.x = 25;
-    sphere.name = "player:slide";
-    scene.add(sphere);
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 25;
+      sphere.name = "player:slide";
+      sphere.userData = new Player(sphere, 3.5);
+      scene.add(sphere);
 
-    let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
-    let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
-    //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
-    //opacity: 0.5, reflectivity:1
-    let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036'}));
-    lampshade.side = THREE.BackSide;
-
-    lampbase.add(lamppole);
-    lampbase.castShadow = true;
-    lamppole.castShadow = true;
-    lamppole.position.y += 14;
-
-    lampbase.add(lampshade);
-    lampshade.castShadow = true;
-    lampshade.position.y += 25;
-
-    lampbase.position.y = -30;
-    lampbase.position.x = 0;
-    lampbase.position.z = -10;
-
-    lampbase.name = "player:slide";
-    lampshade.name = "player:slide";
-    lamppole.name = "player:slide";
-              
-    lampbase.position.y += 1;
-
-    let pointLight1 = new THREE.PointLight(0x404040, 5, 25);
-    let pointLight2 = new THREE.PointLight(0x404040, 5, 25);
-    pointLight1.castShadow = true;
-    pointLight2.castShadow = true;
-
-    lampshade.add(pointLight1);
-    lampshade.add(pointLight2);
-    pointLight1.position.x += 2;
-    pointLight1.position.y += 7;
-    pointLight2.position.x += -2;
-    pointLight2.position.y += 7;
-
-    scene.add(lampbase);
-            
-          // Hollow Box
-          // var singleGeometry = new THREE.Geometry();
-          // cubeGeometry = new THREE.CubeGeometry(10, 1, 10);
-          // cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(pink, 0.3, 0.2));
-          // let cubebottom = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-          // cubeGeometry = new THREE.CubeGeometry(10, 10, 1);
-          // let cubeback = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-          // cubeGeometry = new THREE.CubeGeometry(1, 10, 10);
-          // let cubeleft = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-          // let cuberight = new Phisijs.BoxMesh(cubeGeometry, cubeMaterial);
-          // let cubefront = cubeback;
-          // singleGeometry.merge(cubebottom);
-          // singleGeometry.name = "player:slide";
-          // singleGeometry.position.y = -25;
-          // singleGeometry.position.x = 25;
-          // scene.add(singleGeometry);
-
-
-    // let cylinderGeometry = new THREE.CylinderGeometry(10,10,15,16,1,true);
-    // let cylinderMaterial = Physijs.createMaterial(
-    //     new THREE.MeshLambertMaterial({map:loader.load('/Models/Player_Models/HollowCylinder.glb'), wireframe: true, opacity: 0.5}),
-    //     //new THREE.MeshLambertMaterial({white1, wireframe: true, opacity: 0.5}),
-    //     0.1,
-    //     0.1
-    //  );
-
-  //    let cylinderMaterial = Physijs.createMaterial(
-  //     new THREE.MeshLambertMaterial({color: 0xf0fff0, wireframe: true, opacity: 0.5}),
-  //     0.1,
-  //     0.1
-  //  );
-     
-    //let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
-
-    //let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({ wireframe: true, transparent: true, opacity: 0.5 }));
-    //cylinderMaterial.map.wrapS = cylinderMaterial.map.wrapT = THREE.RepeatWrapping;
-    //cylinderMaterial.map.repeat.set( 1, .5 );
-    //let cylinder = new Physijs.ConcaveMesh(cylinderGeometry, cylinderMaterial);
-    //cylinder.receiveShadow = true;
-    //cylinder.castShadow = true;
-    //cylinder.position.y = -30;
-    //cylinder.position.x = 0
-    //cylinder.name = "player:slide";
-    //scene.add(cylinder);
+      // lamp
+      let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+      let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+      //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+      //opacity: 0.5, reflectivity:1
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036'}));
+      lampshade.side = THREE.BackSide;
+  
+      lampbase.add(lamppole);
+      lampbase.castShadow = true;
+      lamppole.castShadow = true;
+      lamppole.position.y += 14;
+  
+      lampbase.add(lampshade);
+      lampshade.castShadow = true;
+      lampshade.position.y += 25;
+  
+      lampbase.position.y = -30;
+      lampbase.position.x = 0;
+      lampbase.position.z = -10;
+  
+      lampbase.name = "player:slide";
+      lampshade.name = "parent";
+      lamppole.name = "parent";
+      lampbase.userData = new Player(lampbase, 3); 
+                
+      lampbase.position.y += 1;
+  
+      let pointLight1 = new THREE.PointLight(0x404040, 5, 25);
+      let pointLight2 = new THREE.PointLight(0x404040, 5, 25);
+      pointLight1.castShadow = true;
+      pointLight2.castShadow = true;
+  
+      lampshade.add(pointLight1);
+      lampshade.add(pointLight2);
+      pointLight1.position.x += 2;
+      pointLight1.position.y += 7;
+      pointLight2.position.x += -2;
+      pointLight2.position.y += 7;
+  
+      scene.add(lampbase);
 
     return scene;
   }
-
+  
   get_level_demo_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -536,6 +727,8 @@ class Levels {
     cube.position.y = -35;
     cube.position.x = 45
     cube.name = "player:slide:start";
+
+    cube.userData = new Player(cube, 3.5);
 
     scene.add(cube);
 
@@ -596,6 +789,7 @@ class Levels {
     cube.position.x = 90;
     cube.mass = 0;
     scene.add(cube);
+    
 
     //upper left Side
     cubeGeometry = new THREE.CubeGeometry(40,2,25);
@@ -636,123 +830,119 @@ class Levels {
         // called when the resource is loaded
         function ( gltf ) {
 
-                let log = gltf.scene;
+          let log = gltf.scene;
 
-                let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
-                let material = Physijs.createMaterial(
-                    new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
-                    1.0,
-                    0.5
-                );
-                let cylinder = new Physijs.CylinderMesh( geometry, material );
+          let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
+          let material = Physijs.createMaterial(
+              new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
+              1.0,
+              0.5
+          );
+          let cylinder = new Physijs.CylinderMesh( geometry, material );
 
-                cylinder.rotation.x = -0.5*Math.PI;
-                cylinder.position.y = 40;
-                cylinder.position.x = -25;
-                
-                
-                //*******************************************************************
-                //Based on:  xprogram
-                //Published: 04/12/2016
-                //Location:  https://github.com/chandlerprall/Physijs/issues/268
-                //Accessed:  02/16/2020
-                cylinder.addEventListener("ready", function(){
-                    cylinder.setAngularFactor(new THREE.Vector3(0, 0, 1));
-                });
-                //*******************************************************************
-
-                cylinder.name = "player:slide";
-
-                cylinder.add( log );
-                log.rotation.x = -0.5*Math.PI;
-                log.scale.set(3,3,3);
-                scene.add( cylinder );
-                log.traverse( function( child ) { 
-
-                    if ( child.isMesh ) {
-        
-                        child.castShadow = true;
-                        child.receiveShadow = true;
-                        return;
-                    }
-        
-                } );
+          cylinder.rotation.x = -0.5*Math.PI;
+          cylinder.position.y = 40;
+          cylinder.position.x = -25;
           
+          
+          //*******************************************************************
+          //Based on:  xprogram
+          //Published: 04/12/2016
+          //Location:  https://github.com/chandlerprall/Physijs/issues/268
+          //Accessed:  02/16/2020
+          cylinder.addEventListener("ready", function(){
+              cylinder.setAngularFactor(new THREE.Vector3(0, 0, 1));
+          });
+          //*******************************************************************
 
+          cylinder.name = "player:slide";
+
+          cylinder.add( log );
+          log.rotation.x = -0.5*Math.PI;
+          log.scale.set(3,3,3);
+          cylinder.userData = new Player(cylinder, 3.5);
+          scene.add( cylinder );
+          log.traverse( function( child ) { 
+
+              if ( child.isMesh ) {
+  
+                  child.castShadow = true;
+                  child.receiveShadow = true;
+                  return;
+              }
+  
+          } );
         }
       );
 
 
 
-    GLTF_loader.load('../../Models/Player_Models/Ramp.glb',
+      GLTF_loader.load('../../Models/Player_Models/Ramp.glb',
         function ( gltf ) {
-            let rampModel = gltf.scene;
+          let rampModel = gltf.scene;
 
-            //build ramp
-            let green = "rgb(10,200,10)";
-            let blue = "rgb(10,10,200)";
-            let base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-            let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-            let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-            
-            base.add(side);
-            side.position.x += 4;
-            side.position.y += 3;
+          //build ramp
+          let green = "rgb(10,200,10)";
+          let blue = "rgb(10,10,200)";
+          let base = new Physijs.BoxMesh(new THREE.BoxGeometry(8,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+          let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+          let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
-            base.add(ramp);
-            ramp.position.y = 3;
-            ramp.rotation.z = Math.atan(3/4);
+          base.add(side);
+          side.position.x += 4;
+          side.position.y += 3;
 
-            base.position.x = -20;
-            base.position.y = 5;
-            
-            base.mass = 300;
+          base.add(ramp);
+          ramp.position.y = 3;
+          ramp.rotation.z = Math.atan(3/4);
 
-            scene.add(base);
-            side.name = "parent";
-            ramp.name = "parent";
-            rampModel.name = "parent";
-            base.name = "player:slide";
+          base.position.x = -20;
+          base.position.y = 5;
+          
+          base.mass = 300;
+          base.userData = new Player(base, .6);
 
-            base.add( rampModel );
-            rampModel.position.y = 3;
-            rampModel.rotation.x = 0.5*Math.PI;
-            rampModel.scale.set(10.5,12.5,10.5);
+          scene.add(base);
+          side.name = "parent";
+          ramp.name = "parent";
+          rampModel.name = "parent";
+          base.name = "player:slide";
 
-
-            rampModel.traverse( function( child ) { 
-
-                if ( child.isMesh ) {
-
-                    child.castShadow = true;
-                    child.receiveShadow = true;
-                    return;
-                }
-
-            } );
+          base.add( rampModel );
+          rampModel.position.y = 3;
+          rampModel.rotation.x = 0.5*Math.PI;
+          rampModel.scale.set(10.5,12.5,10.5);
 
 
+          rampModel.traverse( function( child ) { 
+
+            if ( child.isMesh ) {
+
+              child.castShadow = true;
+              child.receiveShadow = true;
+              return;
+            }
+
+          } );
+  
+  
         }
     );
-
-
+  
+  
     GLTF_loader.load(//goal
         // resource URL
         '../../Models/Static_Models/Goal.glb',
         // called when the resource is loaded
         function ( gltf ) {
-
             let goal = gltf.scene;
-
             scene.add(goal);
-
             goal.position.x = 100;
             goal.position.y = 10;
             goal.rotation.y = .5*Math.PI;
             goal.scale.set(10,10,10);
 
-        }
-    );
+    });
     return scene;
   }
 }
