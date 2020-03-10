@@ -87,7 +87,6 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        console.log("here");
         let shapes = font.generateShapes("(Prop Hop}", 15);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -252,7 +251,6 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        //console.log("here");
         let shapes = font.generateShapes("<LEVEL SELECT>", 15);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -887,7 +885,7 @@ class Levels {
           cylinder.add( log );
           log.rotation.x = -0.5*Math.PI;
           log.scale.set(3,3,3);
-          cylinder.userData = new Player(cylinder, 3.5);
+          cylinder.userData = new RollPlayer(cylinder, 3.5);
           scene.add( cylinder );
           log.traverse( function( child ) { 
 

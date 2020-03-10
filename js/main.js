@@ -254,7 +254,7 @@ function updateCamAndRaycaster(){
 	}
     jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
     
-    console.log("Raycaster Length: " + jumpCaster.far)
+    //console.log("Raycaster Length: " + jumpCaster.far)
 
     camera.lookAt(scene.getObjectById(player).position);
 }
