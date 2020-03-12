@@ -28,7 +28,7 @@ class Player {
 			else if(cv.z < 50){
 				velocity.z += 100*m;
 			}
-		}
+        }
 		if(moveLeft){
 			if(cv.x > 0){
 				velocity.x -= 1000*m;
@@ -44,7 +44,19 @@ class Player {
 			else if(cv.x < 50){
 				velocity.x += 100*m;
 			}
-		}
+        }
+        if(!moveIn && !moveOut){
+            
+            velocity.z = -cv.z*30*m;
+            
+            //console.log(this.player.getLinearVelocity());
+        }
+        if(!moveLeft && !moveRight){
+            
+            velocity.x = -cv.x*30*m;
+            
+            
+        }
 		if(jump){
 			let intersects = jumpCaster.intersectObjects( scene.children, true);
 			//console.log("intersects: " + intersects.length);
