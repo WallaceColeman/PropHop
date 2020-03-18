@@ -9,6 +9,7 @@ let amount_loaded = 0.0;
 let requested_level = 0;
 let go_to_load = false;
 let on_main_menu = true;
+let current_level = -2; // start at tutorial
 
 let enable_controls = false;
 
@@ -156,7 +157,7 @@ function onMouseDown(e){
 		if (intersects[0].object.name == "start"){
 			console.log("Clicked Start");
 			on_main_menu = false;
-			requested_level = 1;
+			requested_level = levels.last_level;
 			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
@@ -261,6 +262,7 @@ function updateCamAndRaycaster(){
 
 function renderScene(){
 	if(go_to_load){
+		console.log("Go to load: " + requested_level);
 		enable_controls = false;
 		scene = levels.get_level(requested_level);
 		if(requested_level == 0){

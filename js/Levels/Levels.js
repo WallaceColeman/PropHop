@@ -4,6 +4,8 @@ class Levels {
     this.LoadingManager = LM;
     this.render = R;
     this.current_level = 0;
+    this.last_level = -2;
+    this.max_level = 0;
     this.scene = new Physijs.Scene;
   }
   
@@ -13,8 +15,15 @@ class Levels {
   
   get_level(num){
     switch (parseInt(num)) {
+      case -2:
+        this.current_level = -2;
+        this.last_level = -2;
+        console.log("HERERERE")
+        return this.get_tutorial_scene();
+        break;
       case -1:
         this.current_level = -1;
+        this.last_level = -1;
         return this.get_level_demo_scene();
         break;
       case 0:
@@ -22,12 +31,45 @@ class Levels {
         return this.get_main_menu();
         break;
       case 1:
-        this.current_level = 0;
+        this.current_level = 1;
+        this.last_level = 1;
         return this.get_level_1_scene();
         break;
       case 2:
         this.current_level = 2;
+        this.last_level = 2;
         return this.get_level_2_scene();
+        break;
+      // case 3:
+      //   day = "Wednesday";
+      //   break;
+      // case 4:
+      //   day = "Thursday";
+      //   break;
+      // case 5:
+      //   day = "Friday";
+      //   break;
+      // case 6:
+      //   day = "Saturday";
+    }
+  }
+
+  level_controls(keyCode, rayCaster){
+    switch (this.current_level) {
+      case -2:
+        tutorial_controls(keyCode, rayCaster);
+        break;
+      case -1:
+        
+        break;
+      case 0:
+        
+        break;
+      case 1:
+        
+        break;
+      case 2:
+
         break;
       // case 3:
       //   day = "Wednesday";
@@ -57,6 +99,9 @@ class Levels {
       case 2://level 2 
         return 2;
         break;
+      default:
+        return 1;
+        break;
     }
   }
     
@@ -68,7 +113,6 @@ class Levels {
     let loader = new THREE.TextureLoader(this.LoadingManager);
     let fontLoader = new THREE.FontLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
-
 
     //light
     scene.add(new THREE.AmbientLight( 0x404040 ));
@@ -83,7 +127,6 @@ class Levels {
     fontLoader.load(
       // resource URL
       '../../Models/Font/Barcade_Regular_R.json',
-    
       // onLoad callback
       function ( font ) {
         // do something with the font
@@ -98,13 +141,8 @@ class Levels {
         });
 
         let text = new Physijs.BoxMesh(geometry,material);
-        
-
         text.position.y = 40
         scene.add( text );
-        
-        
-        
       },
     
       // onProgress callback
@@ -156,10 +194,7 @@ class Levels {
     
         scene.add( plane );
 
-        plane.add( text );
-        
-        
-        
+        plane.add( text ); 
       },
     
       // onProgress callback
@@ -211,10 +246,7 @@ class Levels {
 
         scene.add( plane );
 
-        plane.add( text );
-        
-        
-        
+        plane.add( text ); 
       },
 
       // onProgress callback
@@ -405,6 +437,81 @@ class Levels {
     return scene;
   }
   
+  get_tutorial_scene(){
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    let fontLoader = new THREE.FontLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+
+    let light = new THREE.PointLight( 0x404040, 5, 1000 );
+    light.position.set( -100, 100, 100 );
+    light.castShadow = true;
+    scene.add( light );
+
+    //Cube
+    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.4,
+        0.5
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 10;
+    cube.position.x = 0;
+    
+    cube.name = "player:slide:start";
+    cube.userData = new Player(cube,  3.5);
+
+    cube.mass = 0;
+    scene.add(cube);
+
+    //To Zoom in and out use the scroll wheel on your mouse
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("To Zoom in and out use the scroll wheel on your mouse", 15);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = 40
+        scene.add( text );
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    return scene;
+  }
+
+  tutorial_controls(keyCode, rayCaster){
+    
+  }
+
   get_level_1_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
