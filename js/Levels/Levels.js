@@ -54,21 +54,21 @@ class Levels {
     }
   }
 
-  level_controls(keyCode){
+  level_controls(keyCode){//!W! this method will find the correct 
     switch (this.current_level) {
       case -2:
-        tutorial_controls(keyCode);
+        return tutorial_controls(keyCode); //be sure to return the cotroll method call !W!
         break;
-      case -1:
+      case -1: //!W! put demo win conditions here
         
         break;
-      case 0:
+      case 0: //!W! menu here, but they are already in main.js so I'll handle moveing them, or we'll leave them there
         
         break;
-      case 1:
+      case 1: //level 1
         
         break;
-      case 2:
+      case 2: // you get the point
 
         break;
       // case 3:
@@ -85,7 +85,7 @@ class Levels {
     }
   }
   
-  level_click_controls(rayCaster){
+  level_click_controls(rayCaster){// !W! same as level controls but you clicking
     switch (this.current_level) {
       case -2:
         tutorial_click_controls(keyCode);
@@ -116,7 +116,7 @@ class Levels {
     }
   }
 
-  get_level_size(){//this will be the last thing we finish
+  get_level_size(){//this will be the last thing we finish so ignore it for now !W!
     switch(this.current_level){
       case -1://demo
         return 15;
@@ -541,11 +541,17 @@ class Levels {
 
   tutorial_click_controls(rayCaster){
     let intersects = rayCaster.intersectObjects( scene.children, true );
-
+    //!W! put any special clickable controls here this may or may not pan out, as we may not have special clickables
   }
 
-  tutorial_controls(keyCode){
-    
+  tutorial_controls(keyCode, player){ //!W! all the comments for this method are important
+    if(player.position.x == 1000 && player.position.y == 1000 && player.position.z == 0){//"win" condition !W!
+      return true;//player finished level
+    }
+    //any special controls for the level go here !W!
+    //like if we implemented flip gravity
+    //NOT SPECIAL CONTROLLS FOR AN OBJECT! !W! !W!
+    return false;//player hasn't finished
   }
 
   get_level_1_scene(){
