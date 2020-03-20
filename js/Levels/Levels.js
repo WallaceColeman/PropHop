@@ -54,10 +54,41 @@ class Levels {
     }
   }
 
-  level_controls(keyCode, rayCaster){
+  level_controls(keyCode){
     switch (this.current_level) {
       case -2:
-        tutorial_controls(keyCode, rayCaster);
+        tutorial_controls(keyCode);
+        break;
+      case -1:
+        
+        break;
+      case 0:
+        
+        break;
+      case 1:
+        
+        break;
+      case 2:
+
+        break;
+      // case 3:
+      //   day = "Wednesday";
+      //   break;
+      // case 4:
+      //   day = "Thursday";
+      //   break;
+      // case 5:
+      //   day = "Friday";
+      //   break;
+      // case 6:
+      //   day = "Saturday";
+    }
+  }
+  
+  level_click_controls(rayCaster){
+    switch (this.current_level) {
+      case -2:
+        tutorial_click_controls(keyCode);
         break;
       case -1:
         
@@ -85,7 +116,7 @@ class Levels {
     }
   }
 
-  get_level_size(){
+  get_level_size(){//this will be the last thing we finish
     switch(this.current_level){
       case -1://demo
         return 15;
@@ -508,7 +539,12 @@ class Levels {
     return scene;
   }
 
-  tutorial_controls(keyCode, rayCaster){
+  tutorial_click_controls(rayCaster){
+    let intersects = rayCaster.intersectObjects( scene.children, true );
+
+  }
+
+  tutorial_controls(keyCode){
     
   }
 
@@ -599,6 +635,10 @@ class Levels {
     scene.add(cube);
 
     return scene;
+  }
+
+  level_1_click_controls(rayCaster){
+
   }
 
   get_level_2_scene(){
