@@ -5,7 +5,7 @@ class Levels {
     this.render = R;
     this.current_level = 0;
     this.last_level = -2;
-    this.max_level = 0;
+    this.max_level = -2;
     this.scene = new Physijs.Scene;
   }
   
@@ -54,10 +54,10 @@ class Levels {
     }
   }
 
-  level_controls(keyCode, player){//!W! this method will find the correct 
+  level_controls(player){//!W! this method will find the correct 
     switch (this.current_level) {
       case -2:
-        return this.level_1_click_controls(rayCaster, player) //be sure to return the cotrol method call !W!
+        return this.tutorial_controls(player) //be sure to return the cotrol method call !W!
         break;
       case -1: //!W! put demo win conditions here
         
@@ -579,8 +579,10 @@ class Levels {
     //!W! put any special clickable controls here this may or may not pan out, as we may not have special clickables
   }
 
-  tutorial_controls(keyCode, player){ //!W! all the comments for this method are important
+  tutorial_controls(player){ //!W! all the comments for this method are important
     if(player.position.x == 1000 && player.position.y == 1000 && player.position.z == 0){//"win" condition !W!
+      this.last_level = -2;
+      this.max_level = 1;
       return true;//player finished level
     }
     //any special controls for the level go here !W!

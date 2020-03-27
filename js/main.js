@@ -11,6 +11,8 @@ let go_to_load = false;
 let on_main_menu = true;
 let current_level = -2; // start at tutorial
 
+let levelDone = false;
+
 let enable_controls = false;
 
 let renderer = new THREE.WebGLRenderer({performance, antialias: true });
@@ -157,7 +159,7 @@ function onMouseDown(e){
 		if (intersects[0].object.name == "start"){
 			console.log("Clicked Start");
 			on_main_menu = false;
-			requested_level = levels.last_level;
+			requested_level = levels.max_level;
 			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
@@ -274,6 +276,11 @@ function renderScene(){
 	else{
 		scene.simulate();
 		requestAnimationFrame(renderScene);
+		let levelDone = levels.level_controls(scene.getObjectById(player));
+		if(levelDone){
+			requested_level = 0;
+			go_to_load = true;
+		}
 		controls();
 		updateCamAndRaycaster();
 		renderer.render(scene, camera);
