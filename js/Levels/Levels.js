@@ -54,10 +54,10 @@ class Levels {
     }
   }
 
-  level_controls(keyCode){//!W! this method will find the correct 
+  level_controls(keyCode, player){//!W! this method will find the correct 
     switch (this.current_level) {
       case -2:
-        return tutorial_controls(keyCode); //be sure to return the cotroll method call !W!
+        return this.level_1_click_controls(rayCaster, player) //be sure to return the cotrol method call !W!
         break;
       case -1: //!W! put demo win conditions here
         
@@ -85,10 +85,11 @@ class Levels {
     }
   }
   
-  level_click_controls(rayCaster){// !W! same as level controls but you clicking
+  level_click_controls(rayCaster, player){// !W! same as level controls but you clicking
     switch (this.current_level) {
       case -2:
-        tutorial_click_controls(keyCode);
+        //tutorial_click_controls(keyCode);
+        this.tutorial_click_controls(rayCaster, player);
         break;
       case -1:
         
@@ -510,7 +511,7 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        let shapes = font.generateShapes("To Zoom in and out use the scroll wheel on your mouse", 15);
+        let shapes = font.generateShapes("[Zoom with the scroll wheel]", 10);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
         let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
@@ -521,8 +522,34 @@ class Levels {
         });
 
         let text = new Physijs.BoxMesh(geometry,material);
-        text.position.y = 40
+        text.position.y = 20;
+        //text.lookAt(new THREE.Vector3(0,25,100));
         scene.add( text );
+
+
+        //Next button
+        shapes = font.generateShapes("[Next>", 5);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+
+        text = new Physijs.BoxMesh(geometry,material);
+
+        let planeGeometry = new THREE.PlaneGeometry(22,8,1,1);
+        let planeMaterial = new THREE.MeshBasicMaterial({ color:'rgb(100,100,100)', transparent:true, opacity:0.5 });
+    
+        let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+        
+        plane.position.x = 175;
+        plane.name = "Next";
+        text.name = "Next";
+        text.position.y = -2;
+    
+        plane.add( text );
+
+        scene.add( plane );
+
       },
     
       // onProgress callback
@@ -539,8 +566,16 @@ class Levels {
     return scene;
   }
 
-  tutorial_click_controls(rayCaster){
+  tutorial_click_controls(rayCaster, player){
     let intersects = rayCaster.intersectObjects( scene.children, true );
+
+    if (intersects[0].object.name == "Next"){
+			console.log("Clicked Next");
+			player.__dirtyPosition = true;
+      player.position.x = 1000;
+      player.position.y = 1000;
+			
+		}
     //!W! put any special clickable controls here this may or may not pan out, as we may not have special clickables
   }
 
@@ -643,7 +678,7 @@ class Levels {
     return scene;
   }
 
-  level_1_click_controls(rayCaster){
+  level_1_click_controls(rayCaster, player){
 
   }
 

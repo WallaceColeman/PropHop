@@ -149,7 +149,7 @@ function onMouseDown(e){
 	
 	raycaster.setFromCamera( mouse, camera );
 	
-	levels.level_click_controls(raycaster);//this lets us have level specific clickables
+	levels.level_click_controls(raycaster, scene.getObjectById(player));//this lets us have level specific clickables
 	
 	let intersects = raycaster.intersectObjects( scene.children, true );
 
