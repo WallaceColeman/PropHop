@@ -4,6 +4,8 @@ class Levels {
     this.LoadingManager = LM;
     this.render = R;
     this.current_level = 0;
+    this.last_level = -2;
+    this.max_level = 0;
     this.scene = new Physijs.Scene;
   }
   
@@ -13,8 +15,15 @@ class Levels {
   
   get_level(num){
     switch (parseInt(num)) {
+      case -2:
+        this.current_level = -2;
+        this.last_level = -2;
+        console.log("HERERERE")
+        return this.get_tutorial_scene();
+        break;
       case -1:
         this.current_level = -1;
+        this.last_level = -1;
         return this.get_level_demo_scene();
         break;
       case 0:
@@ -22,11 +31,13 @@ class Levels {
         return this.get_main_menu();
         break;
       case 1:
-        this.current_level = 0;
+        this.current_level = 1;
+        this.last_level = 1;
         return this.get_level_1_scene();
         break;
       case 2:
         this.current_level = 2;
+        this.last_level = 2;
         return this.get_level_2_scene();
         break;
       // case 3:
@@ -43,7 +54,69 @@ class Levels {
     }
   }
 
-  get_level_size(){
+  level_controls(keyCode){//!W! this method will find the correct 
+    switch (this.current_level) {
+      case -2:
+        return tutorial_controls(keyCode); //be sure to return the cotroll method call !W!
+        break;
+      case -1: //!W! put demo win conditions here
+        
+        break;
+      case 0: //!W! menu here, but they are already in main.js so I'll handle moveing them, or we'll leave them there
+        
+        break;
+      case 1: //level 1
+        
+        break;
+      case 2: // you get the point
+
+        break;
+      // case 3:
+      //   day = "Wednesday";
+      //   break;
+      // case 4:
+      //   day = "Thursday";
+      //   break;
+      // case 5:
+      //   day = "Friday";
+      //   break;
+      // case 6:
+      //   day = "Saturday";
+    }
+  }
+  
+  level_click_controls(rayCaster){// !W! same as level controls but you clicking
+    switch (this.current_level) {
+      case -2:
+        tutorial_click_controls(keyCode);
+        break;
+      case -1:
+        
+        break;
+      case 0:
+        
+        break;
+      case 1:
+        
+        break;
+      case 2:
+
+        break;
+      // case 3:
+      //   day = "Wednesday";
+      //   break;
+      // case 4:
+      //   day = "Thursday";
+      //   break;
+      // case 5:
+      //   day = "Friday";
+      //   break;
+      // case 6:
+      //   day = "Saturday";
+    }
+  }
+
+  get_level_size(){//this will be the last thing we finish so ignore it for now !W!
     switch(this.current_level){
       case -1://demo
         return 15;
@@ -57,6 +130,9 @@ class Levels {
       case 2://level 2 
         return 2;
         break;
+      default:
+        return 1;
+        break;
     }
   }
     
@@ -68,7 +144,6 @@ class Levels {
     let loader = new THREE.TextureLoader(this.LoadingManager);
     let fontLoader = new THREE.FontLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
-
 
     //light
     scene.add(new THREE.AmbientLight( 0x404040 ));
@@ -83,11 +158,9 @@ class Levels {
     fontLoader.load(
       // resource URL
       '../../Models/Font/Barcade_Regular_R.json',
-    
       // onLoad callback
       function ( font ) {
         // do something with the font
-        console.log("here");
         let shapes = font.generateShapes("(Prop Hop}", 15);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -99,13 +172,8 @@ class Levels {
         });
 
         let text = new Physijs.BoxMesh(geometry,material);
-        
-
         text.position.y = 40
         scene.add( text );
-        
-        
-        
       },
     
       // onProgress callback
@@ -157,10 +225,7 @@ class Levels {
     
         scene.add( plane );
 
-        plane.add( text );
-        
-        
-        
+        plane.add( text ); 
       },
     
       // onProgress callback
@@ -212,10 +277,7 @@ class Levels {
 
         scene.add( plane );
 
-        plane.add( text );
-        
-        
-        
+        plane.add( text ); 
       },
 
       // onProgress callback
@@ -241,22 +303,6 @@ class Levels {
     let planeMaterial = new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/PropHopSkin.jpg' )});
 
     let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    
-    //plane.rotation.x = .5*Math.PI;
-    //plane.position.y = 40;
-
-    //scene.add( plane );
-    
-
-    // //controlls
-    // planeGeometry = new THREE.PlaneGeometry(50,15,1,1);
-    // planeMaterial = new THREE.MeshBasicMaterial({color: 0x241BB6});
-
-    // plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
-    
-    // plane.position.y = -30;
-
-    // scene.add( plane );
 
     // //Level Select Screen****************************************************
     
@@ -268,7 +314,6 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        //console.log("here");
         let shapes = font.generateShapes("<LEVEL SELECT>", 15);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -423,6 +468,92 @@ class Levels {
     return scene;
   }
   
+  get_tutorial_scene(){
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    let fontLoader = new THREE.FontLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+
+    let light = new THREE.PointLight( 0x404040, 5, 1000 );
+    light.position.set( -100, 100, 100 );
+    light.castShadow = true;
+    scene.add( light );
+
+    //Cube
+    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.4,
+        0.5
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 10;
+    cube.position.x = 0;
+    
+    cube.name = "player:slide:start";
+    cube.userData = new Player(cube,  3.5);
+
+    cube.mass = 0;
+    scene.add(cube);
+
+    //To Zoom in and out use the scroll wheel on your mouse
+    fontLoader.load(
+      // resource URL
+      '../../Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("To Zoom in and out use the scroll wheel on your mouse", 15);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = 40
+        scene.add( text );
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    return scene;
+  }
+
+  tutorial_click_controls(rayCaster){
+    let intersects = rayCaster.intersectObjects( scene.children, true );
+    //!W! put any special clickable controls here this may or may not pan out, as we may not have special clickables
+  }
+
+  tutorial_controls(keyCode, player){ //!W! all the comments for this method are important
+    if(player.position.x == 1000 && player.position.y == 1000 && player.position.z == 0){//"win" condition !W!
+      return true;//player finished level
+    }
+    //any special controls for the level go here !W!
+    //like if we implemented flip gravity
+    //NOT SPECIAL CONTROLLS FOR AN OBJECT! !W! !W!
+    return false;//player hasn't finished
+  }
+
   get_level_1_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -510,6 +641,10 @@ class Levels {
     scene.add(cube);
 
     return scene;
+  }
+
+  level_1_click_controls(rayCaster){
+
   }
 
   get_level_2_scene(){
@@ -903,7 +1038,7 @@ class Levels {
           cylinder.add( log );
           log.rotation.x = -0.5*Math.PI;
           log.scale.set(3,3,3);
-          cylinder.userData = new Player(cylinder, 3.5);
+          cylinder.userData = new RollPlayer(cylinder, 3.5);
           scene.add( cylinder );
           log.traverse( function( child ) { 
 
@@ -987,5 +1122,9 @@ class Levels {
 
     });
     return scene;
+  }
+
+  get_level_3_scene(){
+    
   }
 }
