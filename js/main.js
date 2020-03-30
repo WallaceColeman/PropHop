@@ -9,6 +9,7 @@ let amount_loaded = 0.0;
 let requested_level = 0;
 let go_to_load = false;
 let on_main_menu = true;
+let current_level = -2; // start at tutorial
 
 let enable_controls = false;
 
@@ -145,18 +146,18 @@ let mouse = new THREE.Vector2();
 
 document.addEventListener('mousedown', onMouseDown, false);
 function onMouseDown(e){
-    //console.log("click");
-    //!!!!!!!!!!!!!RayCaster!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // update the picking ray with the camera and mouse position
+	
 	raycaster.setFromCamera( mouse, camera );
-
+	
+	levels.level_click_controls(raycaster);//this lets us have level specific clickables
+	
 	let intersects = raycaster.intersectObjects( scene.children, true );
 
 	if (on_main_menu){
 		if (intersects[0].object.name == "start"){
 			console.log("Clicked Start");
 			on_main_menu = false;
-			requested_level = 1;
+			requested_level = levels.last_level;
 			go_to_load = true;
 		}
 		else if (intersects[0].object.name == "level_select"){
@@ -191,26 +192,8 @@ function onMouseDown(e){
 			}
 			console.log(on_main_menu);
 		}
-		
-		// if (intersects[0].object.name == "level_1"){
-		// 	on_main_menu = false;
-		// }
-		// else if (intersects[0].object.name == "level_2"){
-		// 	on_main_menu = false;
-		// }
-		// else if (intersects[0].object.name == "level_3"){
-		// 	on_main_menu = false;
-		// }
-		// else if (intersects[0].object.name == "level_4"){
-		// 	on_main_menu = false;
-		// }
-		
-		
 	}
 	else if(intersects.length > 0){
-        // console.log("Was: " + player);
-        // console.log(intersects[0].object.name.split(":")[0]);
-        // console.log(intersects[0].object);
         if(intersects[0].object.name.split(":")[0] == "player"){
             scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
             scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
@@ -254,13 +237,14 @@ function updateCamAndRaycaster(){
 	}
     jumpCaster.set(scene.getObjectById(player).position, new THREE.Vector3(0,-1,0));
     
-    console.log("Raycaster Length: " + jumpCaster.far)
+    //console.log("Raycaster Length: " + jumpCaster.far)
 
     camera.lookAt(scene.getObjectById(player).position);
 }
 
 function renderScene(){
 	if(go_to_load){
+		console.log("Go to load: " + requested_level);
 		enable_controls = false;
 		scene = levels.get_level(requested_level);
 		if(requested_level == 0){
