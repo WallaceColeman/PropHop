@@ -688,8 +688,8 @@ class Levels {
     scene.add(cube);
 
     let geometry = new THREE.CubeGeometry(11.5,10,1);
-    let material = new THREE.MeshLambertMaterial( {color: "rgb(255,255,255)"} ); // this is if we want the wall to blend completely
-    //let material = new THREE.MeshLambertMaterial( {color: white1} ); // this hidden door is a different color
+    //let material = new THREE.MeshLambertMaterial( {color: "rgb(255,255,255)"} ); // this is if we want the wall to blend completely
+    let material = new THREE.MeshLambertMaterial( {color: white1} ); // this hidden door is a different color
     cube = new THREE.Mesh(geometry, material);
     cube.position.x = -142.7;
     cube.position.y = -95;
@@ -844,7 +844,7 @@ class Levels {
       lampshade.position.y += 25;
   
       lampbase.position.y = -30;
-      lampbase.position.x = 0;
+      lampbase.position.x = -140;
       lampbase.position.z = -10;
   
       lampbase.name = "player:slide";
@@ -868,6 +868,54 @@ class Levels {
   
       scene.add(lampbase);
 
+      let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+      GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
+        function ( gltf ) {
+          let deskModel = gltf.scene;
+          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
+          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
+          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,1,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
+
+          dbackside.position.z += 30;
+          dbackside.position.x += -145;
+          dbackside.position.y += -50;
+          dbackside.rotation.y = Math.tan(1);
+
+          //dbackside.rotation = 3.16;
+
+          dbackside.add(dtop);
+          dtop.position.x += 10;
+          dtop.position.y += 15;
+          dtop.position.z += 15;
+
+          dbackside.add(ddrawers);
+          ddrawers.position.x += 60;
+          ddrawers.position.y += -5;
+          ddrawers.position.z += 15;
+          ddrawers.mass = 600;
+
+          dbackside.add(dleg);
+          dleg.mass = 400;
+          dleg.position.x += -50;
+          dleg.position.y += -5;
+          dleg.position.z += 15;
+
+          dbackside.userData = new Player(dbackside, 1);
+          deskModel.scale.set(6,6,6);
+
+          dbackside.name = "player:slide";
+          dtop.name = "parent";
+          ddrawers.name = "parent";
+          dleg.name = "parent";
+         
+          dbackside.add( deskModel );
+          deskModel.position.y += -25;
+          deskModel.position.z += 12;
+          deskModel.position.x += 10;
+          scene.add(dbackside);
+        });
+      
     return scene;
   }
   
