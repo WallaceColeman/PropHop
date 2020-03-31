@@ -842,9 +842,9 @@ class Levels {
       lampbase.add(lampshade);
       lampshade.castShadow = true;
       lampshade.position.y += 25;
-  
-      lampbase.position.y = -30;
+
       lampbase.position.x = -140;
+      lampbase.position.y = -55;
       lampbase.position.z = -10;
   
       lampbase.name = "player:slide";
@@ -872,34 +872,36 @@ class Levels {
       GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
         function ( gltf ) {
           let deskModel = gltf.scene;
-          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
-          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
-          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,1,33),new THREE.MeshLambertMaterial({ transparent: false, wireframe: true, opacity: 0.9 }));
+          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
+          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
+          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
 
-          dbackside.position.z += 30;
           dbackside.position.x += -145;
-          dbackside.position.y += -50;
+          dbackside.position.y += -73;
+          dbackside.position.z += 30;
           dbackside.rotation.y = Math.tan(1);
-
-          //dbackside.rotation = 3.16;
+          dbackside.castShadow = true;
 
           dbackside.add(dtop);
           dtop.position.x += 10;
           dtop.position.y += 15;
           dtop.position.z += 15;
+          dtop.castShadow = true;
 
           dbackside.add(ddrawers);
           ddrawers.position.x += 60;
           ddrawers.position.y += -5;
           ddrawers.position.z += 15;
           ddrawers.mass = 600;
+          ddrawers.castShadow = true;
 
           dbackside.add(dleg);
           dleg.mass = 400;
           dleg.position.x += -50;
           dleg.position.y += -5;
           dleg.position.z += 15;
+          dleg.castShadow = true;
 
           dbackside.userData = new Player(dbackside, 1);
           deskModel.scale.set(6,6,6);
