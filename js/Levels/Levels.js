@@ -917,6 +917,24 @@ class Levels {
           deskModel.position.x += 10;
           scene.add(dbackside);
         });
+
+
+        //GLTF_loader = new THREE.GLTFLoader(loadingManager);
+          GLTF_loader.load('../../Models/Player_Models/Level1/Desk_Chair.glb',
+          function ( gltf ) {
+          let deskchairModel = gltf.scene;
+          let dcwheels = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,5),new THREE.MeshLambertMaterial({wireframe = true, opacity: 0.9 })); // yes I know they are cubes
+          let dcbase1 = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,20),new THREE.MeshLambertMaterial({wireframe = true, opacity: 0.9 }));
+          let dcbase2 = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,20),new THREE.MeshLambertMaterial({wireframe = true, opacity: 0.9 }));
+          let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,6,10),new THREE.MeshLambertMaterial({wireframe = true, opacity: 0.9}));
+
+          dcbase.userData = new Player(dcbase, 1);
+          deskchairModel.scale.set(6,6,6);
+          dcbase.name = "player:slide";
+
+          dcbase.add(deskchairModel);
+          scene.add(dcbase);
+        });
       
     return scene;
   }
