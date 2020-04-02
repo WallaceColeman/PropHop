@@ -959,20 +959,41 @@ class Levels {
         function ( gltf ) {
           let deskchairModel = gltf.scene;
 
-          let dcwheels = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,5),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 })); // yes I know they are cubes
-          let dcbase1 = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,20),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 }));
-          let dcbase2 = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,20),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 }));
-          let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(3,3,6,10),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9}));
+          //let dcwheels = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,5),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 })); // yes I know they are cubes
+          // are the wheels really necessary?
+          let dcbase1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,3,28.5),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbase2 = new Physijs.BoxMesh(new THREE.BoxGeometry(28.5,3,2.5),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbutt = new Physijs.CylinderMesh(new THREE.CylinderGeometry(16,16,5,25),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(2,2,18,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcback = new Physijs.ConvexMesh(new THREE.CylinderGeometry(22,16,45,10,4,4, true, 60,60),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          //wireframe: true, 
 
-          dcbase.position.x += 0;
-          dcbase.position.y += -20;
+          dcbutt.userData = new Player(dcbutt, 0.1);
+          dcbutt.position.y += -25;
 
-          dcbase.userData = new Player(dcbase, 1);
           deskchairModel.scale.set(6,6,6);
-          dcbase.name = "player:slide";
+          deskchairModel.position.y += 15;
+          deskchairModel.position.z += -5;
 
-          dcbase.add(deskchairModel);
-          scene.add(dcbase);
+          dcbutt.add(dcbase);
+          dcbase.position.y += -10;
+
+          dcbutt.add(dcbase1);
+          dcbase1.position.y += -17.5;
+          dcbutt.add(dcbase2);
+          dcbase2.position.y += -17.5;
+
+          dcbutt.add(dcback);
+          dcback.position.y += 25;
+          dcback.rotation.y += -0.8*Math.PI;
+
+          dcbutt.add(deskchairModel);
+          dcbutt.name = "player:slide";
+          dcbase.name = "parent";
+          dcbase1.name = "parent";
+          dcbase2.name = "parent";
+          dcback.name = "parent";
+          scene.add(dcbutt);
         });
       
     return scene;
