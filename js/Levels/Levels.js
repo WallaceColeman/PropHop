@@ -777,8 +777,8 @@ class Levels {
     scene.add(cube);
 
     let geometry = new THREE.CubeGeometry(11.5,10,1);
-    let material = new THREE.MeshLambertMaterial( {color: "rgb(255,255,255)"} ); // this is if we want the wall to blend completely
-    //let material = new THREE.MeshLambertMaterial( {color: white1} ); // this hidden door is a different color
+    //let material = new THREE.MeshLambertMaterial( {color: "rgb(255,255,255)"} ); // this is if we want the wall to blend completely
+    let material = new THREE.MeshLambertMaterial( {color: white1} ); // this hidden door is a different color
     cube = new THREE.Mesh(geometry, material);
     cube.position.x = -142.7;
     cube.position.y = -95;
@@ -931,9 +931,9 @@ class Levels {
       lampbase.add(lampshade);
       //lampshade.castShadow = true;//commented out to try to get a better working lamp
       lampshade.position.y += 25;
-  
-      lampbase.position.y = -30;
-      lampbase.position.x = 0;
+
+      lampbase.position.x = -140;
+      lampbase.position.y = -55;
       lampbase.position.z = -10;
   
       lampbase.name = "player:slide";
@@ -959,6 +959,97 @@ class Levels {
   
       scene.add(lampbase);
 
+      let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+      GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
+        function ( gltf ) {
+          let deskModel = gltf.scene;
+          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
+          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
+          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+
+          dbackside.position.x += -145;
+          dbackside.position.y += -73;
+          dbackside.position.z += 30;
+          dbackside.rotation.y = Math.tan(1);
+          dbackside.castShadow = true;
+
+          dbackside.add(dtop);
+          dtop.position.x += 10;
+          dtop.position.y += 15;
+          dtop.position.z += 15;
+          dtop.castShadow = true;
+
+          dbackside.add(ddrawers);
+          ddrawers.position.x += 60;
+          ddrawers.position.y += -5;
+          ddrawers.position.z += 15;
+          ddrawers.mass = 600;
+          ddrawers.castShadow = true;
+
+          dbackside.add(dleg);
+          dleg.mass = 400;
+          dleg.position.x += -50;
+          dleg.position.y += -5;
+          dleg.position.z += 15;
+          dleg.castShadow = true;
+
+          dbackside.userData = new Player(dbackside, 1);
+          deskModel.scale.set(6,6,6);
+
+          dbackside.name = "player:slide";
+          dtop.name = "parent";
+          ddrawers.name = "parent";
+          dleg.name = "parent";
+         
+          dbackside.add( deskModel );
+          deskModel.position.y += -25;
+          deskModel.position.z += 12;
+          deskModel.position.x += 10;
+          scene.add(dbackside);
+        });
+
+        GLTF_loader.load('../../Models/Player_Models/Level1/Desk_Chair.glb',
+        function ( gltf ) {
+          let deskchairModel = gltf.scene;
+
+          //let dcwheels = new Physijs.BoxMesh(new THREE.BoxGeometry(5,5,5),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 })); // yes I know they are cubes
+          // are the wheels really necessary?
+          let dcbase1 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,3,28.5),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbase2 = new Physijs.BoxMesh(new THREE.BoxGeometry(28.5,3,2.5),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbutt = new Physijs.CylinderMesh(new THREE.CylinderGeometry(16,16,5,25),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(2,2,18,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let dcback = new Physijs.ConvexMesh(new THREE.CylinderGeometry(22,16,45,10,4,4, true, 60,60),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          //wireframe: true, 
+
+          dcbutt.userData = new Player(dcbutt, 0.1);
+          dcbutt.position.y += -25;
+
+          deskchairModel.scale.set(6,6,6);
+          deskchairModel.position.y += 15;
+          deskchairModel.position.z += -5;
+
+          dcbutt.add(dcbase);
+          dcbase.position.y += -10;
+
+          dcbutt.add(dcbase1);
+          dcbase1.position.y += -17.5;
+          dcbutt.add(dcbase2);
+          dcbase2.position.y += -17.5;
+
+          dcbutt.add(dcback);
+          dcback.position.y += 25;
+          dcback.rotation.y += -0.8*Math.PI;
+
+          dcbutt.add(deskchairModel);
+          dcbutt.name = "player:slide";
+          dcbase.name = "parent";
+          dcbase1.name = "parent";
+          dcbase2.name = "parent";
+          dcback.name = "parent";
+          scene.add(dcbutt);
+        });
+      
     return scene;
   }
   
