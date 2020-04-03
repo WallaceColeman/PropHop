@@ -631,6 +631,9 @@ class Levels {
       player.position.x = 1000;
       player.position.y = 1000;
       player.position.z == 0;
+      this.last_level = -2;
+      this.max_level = 1;
+      return true;
     }
     if(player.position.x == 1000 && player.position.y == 1000 && player.position.z == 0){//"win" condition !W!
       this.last_level = -2;
