@@ -695,14 +695,14 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    scene.add(light);
+    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    // scene.add(light);
 
-    let spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-50,75,-10);
-    spotLight.lookAt(0,0,0);
-    spotLight.castShadow = true;
-    scene.add(spotLight); 
+    // let spotLight = new THREE.SpotLight(0xffffff);
+    // spotLight.position.set(-50,75,-10);
+    // spotLight.lookAt(0,0,0);
+    // spotLight.castShadow = true;
+    // scene.add(spotLight); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
@@ -868,7 +868,7 @@ class Levels {
       let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
       //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
       //opacity: 0.5, reflectivity:1
-      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036'}));
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}));
       lampshade.side = THREE.BackSide;
   
       lampbase.add(lamppole);
@@ -877,7 +877,7 @@ class Levels {
       lamppole.position.y += 14;
   
       lampbase.add(lampshade);
-      lampshade.castShadow = true;
+      //lampshade.castShadow = true;//commented out to try to get a better working lamp
       lampshade.position.y += 25;
   
       lampbase.position.y = -30;
@@ -891,17 +891,19 @@ class Levels {
                 
       lampbase.position.y += 1;
   
-      let pointLight1 = new THREE.PointLight(0x404040, 5, 25);
-      let pointLight2 = new THREE.PointLight(0x404040, 5, 25);
+      let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
+      //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
       pointLight1.castShadow = true;
-      pointLight2.castShadow = true;
+      //pointLight2.castShadow = true;//commented out to try to get a better working lamp
   
       lampshade.add(pointLight1);
-      lampshade.add(pointLight2);
-      pointLight1.position.x += 2;
+      //lampshade.add(pointLight2);//commented out to try to get a better working lamp
+      //pointLight1.position.x += 2;//commented out to try to get a better working lamp
       pointLight1.position.y += 7;
-      pointLight2.position.x += -2;
-      pointLight2.position.y += 7;
+      //pointLight2.position.x += -2;//commented out to try to get a better working lamp
+      //pointLight2.position.y += 7;//commented out to try to get a better working lamp
+
+      
   
       scene.add(lampbase);
 
