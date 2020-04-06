@@ -61,8 +61,6 @@ camera.position.y = 30;
 camera.position.z = 100;
 //camera.lookAt(scene.position);
 
-
-
 let jumpCaster = new THREE.Raycaster();
 jumpCaster.far = 3.5;
 jumpCaster.set(new THREE.Vector3(0,0,0), new THREE.Vector3(0,-1,0));
