@@ -7,6 +7,7 @@ class Levels {
     this.last_level = -2;
     this.max_level = -2;
     this.scene = new Physijs.Scene;
+    this.modelLoader = new GetPhysiModels(LM);
   }
   
   new_loading_manager(LM){
@@ -731,6 +732,10 @@ class Levels {
     cube.position.x = -75
     cube.mass = 0;
     scene.add(cube);
+    
+    // this.modelLoader.getPhysiModelByName("desk", scene, 0, 10, 0);
+    // //desk.position.y = 100;
+    // //scene.add(desk);
 
     return scene;
   }
@@ -1012,6 +1017,7 @@ class Levels {
           dleg.name = "parent";
          
           // Please dont modify this, it is the location of the model to the physijs shapes, not the object location
+          // you got it dude -Wallace
           dbackside.add( deskModel );
           deskModel.position.y += -25;
           deskModel.position.z += 12;
@@ -1091,6 +1097,7 @@ class Levels {
     return scene;
   }
   
+
   get_level_demo_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -1345,6 +1352,5 @@ class Levels {
   }
 
   get_level_3_scene(){
-    
   }
 }
