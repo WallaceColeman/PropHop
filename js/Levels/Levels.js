@@ -750,8 +750,8 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    scene.add(light);
+    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    // scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
     //  spotLight.position.set(-50,75,-10);
@@ -1026,13 +1026,14 @@ class Levels {
           let dcbutt = new Physijs.CylinderMesh(new THREE.CylinderGeometry(16,16,5,25),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(2,2,18,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcback = new Physijs.ConvexMesh(new THREE.CylinderGeometry(22,16,45,10,4,4, true, 60,60),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
-          let dcarmL = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //left arm
+          let dcarmL = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //left arm
           let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
-          let dcarmR = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
+          let dcarmR = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
           let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
-
           dcbutt.userData = new Player(dcbutt, 0.1);
           dcbutt.position.y += -70;
+          dcbutt.castShadow = true;
+          dcbutt.receiveShadow = true;
 
           deskchairModel.scale.set(6,6,6);
           deskchairModel.position.y += 15;
@@ -1040,6 +1041,8 @@ class Levels {
 
           dcbutt.add(dcbase);
           dcbase.position.y += -10;
+          dcbase.castShadow = true;
+          dcbase.receiveShadow = true;
 
           // bases have high mass so it wobbles less?
           dcbutt.add(dcbase1);
@@ -1048,14 +1051,20 @@ class Levels {
           dcbutt.add(dcbase2);
           dcbase2.position.y += -17.5;
           dcbase2.mass = 1500;
+          dcbase1.castShadow = true;
+          dcbase1.receiveShadow = true;
+          dcbase2.castShadow = true;
+          dcbase2.receiveShadow = true;
 
           dcbutt.add(dcback);
           dcback.position.y += 25;
           dcback.rotation.y += -0.8*Math.PI;
+          dcbutt.castShadow = true;
+          dcbutt.receiveShadow = true;
 
           // chair: left arm
           dcbutt.add(dcarmL);
-          dcarmL.position.x += 14;
+          dcarmL.position.x += 16;
           dcarmL.rotation.x += Math.PI/2;
           dcarmL.position.y += 7;
           dcarmL.rotation.z += -Math.PI/2;
@@ -1063,10 +1072,11 @@ class Levels {
           dcbutt.add(dcarmL2);
           dcarmL2.position.x += 15.5;
           dcarmL2.position.y += 13;
+          // shadows for arms will look jacked so I didn't add them
 
           // chair: right arm
           dcbutt.add(dcarmR);
-          dcarmR.position.x += -14;
+          dcarmR.position.x += -16;
           dcarmR.rotation.x += Math.PI/2;
           dcarmR.position.y += 7;
           dcarmR.rotation.z += Math.PI/2;
