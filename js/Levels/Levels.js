@@ -974,9 +974,9 @@ class Levels {
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({opacity: 0.9 }));
 
-          dbackside.position.x += -145;
+          dbackside.position.x += -138;
           dbackside.position.y += -73;
           dbackside.position.z += 30;
           dbackside.rotation.y = Math.tan(1);
@@ -993,11 +993,11 @@ class Levels {
           ddrawers.position.x += 60;
           ddrawers.position.y += -5;
           ddrawers.position.z += 15;
-          ddrawers.mass = 600;
+          ddrawers.mass = 6000;
           ddrawers.castShadow = true;
 
           dbackside.add(dleg);
-          dleg.mass = 400;
+          dleg.mass = 4000;
           dleg.position.x += -50;
           dleg.position.y += -5;
           dleg.position.z += 15;
@@ -1011,6 +1011,7 @@ class Levels {
           ddrawers.name = "parent";
           dleg.name = "parent";
          
+          // Please dont modify this, it is the location of the model to the physijs shapes, not the object location
           dbackside.add( deskModel );
           deskModel.position.y += -25;
           deskModel.position.z += 12;
@@ -1032,7 +1033,7 @@ class Levels {
           //wireframe: true, 
 
           dcbutt.userData = new Player(dcbutt, 0.1);
-          dcbutt.position.y += -25;
+          dcbutt.position.y += -70;
 
           deskchairModel.scale.set(6,6,6);
           deskchairModel.position.y += 15;
@@ -1041,10 +1042,13 @@ class Levels {
           dcbutt.add(dcbase);
           dcbase.position.y += -10;
 
+          // bases have high mass so it wobbles less?
           dcbutt.add(dcbase1);
           dcbase1.position.y += -17.5;
+          dcbase1.mass = 1500;
           dcbutt.add(dcbase2);
           dcbase2.position.y += -17.5;
+          dcbase2.mass = 1500;
 
           dcbutt.add(dcback);
           dcback.position.y += 25;
