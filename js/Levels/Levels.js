@@ -960,7 +960,11 @@ class Levels {
       //pointLight2.position.y += 7;//commented out to try to get a better working lamp
 
       
-  
+      lampbase.addEventListener("ready", function(){//this will keep the lamp from tipping over
+        
+        lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
+        
+      });
       scene.add(lampbase);
 
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);
@@ -970,7 +974,7 @@ class Levels {
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
 
           dbackside.position.x += -138;
           dbackside.position.y += -73;
@@ -980,8 +984,8 @@ class Levels {
 
           dbackside.add(dtop);
           dtop.position.x += 10;
-          dtop.position.y += 15;
-          dtop.position.z += 10;
+          dtop.position.y += 15.5;
+          dtop.position.z += 12;
           dtop.castShadow = true;
           dtop.receiveShadow = true;
 
