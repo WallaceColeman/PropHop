@@ -478,8 +478,16 @@ class Levels {
     let fontLoader = new THREE.FontLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
-    let light = new THREE.PointLight( 0x404040, 5, 1000 );
+    let lightA = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(lightA);
+
+    let light = new THREE.PointLight( 0x404040, 1, 1000 );
     light.position.set( -100, 100, 100 );
+    light.castShadow = true;
+    scene.add( light );
+
+    light = new THREE.PointLight( 0x404040, 1, 1000 );
+    light.position.set( -1000, -900, 0 );
     light.castShadow = true;
     scene.add( light );
 
@@ -550,6 +558,43 @@ class Levels {
 
         scene.add( plane );
 
+
+        //second stage of tutorial
+        //Floor
+        cubeGeometry = new THREE.CubeGeometry(250,250,150);
+        cubeMaterial = Physijs.createMaterial(
+            new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+            0.8,
+            0.2
+        );
+        cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+        cubeMaterial.map.repeat.set( 1, .5 );
+        cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+        cube.receiveShadow = true;
+        cube.castShadow = true;
+        cube.position.y = -1125;
+        cube.position.x = -1000;
+        cube.mass = 0;
+        scene.add(cube);
+        
+        //Backwall
+        cubeGeometry = new THREE.CubeGeometry(150,50,1);
+        cubeMaterial = Physijs.createMaterial(
+            new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
+            0.2,
+            0.2
+        );
+        cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+        cubeMaterial.map.repeat.set( 1, .5 );
+        cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+        cube.receiveShadow = true;
+        cube.castShadow = true;
+        cube.position.y = -975;
+        cube.position.x = -1000;
+        cube.position.z = -25
+        cube.mass = 0;
+        scene.add(cube);
+
       },
     
       // onProgress callback
@@ -572,14 +617,24 @@ class Levels {
     if (intersects[0].object.name == "Next"){
 			console.log("Clicked Next");
 			player.__dirtyPosition = true;
-      player.position.x = 1000;
-      player.position.y = 1000;
+      player.position.x = -1000;
+      player.position.y = -1000;
+      player.mass = 10;
 			
 		}
     //!W! put any special clickable controls here this may or may not pan out, as we may not have special clickables
   }
 
   tutorial_controls(player){ //!W! all the comments for this method are important
+    if(player.position.y < -1020){
+      player.mass = 0;
+      player.position.x = 1000;
+      player.position.y = 1000;
+      player.position.z == 0;
+      this.last_level = -2;
+      this.max_level = 1;
+      return true;
+    }
     if(player.position.x == 1000 && player.position.y == 1000 && player.position.z == 0){//"win" condition !W!
       this.last_level = -2;
       this.max_level = 1;
@@ -695,14 +750,14 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    scene.add(light);
+    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    // scene.add(light);
 
-    let spotLight = new THREE.SpotLight(0xffffff);
-    spotLight.position.set(-50,75,-10);
-    spotLight.lookAt(0,0,0);
-    spotLight.castShadow = true;
-    scene.add(spotLight); 
+    // let spotLight = new THREE.SpotLight(0xffffff);
+    // spotLight.position.set(-50,75,-10);
+    // spotLight.lookAt(0,0,0);
+    // spotLight.castShadow = true;
+    // scene.add(spotLight); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
@@ -868,7 +923,7 @@ class Levels {
       let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
       //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
       //opacity: 0.5, reflectivity:1
-      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036'}));
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}));
       lampshade.side = THREE.BackSide;
   
       lampbase.add(lamppole);
@@ -877,7 +932,7 @@ class Levels {
       lamppole.position.y += 14;
   
       lampbase.add(lampshade);
-      lampshade.castShadow = true;
+      //lampshade.castShadow = true;//commented out to try to get a better working lamp
       lampshade.position.y += 25;
 
       lampbase.position.x = -140;
@@ -891,17 +946,19 @@ class Levels {
                 
       lampbase.position.y += 1;
   
-      let pointLight1 = new THREE.PointLight(0x404040, 5, 25);
-      let pointLight2 = new THREE.PointLight(0x404040, 5, 25);
+      let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
+      //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
       pointLight1.castShadow = true;
-      pointLight2.castShadow = true;
+      //pointLight2.castShadow = true;//commented out to try to get a better working lamp
   
       lampshade.add(pointLight1);
-      lampshade.add(pointLight2);
-      pointLight1.position.x += 2;
+      //lampshade.add(pointLight2);//commented out to try to get a better working lamp
+      //pointLight1.position.x += 2;//commented out to try to get a better working lamp
       pointLight1.position.y += 7;
-      pointLight2.position.x += -2;
-      pointLight2.position.y += 7;
+      //pointLight2.position.x += -2;//commented out to try to get a better working lamp
+      //pointLight2.position.y += 7;//commented out to try to get a better working lamp
+
+      
   
       scene.add(lampbase);
 
