@@ -750,8 +750,8 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    //  let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    //  scene.add(light);
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
     //  spotLight.position.set(-50,75,-10);
