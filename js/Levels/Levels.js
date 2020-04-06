@@ -750,14 +750,17 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    // scene.add(light);
+     let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+     scene.add(light);
 
-    // let spotLight = new THREE.SpotLight(0xffffff);
-    // spotLight.position.set(-50,75,-10);
-    // spotLight.lookAt(0,0,0);
-    // spotLight.castShadow = true;
-    // scene.add(spotLight); 
+    // Wallace, I added spotlight back in for testing purposes. I may forget to comment it out again
+    // I just can't see when I'm editing shapes lol :D 
+    // had to disable lamp pointlight too.
+     let spotLight = new THREE.SpotLight(0xffffff);
+     spotLight.position.set(-50,75,-10);
+     spotLight.lookAt(0,0,0);
+     spotLight.castShadow = true;
+     scene.add(spotLight); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
@@ -951,7 +954,9 @@ class Levels {
       pointLight1.castShadow = true;
       //pointLight2.castShadow = true;//commented out to try to get a better working lamp
   
-      lampshade.add(pointLight1);
+      // PLEASE RENABLE THIS LINE: commented out for testing (Jenna)
+      //lampshade.add(pointLight1);
+
       //lampshade.add(pointLight2);//commented out to try to get a better working lamp
       //pointLight1.position.x += 2;//commented out to try to get a better working lamp
       pointLight1.position.y += 7;
@@ -969,7 +974,7 @@ class Levels {
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9 }));
 
           dbackside.position.x += -145;
           dbackside.position.y += -73;
@@ -980,8 +985,9 @@ class Levels {
           dbackside.add(dtop);
           dtop.position.x += 10;
           dtop.position.y += 15;
-          dtop.position.z += 15;
+          dtop.position.z += 10;
           dtop.castShadow = true;
+          dtop.receiveShadow = true;
 
           dbackside.add(ddrawers);
           ddrawers.position.x += 60;
