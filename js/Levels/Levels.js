@@ -750,14 +750,14 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    // scene.add(light);
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
 
-    // let spotLight = new THREE.SpotLight(0xffffff);
-    // spotLight.position.set(-50,75,-10);
-    // spotLight.lookAt(0,0,0);
-    // spotLight.castShadow = true;
-    // scene.add(spotLight); 
+    //  let spotLight = new THREE.SpotLight(0xffffff);
+    //  spotLight.position.set(-50,75,-10);
+    //  spotLight.lookAt(0,0,0);
+    //  spotLight.castShadow = true;
+    //  scene.add(spotLight); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
@@ -952,6 +952,7 @@ class Levels {
       //pointLight2.castShadow = true;//commented out to try to get a better working lamp
   
       lampshade.add(pointLight1);
+
       //lampshade.add(pointLight2);//commented out to try to get a better working lamp
       //pointLight1.position.x += 2;//commented out to try to get a better working lamp
       pointLight1.position.y += 7;
@@ -969,9 +970,9 @@ class Levels {
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({opacity: 0.9 }));
 
-          dbackside.position.x += -145;
+          dbackside.position.x += -138;
           dbackside.position.y += -73;
           dbackside.position.z += 30;
           dbackside.rotation.y = Math.tan(1);
@@ -980,18 +981,19 @@ class Levels {
           dbackside.add(dtop);
           dtop.position.x += 10;
           dtop.position.y += 15;
-          dtop.position.z += 15;
+          dtop.position.z += 10;
           dtop.castShadow = true;
+          dtop.receiveShadow = true;
 
           dbackside.add(ddrawers);
           ddrawers.position.x += 60;
           ddrawers.position.y += -5;
           ddrawers.position.z += 15;
-          ddrawers.mass = 600;
+          ddrawers.mass = 6000;
           ddrawers.castShadow = true;
 
           dbackside.add(dleg);
-          dleg.mass = 400;
+          dleg.mass = 4000;
           dleg.position.x += -50;
           dleg.position.y += -5;
           dleg.position.z += 15;
@@ -1005,6 +1007,7 @@ class Levels {
           ddrawers.name = "parent";
           dleg.name = "parent";
          
+          // Please dont modify this, it is the location of the model to the physijs shapes, not the object location
           dbackside.add( deskModel );
           deskModel.position.y += -25;
           deskModel.position.z += 12;
@@ -1023,10 +1026,13 @@ class Levels {
           let dcbutt = new Physijs.CylinderMesh(new THREE.CylinderGeometry(16,16,5,25),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(2,2,18,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcback = new Physijs.ConvexMesh(new THREE.CylinderGeometry(22,16,45,10,4,4, true, 60,60),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
-          //wireframe: true, 
+          let dcarmL = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //left arm
+          let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
+          let dcarmR = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
+          let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
 
           dcbutt.userData = new Player(dcbutt, 0.1);
-          dcbutt.position.y += -25;
+          dcbutt.position.y += -70;
 
           deskchairModel.scale.set(6,6,6);
           deskchairModel.position.y += 15;
@@ -1035,14 +1041,39 @@ class Levels {
           dcbutt.add(dcbase);
           dcbase.position.y += -10;
 
+          // bases have high mass so it wobbles less?
           dcbutt.add(dcbase1);
           dcbase1.position.y += -17.5;
+          dcbase1.mass = 1500;
           dcbutt.add(dcbase2);
           dcbase2.position.y += -17.5;
+          dcbase2.mass = 1500;
 
           dcbutt.add(dcback);
           dcback.position.y += 25;
           dcback.rotation.y += -0.8*Math.PI;
+
+          // chair: left arm
+          dcbutt.add(dcarmL);
+          dcarmL.position.x += 14;
+          dcarmL.rotation.x += Math.PI/2;
+          dcarmL.position.y += 7;
+          dcarmL.rotation.z += -Math.PI/2;
+          dcarmL.position.z += 7;
+          dcbutt.add(dcarmL2);
+          dcarmL2.position.x += 15.5;
+          dcarmL2.position.y += 13;
+
+          // chair: right arm
+          dcbutt.add(dcarmR);
+          dcarmR.position.x += -14;
+          dcarmR.rotation.x += Math.PI/2;
+          dcarmR.position.y += 7;
+          dcarmR.rotation.z += Math.PI/2;
+          dcarmR.position.z += 7;
+          dcbutt.add(dcarmR2);
+          dcarmR2.position.x += -15.5;
+          dcarmR2.position.y += 13;
 
           dcbutt.add(deskchairModel);
           dcbutt.name = "player:slide";
