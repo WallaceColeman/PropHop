@@ -939,7 +939,8 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    //let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    // testing purposes let light = new THREE.AmbientLight( 0x99999 ); // soft white light so entire room isn't super dark. Disable this for dark room!
     // scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
@@ -1160,10 +1161,10 @@ class Levels {
       GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
         function ( gltf ) {
           let deskModel = gltf.scene;
-          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
-          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
-          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
 
           dbackside.position.x += -138;
           dbackside.position.y += -73;
@@ -1288,6 +1289,37 @@ class Levels {
           scene.add(dcbutt);
         });
       
+        GLTF_loader.load('../../Models/Player_Models/Laptop.glb',
+        function ( gltf ) {
+          let laptopModel = gltf.scene;
+
+          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,18,28),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,20),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          // transparent: true, opacity: 0.0
+
+          keyboard.userData = new Player(keyboard, 0.1);
+          keyboard.position.x += -120;
+          keyboard.position.y += -10;
+          keyboard.rotation.y += Math.PI;
+          keyboard.position.z += 40;
+          keyboard.castShadow = true;
+
+          keyboard.add(laptopscreen);
+          laptopscreen.position.x += 10.5;
+          laptopscreen.position.y += 10;
+          laptopscreen.position.z += 0;
+          laptopscreen.castShadow = true;
+
+          laptopModel.scale.set(9,9,9);
+          laptopModel.position.x += 8;
+
+          keyboard.add(laptopModel);
+          keyboard.name = "player:slide";
+          laptopscreen.name = "parent";
+
+          scene.add(keyboard);
+        });
+
     return scene;
   }
   
