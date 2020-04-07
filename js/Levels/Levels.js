@@ -7,6 +7,7 @@ class Levels {
     this.last_level = -2;
     this.max_level = -2;
     this.scene = new Physijs.Scene;
+    this.modelLoader = new GetPhysiModels(LM);
   }
   
   new_loading_manager(LM){
@@ -565,7 +566,7 @@ class Levels {
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
             0.8,
-            0.2
+            1.0
         );
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 1, .5 );
@@ -578,7 +579,7 @@ class Levels {
         scene.add(cube);
         
         //Backwall
-        cubeGeometry = new THREE.CubeGeometry(150,50,1);
+        cubeGeometry = new THREE.CubeGeometry(185,50,1);
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
             0.2,
@@ -594,6 +595,89 @@ class Levels {
         cube.position.z = -25
         cube.mass = 0;
         scene.add(cube);
+
+        shapes = font.generateShapes("{Move with the wasd keys and the space bar}\n{change into other objects by clicking them}\n(try to move off the the platform>", 5);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+
+        text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = -965;
+        text.position.x = -1000;
+        text.position.z = -24.4;
+        //text.lookAt(new THREE.Vector3(0,25,100));
+        scene.add( text );
+
+        let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+      GLTF_loader.load(//Log
+        // resource URL
+        '../../Models/Player_Models/Log.glb',
+        // called when the resource is loaded
+        function ( gltf ) {
+
+          let log = gltf.scene;
+
+          let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
+          let material = Physijs.createMaterial(
+              new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
+              1.0,
+              0.5
+          );
+          let cylinder = new Physijs.CylinderMesh( geometry, material );
+
+          cylinder.rotation.x = -0.5*Math.PI;
+          cylinder.position.y = -975;
+          cylinder.position.x = -975;
+          
+          
+          //*******************************************************************
+          //Based on:  xprogram
+          //Published: 04/12/2016
+          //Location:  https://github.com/chandlerprall/Physijs/issues/268
+          //Accessed:  02/16/2020
+          cylinder.addEventListener("ready", function(){
+              cylinder.setAngularFactor(new THREE.Vector3(0, 0, 1));
+          });
+          //*******************************************************************
+
+          cylinder.name = "player:slide";
+
+          cylinder.add( log );
+          log.rotation.x = -0.5*Math.PI;
+          log.scale.set(3,3,3);
+          cylinder.userData = new RollPlayer(cylinder, 3.5);
+          scene.add( cylinder );
+          log.traverse( function( child ) { 
+              if ( child.isMesh ) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+              }
+          });
+        }
+      );
+
+      // tennis ball
+      let sphereGeometry = new THREE.SphereGeometry(3,36,36);
+      let sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
+        0.5,
+        1.0
+      );
+
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+
+      sphere.position.y = -975;
+      sphere.position.x = -980;
+      sphere.position.z = 0;
+      sphere.name = "player:slide";
+      sphere.userData = new Player(sphere, 5);
+      scene.add(sphere);
 
       },
     
@@ -652,85 +736,190 @@ class Levels {
     }
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
+    let white1 = "rgb(111, 127, 136)";
+    let pink = "rgb(255,192,203)";
     scene.setGravity(new THREE.Vector3(0,-25,0));
+
     //light
-    // let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    // scene.add(light);
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
 
-    let light = new THREE.PointLight( 0x404040, 5, 1000 );
-    light.position.set( -100, 100, 100 );
-    light.castShadow = true;
-    scene.add( light );
+    //  let spotLight = new THREE.SpotLight(0xffffff);
+    //  spotLight.position.set(-50,75,-10);
+    //  spotLight.lookAt(0,0,0);
+    //  spotLight.castShadow = true;
+    //  scene.add(spotLight); 
 
-    //Cube
-    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
-    let cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
-        0.4,
-        0.5
-    );
-    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-    cubeMaterial.map.repeat.set( 1, .5 );
+    //back wall
+    let cubeGeometry = new THREE.CubeGeometry(300,200,1,1);
+    let cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.castShadow = true;
-    cube.position.y = 10;
+    cube.position.y = -2;
     cube.position.x = 0;
+    cube.position.z = -46;
+    cube.mass = 0;
+    scene.add(cube);
     
-    cube.name = "player:slide:start";
-    cube.userData = new Player(cube,  3.5);
+
+    //floor
+    cubeGeometry = new THREE.CubeGeometry(607,5,160,500);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.9,
+        0.9
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -100; //keep
+    cube.position.x = 150;
+    cube.position.z = 26;
+    cube.mass = 0;
     scene.add(cube);
 
-    //Floor
-    cubeGeometry = new THREE.CubeGeometry(250,250,150);
+    //right wall
+    cubeGeometry = new THREE.CubeGeometry(3,225,155,1);
     cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
+        new THREE.MeshLambertMaterial(white1,
         0.8,
         0.2
-    );
-    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-    cubeMaterial.map.repeat.set( 1, .5 );
+    ));
+    // cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    // cubeMaterial.map.repeat.set( 1, .5 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.castShadow = true;
-    cube.position.y = -125;
+    cube.position.y = 0;
+    cube.position.x = 150;
+    cube.position.z = 33;
     cube.mass = 0;
     scene.add(cube);
-    
-    //Backwall
-    cubeGeometry = new THREE.CubeGeometry(150,50,1);
+
+    //left wall
+    cubeGeometry = new THREE.CubeGeometry(3,200,155,1);
     cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0.2,
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
         0.2
-    );
-    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-    cubeMaterial.map.repeat.set( 1, .5 );
+    ));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.castShadow = true;
-    cube.position.y = 25;
-    cube.position.z = -25
-    cube.mass = 0;
-    scene.add(cube);
-    
-    //Leftwall
-    cubeGeometry = new THREE.CubeGeometry(1,50,100);
-    cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
-        0.2,
-        0.2
-    );
-    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-    cubeMaterial.map.repeat.set( 1, .5 );
-    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-    cube.receiveShadow = true;
-    cube.castShadow = true;
+    cube.position.y = 0;
+    cube.position.x = -150;
     cube.position.z = 25;
-    cube.position.y = 25;
-    cube.position.x = -75
     cube.mass = 0;
     scene.add(cube);
+
+    //front wall
+    cubeGeometry = new THREE.CubeGeometry(600,100,5,1);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial(white1,
+        0.8,
+        0.2
+    ));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -100;
+    cube.position.x = 0;
+    cube.position.z = 105;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //nightStand
+    //lamp starts on nightstand
+    
+    //bed
+
+    //shelf to slide along with lamp
+    //the player will have to catch the lip of the shelf with the lampshade to slide over danger
+
+    // player
+    let sphereGeometry = new THREE.SphereGeometry(6,36,36);
+    let sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
+      0.1,
+      1.5
+    );
+
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 0
+      sphere.name = "player:slide:start";
+      sphere.userData = new Player(sphere, 6.5);
+      scene.add(sphere);
+
+      // player
+      sphereGeometry = new THREE.SphereGeometry(3,36,36);
+      sphereMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
+      0.9,
+      0.1
+      );
+
+      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+      sphereMaterial.map.repeat.set( 1, .5 );
+      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      sphere.receiveShadow = true;
+      sphere.castShadow = true;
+      sphere.position.y = 0;
+      sphere.position.x = 25;
+      sphere.name = "player:slide";
+      sphere.userData = new Player(sphere, 3.5);
+      scene.add(sphere);
+
+      // lamp
+      let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+      let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+      //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+      //opacity: 0.5, reflectivity:1
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}));
+      lampshade.side = THREE.BackSide;
+  
+      lampbase.add(lamppole);
+      lampbase.castShadow = true;
+      lamppole.castShadow = true;
+      lamppole.position.y += 14;
+  
+      lampbase.add(lampshade);
+      //lampshade.castShadow = true;//commented out to try to get a better working lamp
+      lampshade.position.y += 25;
+
+      lampbase.position.x = -140;
+      lampbase.position.y = -55;
+      lampbase.position.z = -10;
+  
+      lampbase.name = "player:slide";
+      lampshade.name = "parent";
+      lamppole.name = "parent";
+      lampbase.userData = new Player(lampbase, 3); 
+                
+      lampbase.position.y += 1;
+  
+      let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
+      //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
+      pointLight1.castShadow = true;
+      //pointLight2.castShadow = true;//commented out to try to get a better working lamp
+  
+      lampshade.add(pointLight1);
+
+      //lampshade.add(pointLight2);//commented out to try to get a better working lamp
+      //pointLight1.position.x += 2;//commented out to try to get a better working lamp
+      pointLight1.position.y += 7;
+      //pointLight2.position.x += -2;//commented out to try to get a better working lamp
+      //pointLight2.position.y += 7;//commented out to try to get a better working lamp
+
+      
+      lampbase.addEventListener("ready", function(){//this will keep the lamp from tipping over
+        
+        lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
+        
+      });
+      scene.add(lampbase);
 
     return scene;
   }
@@ -960,7 +1149,11 @@ class Levels {
       //pointLight2.position.y += 7;//commented out to try to get a better working lamp
 
       
-  
+      lampbase.addEventListener("ready", function(){//this will keep the lamp from tipping over
+        
+        lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
+        
+      });
       scene.add(lampbase);
 
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);
@@ -970,7 +1163,7 @@ class Levels {
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
           let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,40),new THREE.MeshLambertMaterial({opacity: 0.9 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
 
           dbackside.position.x += -138;
           dbackside.position.y += -73;
@@ -980,8 +1173,8 @@ class Levels {
 
           dbackside.add(dtop);
           dtop.position.x += 10;
-          dtop.position.y += 15;
-          dtop.position.z += 10;
+          dtop.position.y += 15.5;
+          dtop.position.z += 12;
           dtop.castShadow = true;
           dtop.receiveShadow = true;
 
@@ -1008,6 +1201,7 @@ class Levels {
           dleg.name = "parent";
          
           // Please dont modify this, it is the location of the model to the physijs shapes, not the object location
+          // you got it dude -Wallace
           dbackside.add( deskModel );
           deskModel.position.y += -25;
           deskModel.position.z += 12;
@@ -1097,6 +1291,7 @@ class Levels {
     return scene;
   }
   
+
   get_level_demo_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -1351,6 +1546,5 @@ class Levels {
   }
 
   get_level_3_scene(){
-    
   }
 }
