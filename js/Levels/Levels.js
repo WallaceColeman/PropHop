@@ -759,7 +759,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = -2;
     cube.position.x = 0;
-    cube.position.z = -46;
+    cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
     
@@ -794,7 +794,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = 0;
     cube.position.x = 150;
-    cube.position.z = 33;
+    cube.position.z = 25;
     cube.mass = 0;
     scene.add(cube);
 
@@ -828,6 +828,23 @@ class Levels {
     cube.mass = 0;
     scene.add(cube);
 
+    //shelf above bed
+    cubeGeometry = new THREE.CubeGeometry(100,3,20);
+    cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial(white1,
+      0.2,
+      0.2
+    ));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.mass = 0;
+    cube.position.x = 0;
+    cube.position.y = 0;
+    cube.position.z = -40;
+    scene.add(cube);
+    
+    //trophy on shelf
+    
+    
     //nightStand
     //lamp starts on nightstand
     
