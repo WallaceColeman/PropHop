@@ -497,7 +497,7 @@ class Levels {
     let cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         0.4,
-        0.5
+        0.1
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
     cubeMaterial.map.repeat.set( 1, .5 );
@@ -565,8 +565,8 @@ class Levels {
         cubeGeometry = new THREE.CubeGeometry(250,250,150);
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
-            0.8,
-            1.0
+            0.9,
+            0.9
         );
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 1, .5 );
@@ -583,7 +583,7 @@ class Levels {
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
             0.2,
-            0.2
+            1.0
         );
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 1, .5 );
@@ -662,13 +662,15 @@ class Levels {
       let sphereGeometry = new THREE.SphereGeometry(3,36,36);
       let sphereMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
-        0.5,
-        1.0
+        0.1,
+        1.5
       );
 
       sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
       sphereMaterial.map.repeat.set( 1, .5 );
       let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      console.log("tennis ball mass: " + sphere.mass);
+      sphere.mass = 5;
       sphere.receiveShadow = true;
       sphere.castShadow = true;
 
@@ -853,7 +855,7 @@ class Levels {
       sphere.userData = new Player(sphere, 6.5);
       scene.add(sphere);
 
-      // player
+      
       sphereGeometry = new THREE.SphereGeometry(3,36,36);
       sphereMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
