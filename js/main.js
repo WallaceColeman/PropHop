@@ -183,7 +183,7 @@ function onMouseDown(e){
 					go_to_load = true;
 					break;
 				case "Level_4":
-					requested_level = 4;
+					requested_level = 3;
 					go_to_load = true;
 					break;
 				

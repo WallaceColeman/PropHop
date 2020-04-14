@@ -41,9 +41,11 @@ class Levels {
         this.last_level = 2;
         return this.get_level_2_scene();
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         this.current_level = 3;
+         this.last_level = 3;
+         return this.get_level_3_scene();
+         break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -72,9 +74,9 @@ class Levels {
       case 2: // you get the point
 
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         
+        break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -1613,6 +1615,7 @@ class Levels {
     //cube.mass = 0;
     cube.name = "player:slide:start";
 
+    
     scene.add(cube);
 
     //plane
