@@ -13,6 +13,8 @@ class Player {
         let m = this.player.mass/300;
 		let velocity = new THREE.Vector3();
         let cv = this.player.getLinearVelocity();
+        let intersects = jumpCaster.intersectObjects( scene.children, true);
+        let airBorn = intersects.length < 1;
 		if(moveIn){
 			if(cv.z > 0){
 				velocity.z -= 1000*m;
@@ -45,20 +47,20 @@ class Player {
 				velocity.x += 100*m;
 			}
         }
-        if(!moveIn && !moveOut){
+        if(!moveIn && !moveOut && !airBorn){
             
             velocity.z = -cv.z*30*m;
             
             //console.log(this.player.getLinearVelocity());
         }
-        if(!moveLeft && !moveRight){
+        if(!moveLeft && !moveRight && !airBorn){
             
             velocity.x = -cv.x*30*m;
             
             
         }
 		if(jump){
-			let intersects = jumpCaster.intersectObjects( scene.children, true);
+			
 			//console.log("intersects: " + intersects.length);
 				try{
 					//console.log(1);
