@@ -940,8 +940,11 @@ class Levels {
 
     //light
     //let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    // testing purposes let light = new THREE.AmbientLight( 0x99999 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    // scene.add(light);
+    //scene.add(light);
+
+    // light for testing:
+    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    //scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
     //  spotLight.position.set(-50,75,-10);
@@ -1087,25 +1090,6 @@ class Levels {
       sphere.position.x = 0
       sphere.name = "player:slide:start";
       sphere.userData = new Player(sphere, 6.5);
-      scene.add(sphere);
-
-          // player
-      sphereGeometry = new THREE.SphereGeometry(3,36,36);
-      sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
-      0.9,
-      0.1
-      );
-
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 25;
-      sphere.name = "player:slide";
-      sphere.userData = new Player(sphere, 3.5);
       scene.add(sphere);
 
       // lamp
@@ -1267,7 +1251,8 @@ class Levels {
           dcbutt.add(dcarmL2);
           dcarmL2.position.x += 15.5;
           dcarmL2.position.y += 13;
-          // shadows for arms will look jacked so I didn't add them
+          // shadows for arms will look jacked so I didn't add them, will fix this later.
+          // commenting "Jenna" so I can ctrl F find this easier later for making this pretty
 
           // chair: right arm
           dcbutt.add(dcarmR);
@@ -1318,6 +1303,42 @@ class Levels {
           laptopscreen.name = "parent";
 
           scene.add(keyboard);
+        });
+
+        // I am still going to move this to the objects class! 
+        GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
+        function ( gltf ) {
+          let mouseModel = gltf.scene;
+
+          let mouse = new Physijs.BoxMesh(new THREE.BoxGeometry(4.5,1.5,8),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let topmouse = new Physijs.ConvexMesh( new THREE.SphereGeometry(3.5,8,8, Math.PI/2, Math.PI*2, 0, 0.5 * Math.PI), new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+
+          mouse.userData = new Player(mouse, 0.5);
+          mouse.name = "player:slide";
+          topmouse.name = "parent";
+          mouseModel.name = "parent";
+
+          mouse.add(mouseModel);
+          mouseModel.scale.set(250,250,250);
+          mouseModel.position.y += -1;
+          mouseModel.position.z += -2.5;
+
+          mouse.position.x += -120;
+          mouse.position.y += -45;
+          mouse.mass = 100;
+          mouse.rotation.y += Math.PI/3;
+
+          mouse.castShadow = true;
+          mouse.receiveShadow = true;
+
+          mouse.add(topmouse);
+          topmouse.position.x += 0;
+          topmouse.position.y += -1;
+          topmouse.position.z += 0.5;
+          topmouse.castShadow = true;
+          topmouse.receiveShadow = true;
+
+          scene.add(mouse);
         });
 
     return scene;
