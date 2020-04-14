@@ -7,7 +7,7 @@ class Levels {
     this.last_level = -2;
     this.max_level = -2;
     this.scene = new Physijs.Scene;
-    this.modelLoader = new GetPhysiModels(LM);
+    //this.modelLoader = new GetPhysiModels(LM);
   }
   
   new_loading_manager(LM){
@@ -1626,6 +1626,8 @@ class Levels {
     }
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
+    let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+    
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
@@ -1654,13 +1656,14 @@ class Levels {
     cube.position.x = 45;
     //cube.mass = 0;
     cube.name = "player:slide:start";
+    cube.userData = new SlidePlayer(cube, 3.5);
 
     
     scene.add(cube);
 
     //plane
-    var planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
-    //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+    let planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
+    //let planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
     let planeMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
       0.2,
@@ -1669,7 +1672,7 @@ class Levels {
     planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
     planeMaterial.map.repeat.set( 1, .5 );
     //floor
-    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -.5*Math.PI;
     //plane.rotation.y = (0.125)*Math.PI;
     plane.receiveShadow = true;
@@ -1727,14 +1730,11 @@ class Levels {
                 child.receiveShadow = true;
                 return;
             }
-
         } );
 
+      }
+    );
 
-    }
-);
-
-let GLTF_loader = new THREE.GLTFLoader(loadingManager);
       GLTF_loader.load(//Log
         // resource URL
         '../../Models/Player_Models/Log.glb',
@@ -1782,8 +1782,6 @@ let GLTF_loader = new THREE.GLTFLoader(loadingManager);
           });
         }
       );
-
-
-return scene;
+    return scene;
   }
 }
