@@ -41,9 +41,11 @@ class Levels {
         this.last_level = 2;
         return this.get_level_2_scene();
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         this.current_level = 3;
+         this.last_level = 3;
+         return this.get_level_3_scene();
+         break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -72,9 +74,9 @@ class Levels {
       case 2: // you get the point
 
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         
+        break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -958,8 +960,12 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    scene.add(light);
+    //let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    //scene.add(light);
+
+    // light for testing:
+    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    //scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
     //  spotLight.position.set(-50,75,-10);
@@ -1107,25 +1113,6 @@ class Levels {
       sphere.userData = new Player(sphere, 6.5);
       scene.add(sphere);
 
-          // player
-      sphereGeometry = new THREE.SphereGeometry(3,36,36);
-      sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/abstract.jpg' )}),
-      0.9,
-      0.1
-      );
-
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 25;
-      sphere.name = "player:slide";
-      sphere.userData = new Player(sphere, 3.5);
-      scene.add(sphere);
-
       // lamp
       let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
       let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
@@ -1179,10 +1166,10 @@ class Levels {
       GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
         function ( gltf ) {
           let deskModel = gltf.scene;
-          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
-          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({  opacity: 0.9 }));
-          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
-          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({ opacity: 0.9 }));
+          let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dbackside = new Physijs.BoxMesh(new THREE.BoxGeometry(100,30,1),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dleg = new Physijs.BoxMesh(new THREE.BoxGeometry(1,40,33),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
+          let dtop = new Physijs.BoxMesh(new THREE.BoxGeometry(130,2,44),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
 
           dbackside.position.x += -138;
           dbackside.position.y += -73;
@@ -1239,13 +1226,14 @@ class Levels {
           let dcbutt = new Physijs.CylinderMesh(new THREE.CylinderGeometry(16,16,5,25),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(2,2,18,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let dcback = new Physijs.ConvexMesh(new THREE.CylinderGeometry(22,16,45,10,4,4, true, 60,60),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
-          let dcarmL = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //left arm
+          let dcarmL = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //left arm
           let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
-          let dcarmR = new Physijs.ConvexMesh(new THREE.SphereGeometry(6, 8, 6, 0, 2*Math.PI, 0, 0.5*Math.PI),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
+          let dcarmR = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
           let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
-
           dcbutt.userData = new Player(dcbutt, 0.1);
           dcbutt.position.y += -70;
+          dcbutt.castShadow = true;
+          dcbutt.receiveShadow = true;
 
           deskchairModel.scale.set(6,6,6);
           deskchairModel.position.y += 15;
@@ -1253,6 +1241,8 @@ class Levels {
 
           dcbutt.add(dcbase);
           dcbase.position.y += -10;
+          dcbase.castShadow = true;
+          dcbase.receiveShadow = true;
 
           // bases have high mass so it wobbles less?
           dcbutt.add(dcbase1);
@@ -1261,14 +1251,20 @@ class Levels {
           dcbutt.add(dcbase2);
           dcbase2.position.y += -17.5;
           dcbase2.mass = 1500;
+          dcbase1.castShadow = true;
+          dcbase1.receiveShadow = true;
+          dcbase2.castShadow = true;
+          dcbase2.receiveShadow = true;
 
           dcbutt.add(dcback);
           dcback.position.y += 25;
           dcback.rotation.y += -0.8*Math.PI;
+          dcbutt.castShadow = true;
+          dcbutt.receiveShadow = true;
 
           // chair: left arm
           dcbutt.add(dcarmL);
-          dcarmL.position.x += 14;
+          dcarmL.position.x += 16;
           dcarmL.rotation.x += Math.PI/2;
           dcarmL.position.y += 7;
           dcarmL.rotation.z += -Math.PI/2;
@@ -1276,10 +1272,12 @@ class Levels {
           dcbutt.add(dcarmL2);
           dcarmL2.position.x += 15.5;
           dcarmL2.position.y += 13;
+          // shadows for arms will look jacked so I didn't add them, will fix this later.
+          // commenting "Jenna" so I can ctrl F find this easier later for making this pretty
 
           // chair: right arm
           dcbutt.add(dcarmR);
-          dcarmR.position.x += -14;
+          dcarmR.position.x += -16;
           dcarmR.rotation.x += Math.PI/2;
           dcarmR.position.y += 7;
           dcarmR.rotation.z += Math.PI/2;
@@ -1297,6 +1295,73 @@ class Levels {
           scene.add(dcbutt);
         });
       
+        GLTF_loader.load('../../Models/Player_Models/Laptop.glb',
+        function ( gltf ) {
+          let laptopModel = gltf.scene;
+
+          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,18,28),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,20),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          // transparent: true, opacity: 0.0
+
+          keyboard.userData = new Player(keyboard, 0.1);
+          keyboard.position.x += -120;
+          keyboard.position.y += -10;
+          keyboard.rotation.y += Math.PI;
+          keyboard.position.z += 40;
+          keyboard.castShadow = true;
+
+          keyboard.add(laptopscreen);
+          laptopscreen.position.x += 10.5;
+          laptopscreen.position.y += 10;
+          laptopscreen.position.z += 0;
+          laptopscreen.castShadow = true;
+
+          laptopModel.scale.set(9,9,9);
+          laptopModel.position.x += 8;
+
+          keyboard.add(laptopModel);
+          keyboard.name = "player:slide";
+          laptopscreen.name = "parent";
+
+          scene.add(keyboard);
+        });
+
+        // I am still going to move this to the objects class! 
+        GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
+        function ( gltf ) {
+          let mouseModel = gltf.scene;
+
+          let mouse = new Physijs.BoxMesh(new THREE.BoxGeometry(4.5,1.5,8),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let topmouse = new Physijs.ConvexMesh( new THREE.SphereGeometry(3.5,8,8, Math.PI/2, Math.PI*2, 0, 0.5 * Math.PI), new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+
+          mouse.userData = new Player(mouse, 0.5);
+          mouse.name = "player:slide";
+          topmouse.name = "parent";
+          mouseModel.name = "parent";
+
+          mouse.add(mouseModel);
+          mouseModel.scale.set(250,250,250);
+          mouseModel.position.y += -1;
+          mouseModel.position.z += -2.5;
+
+          mouse.position.x += -120;
+          mouse.position.y += -45;
+          mouse.mass = 100;
+          mouse.rotation.y += Math.PI/3;
+
+          mouse.castShadow = true;
+          mouse.receiveShadow = true;
+
+          mouse.add(topmouse);
+          topmouse.position.x += 0;
+          topmouse.position.y += -1;
+          topmouse.position.z += 0.5;
+          topmouse.castShadow = true;
+          topmouse.receiveShadow = true;
+
+          scene.add(mouse);
+        });
+
     return scene;
   }
   
@@ -1555,5 +1620,170 @@ class Levels {
   }
 
   get_level_3_scene(){
+
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+
+    //light
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
+
+    let spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40,60,40);
+    spotLight.castShadow = true;
+    scene.add(spotLight);   
+
+
+    //title
+    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.4,
+        0.5
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 10;
+    cube.position.x = 45;
+    //cube.mass = 0;
+    cube.name = "player:slide:start";
+
+    
+    scene.add(cube);
+
+    //plane
+    var planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
+    //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+    let planeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
+      0.2,
+      0.2
+    );
+    planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+    planeMaterial.map.repeat.set( 1, .5 );
+    //floor
+    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -.5*Math.PI;
+    //plane.rotation.y = (0.125)*Math.PI;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
+    function ( gltf ) {
+        let chairModel = gltf.scene;
+        //scene.add(chairModel);
+        //chairModel.position.x = 45;
+        //chairModel.position.z = 45;
+        //chairModel.rotation.y = 1.25*Math.PI;
+        //chairModel.scale.set(3,3,3);
+
+        //build ramp
+        //let green = "rgb(10,200,10)";
+        //let blue = "rgb(10,10,200)";
+        let base = new Physijs.BoxMesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        //let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        //let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+
+        //base.add(side);
+        //side.position.x += 4;
+        //side.position.y += 3;
+
+        //base.add(ramp);
+        //ramp.position.y = 3;
+        //ramp.rotation.z = Math.atan(3/4);
+
+        //base.position.x = 45;
+        //base.position.z = 45;
+        base.position.y = 1.25*Math.PI;
+        
+        base.mass = 300;
+
+        scene.add(base);
+        //side.name = "parent";
+        //ramp.name = "parent";
+        chairModel.name = "parent";
+        base.name = "player:slide";
+
+        base.add( chairModel );
+        //chairModel.position.x = 45;
+        //chairModel.position.z = 45;
+        chairModel.rotation.y = 1.25*Math.PI;
+        chairModel.scale.set(3,3,3);
+        
+
+
+        chairModel.traverse( function( child ) { 
+
+            if ( child.isMesh ) {
+
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+            }
+
+        } );
+
+
+    }
+);
+
+let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+      GLTF_loader.load(//Log
+        // resource URL
+        '../../Models/Player_Models/Log.glb',
+        // called when the resource is loaded
+        function ( gltf ) {
+
+          let log = gltf.scene;
+
+          let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
+          let material = Physijs.createMaterial(
+              new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
+              1.0,
+              0.5
+          );
+          let cylinder = new Physijs.CylinderMesh( geometry, material );
+
+          cylinder.rotation.x = -0.5*Math.PI;
+          cylinder.position.y = -975;
+          cylinder.position.x = -975;
+          
+          
+          //*******************************************************************
+          //Based on:  xprogram
+          //Published: 04/12/2016
+          //Location:  https://github.com/chandlerprall/Physijs/issues/268
+          //Accessed:  02/16/2020
+          cylinder.addEventListener("ready", function(){
+              cylinder.setAngularFactor(new THREE.Vector3(0, 0, 1));
+          });
+          //*******************************************************************
+
+          cylinder.name = "player:slide";
+
+          cylinder.add( log );
+          log.rotation.x = -0.5*Math.PI;
+          log.scale.set(3,3,3);
+          cylinder.userData = new RollPlayer(cylinder, 3.5);
+          scene.add( cylinder );
+          log.traverse( function( child ) { 
+              if ( child.isMesh ) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+              }
+          });
+        }
+      );
+
+
+return scene;
   }
 }
