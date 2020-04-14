@@ -41,9 +41,11 @@ class Levels {
         this.last_level = 2;
         return this.get_level_2_scene();
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         this.current_level = 3;
+         this.last_level = 3;
+         return this.get_level_3_scene();
+         break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -72,9 +74,9 @@ class Levels {
       case 2: // you get the point
 
         break;
-      // case 3:
-      //   day = "Wednesday";
-      //   break;
+       case 3:
+         
+        break;
       // case 4:
       //   day = "Thursday";
       //   break;
@@ -1599,5 +1601,170 @@ class Levels {
   }
 
   get_level_3_scene(){
+
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,-25,0));
+
+    //light
+    let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    scene.add(light);
+
+    let spotLight = new THREE.SpotLight(0xffffff);
+    spotLight.position.set(-40,60,40);
+    spotLight.castShadow = true;
+    scene.add(spotLight);   
+
+
+    //title
+    let cubeGeometry = new THREE.CubeGeometry(6,6,6);
+    let cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
+        0.4,
+        0.5
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, .5 );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    cube.position.y = 10;
+    cube.position.x = 45;
+    //cube.mass = 0;
+    cube.name = "player:slide:start";
+
+    
+    scene.add(cube);
+
+    //plane
+    var planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
+    //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+    let planeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
+      0.2,
+      0.2
+    );
+    planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
+    planeMaterial.map.repeat.set( 1, .5 );
+    //floor
+    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -.5*Math.PI;
+    //plane.rotation.y = (0.125)*Math.PI;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
+    function ( gltf ) {
+        let chairModel = gltf.scene;
+        //scene.add(chairModel);
+        //chairModel.position.x = 45;
+        //chairModel.position.z = 45;
+        //chairModel.rotation.y = 1.25*Math.PI;
+        //chairModel.scale.set(3,3,3);
+
+        //build ramp
+        //let green = "rgb(10,200,10)";
+        //let blue = "rgb(10,10,200)";
+        let base = new Physijs.BoxMesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        //let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+        //let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
+
+        //base.add(side);
+        //side.position.x += 4;
+        //side.position.y += 3;
+
+        //base.add(ramp);
+        //ramp.position.y = 3;
+        //ramp.rotation.z = Math.atan(3/4);
+
+        //base.position.x = 45;
+        //base.position.z = 45;
+        base.position.y = 1.25*Math.PI;
+        
+        base.mass = 300;
+
+        scene.add(base);
+        //side.name = "parent";
+        //ramp.name = "parent";
+        chairModel.name = "parent";
+        base.name = "player:slide";
+
+        base.add( chairModel );
+        //chairModel.position.x = 45;
+        //chairModel.position.z = 45;
+        chairModel.rotation.y = 1.25*Math.PI;
+        chairModel.scale.set(3,3,3);
+        
+
+
+        chairModel.traverse( function( child ) { 
+
+            if ( child.isMesh ) {
+
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+            }
+
+        } );
+
+
+    }
+);
+
+let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+      GLTF_loader.load(//Log
+        // resource URL
+        '../../Models/Player_Models/Log.glb',
+        // called when the resource is loaded
+        function ( gltf ) {
+
+          let log = gltf.scene;
+
+          let geometry = new THREE.CylinderGeometry( 3, 3, 15, 16 );
+          let material = Physijs.createMaterial(
+              new THREE.MeshLambertMaterial(/*{ wireframe: true, opacity: 0.5 }/*/{ transparent: true, opacity: 0.0 }),
+              1.0,
+              0.5
+          );
+          let cylinder = new Physijs.CylinderMesh( geometry, material );
+
+          cylinder.rotation.x = -0.5*Math.PI;
+          cylinder.position.y = -975;
+          cylinder.position.x = -975;
+          
+          
+          //*******************************************************************
+          //Based on:  xprogram
+          //Published: 04/12/2016
+          //Location:  https://github.com/chandlerprall/Physijs/issues/268
+          //Accessed:  02/16/2020
+          cylinder.addEventListener("ready", function(){
+              cylinder.setAngularFactor(new THREE.Vector3(0, 0, 1));
+          });
+          //*******************************************************************
+
+          cylinder.name = "player:slide";
+
+          cylinder.add( log );
+          log.rotation.x = -0.5*Math.PI;
+          log.scale.set(3,3,3);
+          cylinder.userData = new RollPlayer(cylinder, 3.5);
+          scene.add( cylinder );
+          log.traverse( function( child ) { 
+              if ( child.isMesh ) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+                return;
+              }
+          });
+        }
+      );
+
+
+return scene;
   }
 }
