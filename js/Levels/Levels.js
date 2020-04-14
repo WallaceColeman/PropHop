@@ -1326,7 +1326,8 @@ class Levels {
           scene.add(keyboard);
         });
 
-        // I am still going to move this to the objects class! 
+        // I am still going to move this to the objects class!
+        // please don't that class does not work -Wallace
         GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
         function ( gltf ) {
           let mouseModel = gltf.scene;
@@ -1681,42 +1682,20 @@ class Levels {
     GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
     function ( gltf ) {
         let chairModel = gltf.scene;
-        //scene.add(chairModel);
-        //chairModel.position.x = 45;
-        //chairModel.position.z = 45;
-        //chairModel.rotation.y = 1.25*Math.PI;
-        //chairModel.scale.set(3,3,3);
 
-        //build ramp
-        //let green = "rgb(10,200,10)";
-        //let blue = "rgb(10,10,200)";
         let base = new Physijs.BoxMesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-        //let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-        //let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
-        //base.add(side);
-        //side.position.x += 4;
-        //side.position.y += 3;
-
-        //base.add(ramp);
-        //ramp.position.y = 3;
-        //ramp.rotation.z = Math.atan(3/4);
-
-        //base.position.x = 45;
-        //base.position.z = 45;
         base.position.y = 1.25*Math.PI;
         
         base.mass = 300;
 
         scene.add(base);
-        //side.name = "parent";
-        //ramp.name = "parent";
+
         chairModel.name = "parent";
         base.name = "player:slide";
 
         base.add( chairModel );
-        //chairModel.position.x = 45;
-        //chairModel.position.z = 45;
+
         chairModel.rotation.y = 1.25*Math.PI;
         chairModel.scale.set(3,3,3);
         
