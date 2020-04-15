@@ -7,7 +7,7 @@ class Levels {
     this.last_level = -2;
     this.max_level = -2;
     this.scene = new Physijs.Scene;
-    this.modelLoader = new GetPhysiModels(LM);
+    //this.modelLoader = new GetPhysiModels(LM);
   }
   
   new_loading_manager(LM){
@@ -499,7 +499,7 @@ class Levels {
     let cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         0.4,
-        0.5
+        0.1
     );
     cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
     cubeMaterial.map.repeat.set( 1, .5 );
@@ -567,8 +567,8 @@ class Levels {
         cubeGeometry = new THREE.CubeGeometry(250,250,150);
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Grass.png' )}),
-            0.8,
-            1.0
+            0.9,
+            0.9
         );
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 1, .5 );
@@ -585,7 +585,7 @@ class Levels {
         cubeMaterial = Physijs.createMaterial(
             new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/White_Paint.png' )}),
             0.2,
-            0.2
+            1.0
         );
         cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
         cubeMaterial.map.repeat.set( 1, .5 );
@@ -664,13 +664,15 @@ class Levels {
       let sphereGeometry = new THREE.SphereGeometry(3,36,36);
       let sphereMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
-        0.5,
-        1.0
+        0.1,
+        1.5
       );
 
       sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
       sphereMaterial.map.repeat.set( 1, .5 );
       let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+      console.log("tennis ball mass: " + sphere.mass);
+      sphere.mass = 5;
       sphere.receiveShadow = true;
       sphere.castShadow = true;
 
@@ -759,7 +761,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = -2;
     cube.position.x = 0;
-    cube.position.z = -46;
+    cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
     
@@ -794,7 +796,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = 0;
     cube.position.x = 150;
-    cube.position.z = 33;
+    cube.position.z = 25;
     cube.mass = 0;
     scene.add(cube);
 
@@ -828,6 +830,23 @@ class Levels {
     cube.mass = 0;
     scene.add(cube);
 
+    //shelf above bed
+    cubeGeometry = new THREE.CubeGeometry(100,3,20);
+    cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial(white1,
+      0.2,
+      0.2
+    ));
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.mass = 0;
+    cube.position.x = 0;
+    cube.position.y = 0;
+    cube.position.z = -40;
+    scene.add(cube);
+    
+    //trophy on shelf
+    
+    
     //nightStand
     //lamp starts on nightstand
     
@@ -855,7 +874,7 @@ class Levels {
       sphere.userData = new Player(sphere, 6.5);
       scene.add(sphere);
 
-      // player
+      
       sphereGeometry = new THREE.SphereGeometry(3,36,36);
       sphereMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
@@ -1307,7 +1326,8 @@ class Levels {
           scene.add(keyboard);
         });
 
-        // I am still going to move this to the objects class! 
+        // I am still going to move this to the objects class!
+        // please don't that class does not work -Wallace
         GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
         function ( gltf ) {
           let mouseModel = gltf.scene;
@@ -1607,6 +1627,8 @@ class Levels {
     }
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
+    let GLTF_loader = new THREE.GLTFLoader(loadingManager);
+    
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
@@ -1635,13 +1657,14 @@ class Levels {
     cube.position.x = 45;
     //cube.mass = 0;
     cube.name = "player:slide:start";
+    cube.userData = new SlidePlayer(cube, 3.5);
 
     
     scene.add(cube);
 
     //plane
-    var planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
-    //var planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
+    let planeGeometry = new THREE.PlaneGeometry(400,400,1,1);
+    //let planeMaterial = new THREE.MeshBasicMaterial({color:"rgb(10,200,10)"});
     let planeMaterial = Physijs.createMaterial(
       new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/smooth-ice.jpg' )}),
       0.2,
@@ -1650,7 +1673,7 @@ class Levels {
     planeMaterial.map.wrapS = planeMaterial.map.wrapT = THREE.RepeatWrapping;
     planeMaterial.map.repeat.set( 1, .5 );
     //floor
-    var plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
+    let plane = new Physijs.BoxMesh(planeGeometry, planeMaterial);
     plane.rotation.x = -.5*Math.PI;
     //plane.rotation.y = (0.125)*Math.PI;
     plane.receiveShadow = true;
@@ -1659,42 +1682,20 @@ class Levels {
     GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
     function ( gltf ) {
         let chairModel = gltf.scene;
-        //scene.add(chairModel);
-        //chairModel.position.x = 45;
-        //chairModel.position.z = 45;
-        //chairModel.rotation.y = 1.25*Math.PI;
-        //chairModel.scale.set(3,3,3);
 
-        //build ramp
-        //let green = "rgb(10,200,10)";
-        //let blue = "rgb(10,10,200)";
         let base = new Physijs.BoxMesh(new THREE.BoxGeometry(10,10,10),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-        //let side = new Physijs.BoxMesh(new THREE.BoxGeometry(0.1,6,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
-        //let ramp = new Physijs.BoxMesh(new THREE.BoxGeometry(10,0.1,12),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0 }));
 
-        //base.add(side);
-        //side.position.x += 4;
-        //side.position.y += 3;
-
-        //base.add(ramp);
-        //ramp.position.y = 3;
-        //ramp.rotation.z = Math.atan(3/4);
-
-        //base.position.x = 45;
-        //base.position.z = 45;
         base.position.y = 1.25*Math.PI;
         
         base.mass = 300;
 
         scene.add(base);
-        //side.name = "parent";
-        //ramp.name = "parent";
+
         chairModel.name = "parent";
         base.name = "player:slide";
 
         base.add( chairModel );
-        //chairModel.position.x = 45;
-        //chairModel.position.z = 45;
+
         chairModel.rotation.y = 1.25*Math.PI;
         chairModel.scale.set(3,3,3);
         
@@ -1708,14 +1709,11 @@ class Levels {
                 child.receiveShadow = true;
                 return;
             }
-
         } );
 
+      }
+    );
 
-    }
-);
-
-let GLTF_loader = new THREE.GLTFLoader(loadingManager);
       GLTF_loader.load(//Log
         // resource URL
         '../../Models/Player_Models/Log.glb',
@@ -1763,8 +1761,6 @@ let GLTF_loader = new THREE.GLTFLoader(loadingManager);
           });
         }
       );
-
-
-return scene;
+    return scene;
   }
 }

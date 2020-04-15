@@ -22,11 +22,13 @@ renderer.setSize(window.innerWidth-20, window.innerHeight-20);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+
+
 let loading = {
 	scene: new THREE.Scene(),
 	camera: new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1,1000),
 	box: new THREE.Mesh(
-		new THREE.BoxGeometry(1,1,1),
+		new THREE.BoxGeometry(2,2,2),
 		new THREE.MeshBasicMaterial({color:"rgb(255,0,0)"})
 	)
 };
@@ -37,6 +39,37 @@ loading.camera.position.z=10;
 loading.scene.add(loading.box);
 loading.scene.add(loading.camera);
 loading.scene.add( new THREE.AmbientLight( 0x404040) );
+
+let fontLoader = new THREE.FontLoader();
+fontLoader.load(
+	'../Models/Font/Barcade_Regular_R.json',
+	function ( font ) {
+	  // do something with the font
+	  let shapes = font.generateShapes("<Loading>", 2);
+	  let geometry = new THREE.ShapeBufferGeometry(shapes);
+	  geometry.computeBoundingBox();
+	  let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+	  geometry.translate(xMid, 0, 0);
+	  let material = new THREE.MeshBasicMaterial({
+		color: "rgb(0,0,0)",
+		side: THREE.DoubleSide
+	  });
+
+	  let text = new Physijs.BoxMesh(geometry,material);
+	  text.position.y = -5;
+	  loading.scene.add( text );
+	},
+  
+	// onProgress callback
+	function ( xhr ) {
+	  console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+	},
+  
+	// onError callback
+	function ( err ) {
+	  console.log( err );
+	}
+  );
 
 loadingManager = new THREE.LoadingManager();
 
@@ -179,11 +212,11 @@ function onMouseDown(e){
 					go_to_load = true;
 					break;
 				case "Level_3":
-					requested_level = -1;
+					requested_level = 3;
 					go_to_load = true;
 					break;
 				case "Level_4":
-					requested_level = 3;
+					requested_level = -1;
 					go_to_load = true;
 					break;
 				
@@ -295,7 +328,9 @@ function loadingRenderer(){
 	//Accessed: 02/08/2020
 	if(LOADING_NOT_DONE){
 		requestAnimationFrame (loadingRenderer);
-		loading.box.scale.x = amount_loaded*20;//*20 to make the bar take up more of the screen.
+		//loading.box.scale.x = amount_loaded*20;//*20 to make the bar take up more of the screen.
+		loading.box.rotation.x = loading.box.rotation.x + 0.05;
+		loading.box.rotation.y = loading.box.rotation.x * 1.5;
 		renderer.render (loading.scene, loading.camera);
 	}//--------------------------------Loading Screen--------------------------------
 	else{
