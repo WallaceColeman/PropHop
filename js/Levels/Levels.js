@@ -767,7 +767,7 @@ class Levels {
     
 
     //floor
-    cubeGeometry = new THREE.CubeGeometry(607,5,160,500);
+    cubeGeometry = new THREE.CubeGeometry(607,5,160);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         0.9,
@@ -858,13 +858,96 @@ class Levels {
     trophybase.position.y = 2;
     trophybase.position.z = -45;
     scene.add(trophybase);
+
+    //books on shelf
+    //Add some more maybe
+    cubeGeometry = new THREE.CubeGeometry(3,12,9);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/BookBinding.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 7;
+    cube.position.x = 12;
+    cube.position.z = -45;
+    scene.add(cube);
+    
+    cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/BookBinding2.png' )}),
+      0.9,
+      0.2
+    );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 7;
+    cube.position.x = 15.2;
+    cube.position.z = -45;
+    scene.add(cube);
     
     
     //nightStand
     //lamp starts on nightstand
     
-    //bed
 
+    //bed
+    
+    //bed head
+    cubeGeometry = new THREE.CubeGeometry(100,50,5);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/HeadBoard.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -40;
+    cube.position.x = 0;
+    cube.position.z = -45;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //bed foot
+    cubeGeometry = new THREE.CubeGeometry(100,25,5);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Footboard.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -50;
+    cube.position.x = 0;
+    cube.position.z = 20;
+    cube.mass = 0;
+    scene.add(cube);
+
+
+    //bed matteress/base
+    cubeGeometry = new THREE.CubeGeometry(95,30,60);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Sheets.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -60;
+    cube.position.x = 0;
+    cube.position.z = -12.5;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //bed legs
     
 
     // player
@@ -910,7 +993,7 @@ class Levels {
       let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
       //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
       //opacity: 0.5, reflectivity:1
-      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}));
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}),0.0,0.5);
       lampshade.side = THREE.BackSide;
   
       lampbase.add(lamppole);
@@ -923,7 +1006,7 @@ class Levels {
       lampshade.position.y += 25;
 
       lampbase.position.x = -140;
-      lampbase.position.y = -55;
+      lampbase.position.y = 0;
       lampbase.position.z = -10;
   
       lampbase.name = "player:slide";
