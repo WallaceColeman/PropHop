@@ -830,6 +830,8 @@ class Levels {
     cube.mass = 0;
     scene.add(cube);
 
+    //shelf to slide along with lamp
+    //the player will have to catch the lip of the shelf with the lampshade to slide over danger
     //shelf above bed
     cubeGeometry = new THREE.CubeGeometry(100,3,20);
     cubeMaterial = Physijs.createMaterial(
@@ -845,6 +847,17 @@ class Levels {
     scene.add(cube);
     
     //trophy on shelf
+    //might want to use joints instead of adding to a base
+    let trophybase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(3,3,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    let trophymid = new Physijs.CylinderMesh(new THREE.CylinderGeometry(1,1,5,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    let trophycup = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,3,4,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    trophybase.add(trophymid);
+    trophymid.position.y = 2.5;
+    trophybase.add(trophycup);
+    trophycup.position.y = 7;
+    trophybase.position.y = 2;
+    trophybase.position.z = -45;
+    scene.add(trophybase);
     
     
     //nightStand
@@ -852,8 +865,7 @@ class Levels {
     
     //bed
 
-    //shelf to slide along with lamp
-    //the player will have to catch the lip of the shelf with the lampshade to slide over danger
+    
 
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
