@@ -987,7 +987,8 @@ class Levels {
     scene.add(cube);
 
     // back wall, but above hidden part
-    cubeGeometry = new THREE.CubeGeometry(12.25,300,1,1);
+    // not sure why this is so visible??? same z location, same depth
+    cubeGeometry = new THREE.CubeGeometry(12.5,300,1,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
