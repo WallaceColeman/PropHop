@@ -1341,7 +1341,8 @@ class Levels {
           let mouse = new Physijs.BoxMesh(new THREE.BoxGeometry(4.5,1.5,8),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           let topmouse = new Physijs.ConvexMesh( new THREE.SphereGeometry(3.5,8,8, Math.PI/2, Math.PI*2, 0, 0.5 * Math.PI), new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
 
-          mouse.userData = new Player(mouse, 0.5);
+          // It is difficult to switch to mouse player, not sure why
+          mouse.userData = new Player(mouse, 2);
           mouse.name = "player:slide";
           topmouse.name = "parent";
           mouseModel.name = "parent";
