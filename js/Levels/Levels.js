@@ -961,11 +961,12 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    //let light = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    let light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
+
     //scene.add(light);
 
     // light for testing:
-    let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
     scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
@@ -985,14 +986,14 @@ class Levels {
     cube.mass = 0;
     scene.add(cube);
 
-
-    cubeGeometry = new THREE.CubeGeometry(13,190,1,1);
+    // back wall, but above hidden part
+    cubeGeometry = new THREE.CubeGeometry(12.25,300,1,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = 5;
-    cube.position.x = -143;
-    cube.position.z = -46;
+    cube.position.y += 60;
+    cube.position.x += -143;
+    cube.position.z += -46;
     cube.mass = 0;
     scene.add(cube);
 
@@ -1204,7 +1205,7 @@ class Levels {
           dleg.position.z += 15;
           dleg.castShadow = true;
 
-          dbackside.userData = new Player(dbackside, 1);
+          dbackside.userData = new Player(dbackside, 2);
           deskModel.scale.set(6,6,6);
 
           dbackside.name = "player:slide";
@@ -1236,7 +1237,7 @@ class Levels {
           let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
           let dcarmR = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
           let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
-          dcbutt.userData = new Player(dcbutt, 0.1);
+          dcbutt.userData = new Player(dcbutt, 2.25);
           dcbutt.position.y += -70;
           dcbutt.castShadow = true;
           dcbutt.receiveShadow = true;
@@ -1305,8 +1306,8 @@ class Levels {
         function ( gltf ) {
           let laptopModel = gltf.scene;
 
-          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,19,29),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9}));
-          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,30),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9}));
+          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,19,29),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,30),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
           // transparent: true, opacity: 0.0
           // wireframe: true, opacity: 0.9
 
@@ -1335,6 +1336,7 @@ class Levels {
 
         // I am still going to move this to the objects class!
         // please don't that class does not work -Wallace
+        // okay I won't!
         GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
         function ( gltf ) {
           let mouseModel = gltf.scene;
@@ -1370,6 +1372,9 @@ class Levels {
 
           scene.add(mouse);
         });
+
+        // Possible implemelntation: rope https://github.com/mrdoob/three.js/blob/master/examples/physics_ammo_rope.html
+
 
     return scene;
   }
