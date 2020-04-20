@@ -481,7 +481,8 @@ class Levels {
     let fontLoader = new THREE.FontLoader(this.LoadingManager);
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
-    let lightA = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    //let lightA = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
+    let lightA = new THREE.AmbientLight(0xCCCCCC); // I brightened this up a bit, I hope you dont mind
     scene.add(lightA);
 
     let light = new THREE.PointLight( 0x404040, 1, 1000 );
@@ -964,8 +965,8 @@ class Levels {
     //scene.add(light);
 
     // light for testing:
-    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
-    //scene.add(light);
+    let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
     //  spotLight.position.set(-50,75,-10);
@@ -974,7 +975,7 @@ class Levels {
     //  scene.add(spotLight); 
 
     //back wall
-    let cubeGeometry = new THREE.CubeGeometry(288,200,1,1);
+    let cubeGeometry = new THREE.CubeGeometry(288,300,1,1);
     let cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
@@ -983,6 +984,8 @@ class Levels {
     cube.position.z = -46;
     cube.mass = 0;
     scene.add(cube);
+
+
     cubeGeometry = new THREE.CubeGeometry(13,190,1,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
@@ -1004,15 +1007,17 @@ class Levels {
 
 
     // hidden corridor
+    // back part of hidden corridor
     cubeGeometry = new THREE.CubeGeometry(317,16,5,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
     cube.position.y = -90;
     cube.position.x = 5;
-    cube.position.z = -55;
+    cube.position.z = -58;
     cube.mass = 0;
     scene.add(cube);
+    
     cubeGeometry = new THREE.CubeGeometry(313,2,10,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube2 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial,0);
@@ -1107,8 +1112,9 @@ class Levels {
       let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
       sphere.receiveShadow = true;
       sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 0
+      sphere.position.y += -40;
+      sphere.position.x += 0
+      sphere.position.z += 5
       sphere.name = "player:slide:start";
       sphere.userData = new Player(sphere, 6.5);
       scene.add(sphere);
