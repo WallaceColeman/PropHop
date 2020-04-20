@@ -1305,11 +1305,12 @@ class Levels {
         function ( gltf ) {
           let laptopModel = gltf.scene;
 
-          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,18,28),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
-          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,20),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
+          let laptopscreen = new Physijs.BoxMesh(new THREE.BoxGeometry(0.5,19,29),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9}));
+          let keyboard = new Physijs.BoxMesh(new THREE.BoxGeometry(20,1,30),new THREE.MeshLambertMaterial({wireframe: true, opacity: 0.9}));
           // transparent: true, opacity: 0.0
+          // wireframe: true, opacity: 0.9
 
-          keyboard.userData = new Player(keyboard, 0.1);
+          keyboard.userData = new Player(keyboard, 2);
           keyboard.position.x += -120;
           keyboard.position.y += -10;
           keyboard.rotation.y += Math.PI;
