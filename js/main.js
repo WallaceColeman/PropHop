@@ -1,7 +1,7 @@
 "use strict";
 
-Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
-Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
+Physijs.scripts.worker = 'js/ThreeLib/physijs_worker.js';
+Physijs.scripts.ammo = "https://wallacecoleman.github.io/PropHop/js/ThreeLib/ammo.js";
 
 let LOADING_NOT_DONE = true;
 let loadingManager = null;
@@ -42,7 +42,7 @@ loading.scene.add( new THREE.AmbientLight( 0x404040) );
 
 let fontLoader = new THREE.FontLoader();
 fontLoader.load(
-	'../Models/Font/Barcade_Regular_R.json',
+	'https://wallacecoleman.github.io/PropHop/Models/Font/Barcade_Regular_R.json',
 	function ( font ) {
 	  // do something with the font
 	  let shapes = font.generateShapes("<Loading>", 2);
