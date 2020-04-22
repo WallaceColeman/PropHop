@@ -614,7 +614,7 @@ class Levels {
         let GLTF_loader = new THREE.GLTFLoader(loadingManager);
       GLTF_loader.load(//Log
         // resource URL
-        '../../Models/Player_Models/Log.glb',
+        './Models/Player_Models/Log.glb',
         // called when the resource is loaded
         function ( gltf ) {
 
@@ -1327,7 +1327,7 @@ class Levels {
       scene.add(lampbase);
 
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);
-      GLTF_loader.load('../../Models/Player_Models/Level1/Desk.glb',
+      GLTF_loader.load('./Models/Player_Models/Level1/Desk.glb',
         function ( gltf ) {
           let deskModel = gltf.scene;
           let ddrawers = new Physijs.BoxMesh(new THREE.BoxGeometry(25,40,33),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0 }));
@@ -1379,7 +1379,7 @@ class Levels {
           scene.add(dbackside);
         });
 
-        GLTF_loader.load('../../Models/Player_Models/Level1/Desk_Chair.glb',
+        GLTF_loader.load('./Models/Player_Models/Level1/Desk_Chair.glb',
         function ( gltf ) {
           let deskchairModel = gltf.scene;
 
@@ -1459,7 +1459,7 @@ class Levels {
           scene.add(dcbutt);
         });
       
-        GLTF_loader.load('../../Models/Player_Models/Laptop.glb',
+        GLTF_loader.load('./Models/Player_Models/Laptop.glb',
         function ( gltf ) {
           let laptopModel = gltf.scene;
 
@@ -1492,7 +1492,7 @@ class Levels {
 
         // I am still going to move this to the objects class!
         // please don't that class does not work -Wallace
-        GLTF_loader.load('../../Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
+        GLTF_loader.load('./Models/Player_Models/mouse-gamer-free-model-by-oscar-creativo.glb',
         function ( gltf ) {
           let mouseModel = gltf.scene;
 
@@ -1664,7 +1664,7 @@ class Levels {
     let GLTF_loader = new THREE.GLTFLoader(loadingManager);
       GLTF_loader.load(//Log
         // resource URL
-        '../../Models/Player_Models/Log.glb',
+        './Models/Player_Models/Log.glb',
         // called when the resource is loaded
         function ( gltf ) {
 
@@ -1715,7 +1715,7 @@ class Levels {
 
 
 
-      GLTF_loader.load('../../Models/Player_Models/Ramp.glb',
+      GLTF_loader.load('./Models/Player_Models/Ramp.glb',
         function ( gltf ) {
           let rampModel = gltf.scene;
 
@@ -1770,7 +1770,7 @@ class Levels {
   
     GLTF_loader.load(//goal
         // resource URL
-        '../../Models/Static_Models/Goal.glb',
+        './Models/Static_Models/Goal.glb',
         // called when the resource is loaded
         function ( gltf ) {
             let goal = gltf.scene;
@@ -1843,7 +1843,7 @@ class Levels {
     plane.receiveShadow = true;
     scene.add(plane);
 
-    GLTF_loader.load('../../Models/Player_Models/Level1/Chair.glb',
+    GLTF_loader.load('./Models/Player_Models/Level1/Chair.glb',
     function ( gltf ) {
         let chairModel = gltf.scene;
 
@@ -1880,7 +1880,7 @@ class Levels {
 
       GLTF_loader.load(//Log
         // resource URL
-        '../../Models/Player_Models/Log.glb',
+        './Models/Player_Models/Log.glb',
         // called when the resource is loaded
         function ( gltf ) {
 
