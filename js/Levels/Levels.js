@@ -843,7 +843,7 @@ class Levels {
     cube.mass = 0;
     cube.position.x = 0;
     cube.position.y = 0;
-    cube.position.z = -40;
+    cube.position.z = -50;
     scene.add(cube);
     
     //trophy on shelf
@@ -890,8 +890,22 @@ class Levels {
     
     
     //nightStand
-    //lamp starts on nightstand
-    
+    //lamp starts on left nightstand
+    cubeGeometry = new THREE.CubeGeometry(25,5,25);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/DarkWood.png' )}),
+        0.5,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -50;
+    cube.position.x = -75
+    cube.position.z = -30
+    cube.mass = 0;
+    scene.add(cube);
 
     //bed
     
@@ -908,7 +922,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = -40;
     cube.position.x = 0;
-    cube.position.z = -45;
+    cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
 
@@ -925,12 +939,12 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = -50;
     cube.position.x = 0;
-    cube.position.z = 20;
+    cube.position.z = 15;
     cube.mass = 0;
     scene.add(cube);
 
 
-    //bed matteress/base
+    //bed mattress/base
     cubeGeometry = new THREE.CubeGeometry(95,30,60);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Sheets.png' )}),
@@ -943,7 +957,7 @@ class Levels {
     cube.receiveShadow = true;
     cube.position.y = -60;
     cube.position.x = 0;
-    cube.position.z = -12.5;
+    cube.position.z = -17.5;
     cube.mass = 0;
     scene.add(cube);
 
@@ -1005,16 +1019,16 @@ class Levels {
       //lampshade.castShadow = true;//commented out to try to get a better working lamp
       lampshade.position.y += 25;
 
-      lampbase.position.x = -140;
-      lampbase.position.y = 0;
-      lampbase.position.z = -10;
+      lampbase.position.x = -75;
+      lampbase.position.y = -45;
+      lampbase.position.z = -30;
   
       lampbase.name = "player:slide";
       lampshade.name = "parent";
       lamppole.name = "parent";
-      lampbase.userData = new Player(lampbase, 3); 
+      lampbase.userData = new Player(lampbase, 2); 
                 
-      lampbase.position.y += 1;
+
   
       let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
       //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
