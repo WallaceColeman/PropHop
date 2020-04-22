@@ -1,6 +1,6 @@
 "use strict";
 
-Physijs.scripts.worker = 'PropHop/js/ThreeLib/physijs_worker.js';
+Physijs.scripts.worker = '/js/ThreeLib/physijs_worker.js';
 Physijs.scripts.ammo = "http://chandlerprall.github.io/Physijs/examples/js/ammo.js";
 
 let LOADING_NOT_DONE = true;
