@@ -905,58 +905,62 @@ class Levels {
       cube.position.y = y;
       cube.position.x = x;
       cube.position.z = z;
-      cube.mass = 0;
+      //cube.mass = 0;
       scene.add(cube);
 
       //nightstand shelf
       let nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
       nightStandPart.receiveShadow = true;
-      nightStandPart.position.y = -10;
+      nightStandPart.castShadow = true;
+      nightStandPart.position.x = x;
+      nightStandPart.position.y = y - 10;
+      nightStandPart.position.z = z;
       nightStandPart.mass = 0;
 
-      cube.add(nightStandPart);
+      scene.add(nightStandPart);
 
-      //nightstand leg
+      //nightstand legs
       cubeGeometry = new THREE.CubeGeometry(5,25,5);
       nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
       nightStandPart.receiveShadow = true;
-      nightStandPart.position.x = -10;
-      nightStandPart.position.y = -12.5;
-      nightStandPart.position.z = -10;
+      nightStandPart.position.x = x-10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z-10;
       nightStandPart.mass = 0;
 
-      cube.add(nightStandPart);
+      scene.add(nightStandPart);
 
       nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
       nightStandPart.receiveShadow = true;
-      nightStandPart.position.x = 10;
-      nightStandPart.position.y = -12.5;
-      nightStandPart.position.z = -10;
+      nightStandPart.position.x = x+10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z-10;
       nightStandPart.mass = 0;
 
-      cube.add(nightStandPart);
+      scene.add(nightStandPart);
 
       nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
       nightStandPart.receiveShadow = true;
-      nightStandPart.position.x = -10;
-      nightStandPart.position.y = -12.5;
-      nightStandPart.position.z = 10;
-      nightStandPart.mass = 0;
+      nightStandPart.position.x = x-10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z+10;
+      //nightStandPart.mass = 0;
 
-      cube.add(nightStandPart);
+      scene.add(nightStandPart);
 
       nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
       nightStandPart.receiveShadow = true;
-      nightStandPart.position.x = 10;
-      nightStandPart.position.y = -12.5;
-      nightStandPart.position.z = 10;
-      nightStandPart.mass = 0;
+      nightStandPart.position.x = x+10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z+10;
+      //nightStandPart.mass = 0;
 
-      cube.add(nightStandPart);
+      scene.add(nightStandPart);
       
     }
     
     buildAndPlaceNightstand(scene,-75,-50,-30);
+    buildAndPlaceNightstand(scene, 75,-50,-30);
     // cube.position.y = -50;
     // cube.position.x = -75
     // cube.position.z = -30
