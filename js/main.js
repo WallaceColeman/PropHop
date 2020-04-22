@@ -42,7 +42,7 @@ loading.scene.add( new THREE.AmbientLight( 0x404040) );
 
 let fontLoader = new THREE.FontLoader();
 fontLoader.load(
-	'./Models/Font/Barcade_Regular_R.json',
+	'PropHop/Models/Font/Barcade_Regular_R.json',
 	function ( font ) {
 	  // do something with the font
 	  let shapes = font.generateShapes("<Loading>", 2);
