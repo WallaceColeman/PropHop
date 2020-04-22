@@ -777,7 +777,7 @@ class Levels {
     cubeMaterial.map.repeat.set( 1, 1 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = -100; //keep
+    cube.position.y = -75; //keep
     cube.position.x = 150;
     cube.position.z = 26;
     cube.mass = 0;
@@ -888,24 +888,78 @@ class Levels {
     cube.position.z = -45;
     scene.add(cube);
     
+    let buildAndPlaceNightstand = function(scene, x,y,z){
+      //nightStand
+      //lamp starts on left nightstand
+      let cubeGeometry = new THREE.CubeGeometry(25,5,25);
+      let cubeMaterial = Physijs.createMaterial(
+          new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/DarkWood.png' )}),
+          0.5,
+          0.2
+      );
+      cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+      cubeMaterial.map.repeat.set( 1, 1 );
+      let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      cube.receiveShadow = true;
+      cube.castShadow = true;
+      cube.position.y = y;
+      cube.position.x = x;
+      cube.position.z = z;
+      cube.mass = 0;
+      scene.add(cube);
+
+      //nightstand shelf
+      let nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.y = -10;
+      nightStandPart.mass = 0;
+
+      cube.add(nightStandPart);
+
+      //nightstand leg
+      cubeGeometry = new THREE.CubeGeometry(5,25,5);
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = -10;
+      nightStandPart.position.y = -12.5;
+      nightStandPart.position.z = -10;
+      nightStandPart.mass = 0;
+
+      cube.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = 10;
+      nightStandPart.position.y = -12.5;
+      nightStandPart.position.z = -10;
+      nightStandPart.mass = 0;
+
+      cube.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = -10;
+      nightStandPart.position.y = -12.5;
+      nightStandPart.position.z = 10;
+      nightStandPart.mass = 0;
+
+      cube.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = 10;
+      nightStandPart.position.y = -12.5;
+      nightStandPart.position.z = 10;
+      nightStandPart.mass = 0;
+
+      cube.add(nightStandPart);
+      
+    }
     
-    //nightStand
-    //lamp starts on left nightstand
-    cubeGeometry = new THREE.CubeGeometry(25,5,25);
-    cubeMaterial = Physijs.createMaterial(
-        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/DarkWood.png' )}),
-        0.5,
-        0.2
-    );
-    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
-    cubeMaterial.map.repeat.set( 1, 1 );
-    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-    cube.receiveShadow = true;
-    cube.position.y = -50;
-    cube.position.x = -75
-    cube.position.z = -30
-    cube.mass = 0;
-    scene.add(cube);
+    buildAndPlaceNightstand(scene,-75,-50,-30);
+    // cube.position.y = -50;
+    // cube.position.x = -75
+    // cube.position.z = -30
 
     //bed
     
@@ -925,7 +979,6 @@ class Levels {
     cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
-
     //bed foot
     cubeGeometry = new THREE.CubeGeometry(100,25,5);
     cubeMaterial = Physijs.createMaterial(
@@ -1026,9 +1079,7 @@ class Levels {
       lampbase.name = "player:slide";
       lampshade.name = "parent";
       lamppole.name = "parent";
-      lampbase.userData = new Player(lampbase, 2); 
-                
-
+      lampbase.userData = new Player(lampbase, 2); //don't raise or the lamp can jump all the way over the bed
   
       let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
       //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
