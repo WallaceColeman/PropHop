@@ -767,7 +767,7 @@ class Levels {
     
 
     //floor
-    cubeGeometry = new THREE.CubeGeometry(607,5,160,500);
+    cubeGeometry = new THREE.CubeGeometry(607,5,160);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/hardwood2_diffuse.jpg' )}),
         0.9,
@@ -777,7 +777,7 @@ class Levels {
     cubeMaterial.map.repeat.set( 1, 1 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = -100; //keep
+    cube.position.y = -75; //keep
     cube.position.x = 150;
     cube.position.z = 26;
     cube.mass = 0;
@@ -830,6 +830,8 @@ class Levels {
     cube.mass = 0;
     scene.add(cube);
 
+    //shelf to slide along with lamp
+    //the player will have to catch the lip of the shelf with the lampshade to slide over danger
     //shelf above bed
     cubeGeometry = new THREE.CubeGeometry(100,3,20);
     cubeMaterial = Physijs.createMaterial(
@@ -841,19 +843,183 @@ class Levels {
     cube.mass = 0;
     cube.position.x = 0;
     cube.position.y = 0;
-    cube.position.z = -40;
+    cube.position.z = -50;
     scene.add(cube);
     
     //trophy on shelf
-    
-    
-    //nightStand
-    //lamp starts on nightstand
-    
-    //bed
+    //might want to use joints instead of adding to a base
+    let trophybase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(3,3,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    let trophymid = new Physijs.CylinderMesh(new THREE.CylinderGeometry(1,1,5,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    let trophycup = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,3,4,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    trophybase.add(trophymid);
+    trophymid.position.y = 2.5;
+    trophybase.add(trophycup);
+    trophycup.position.y = 7;
+    trophybase.position.y = 2;
+    trophybase.position.z = -45;
+    scene.add(trophybase);
 
-    //shelf to slide along with lamp
-    //the player will have to catch the lip of the shelf with the lampshade to slide over danger
+    //books on shelf
+    //Add some more maybe
+    cubeGeometry = new THREE.CubeGeometry(3,12,9);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/BookBinding.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 7;
+    cube.position.x = 12;
+    cube.position.z = -45;
+    scene.add(cube);
+    
+    cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/BookBinding2.png' )}),
+      0.9,
+      0.2
+    );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = 7;
+    cube.position.x = 15.2;
+    cube.position.z = -45;
+    scene.add(cube);
+    
+    let buildAndPlaceNightstand = function(scene, x,y,z){
+      //nightStand
+      //lamp starts on left nightstand
+      let cubeGeometry = new THREE.CubeGeometry(25,5,25);
+      let cubeMaterial = Physijs.createMaterial(
+          new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/DarkWood.png' )}),
+          0.5,
+          0.2
+      );
+      cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+      cubeMaterial.map.repeat.set( 1, 1 );
+      let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      cube.receiveShadow = true;
+      cube.castShadow = true;
+      cube.position.y = y;
+      cube.position.x = x;
+      cube.position.z = z;
+      cube.mass = 0;
+      scene.add(cube);
+
+      //nightstand shelf
+      let nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.castShadow = true;
+      nightStandPart.position.x = x;
+      nightStandPart.position.y = y - 12.5;
+      nightStandPart.position.z = z;
+      nightStandPart.mass = 0;
+
+      scene.add(nightStandPart);
+
+      //nightstand legs
+      cubeGeometry = new THREE.CubeGeometry(5,25,5);
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = x-10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z-10;
+      nightStandPart.mass = 0;
+
+      scene.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = x+10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z-10;
+      nightStandPart.mass = 0;
+
+      scene.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = x-10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z+10;
+      nightStandPart.mass = 0;
+
+      scene.add(nightStandPart);
+
+      nightStandPart = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+      nightStandPart.receiveShadow = true;
+      nightStandPart.position.x = x+10;
+      nightStandPart.position.y = y-12.5;
+      nightStandPart.position.z = z+10;
+      nightStandPart.mass = 0;
+
+      scene.add(nightStandPart);
+      
+    }
+    
+    buildAndPlaceNightstand(scene,-75,-50,-35);
+    buildAndPlaceNightstand(scene, 75,-50,-35);
+    // cube.position.y = -50;
+    // cube.position.x = -75
+    // cube.position.z = -30
+
+    //bed
+    
+    //bed head
+    cubeGeometry = new THREE.CubeGeometry(100,50,5);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/HeadBoard.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -40;
+    cube.position.x = 0;
+    cube.position.z = -50;
+    cube.mass = 0;
+    scene.add(cube);
+    //bed foot
+    cubeGeometry = new THREE.CubeGeometry(100,25,5);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Footboard.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -50;
+    cube.position.x = 0;
+    cube.position.z = 15;
+    cube.mass = 0;
+    scene.add(cube);
+
+
+    //bed mattress/base
+    cubeGeometry = new THREE.CubeGeometry(95,30,60);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Sheets.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.position.y = -60;
+    cube.position.x = 0;
+    cube.position.z = -17.5;
+    cube.mass = 0;
+    scene.add(cube);
+
+    //bed legs
+    
 
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
@@ -898,7 +1064,7 @@ class Levels {
       let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
       //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
       //opacity: 0.5, reflectivity:1
-      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}));
+      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}),0.0,0.5);
       lampshade.side = THREE.BackSide;
   
       lampbase.add(lamppole);
@@ -910,16 +1076,14 @@ class Levels {
       //lampshade.castShadow = true;//commented out to try to get a better working lamp
       lampshade.position.y += 25;
 
-      lampbase.position.x = -140;
-      lampbase.position.y = -55;
-      lampbase.position.z = -10;
+      lampbase.position.x = -75;
+      lampbase.position.y = -45;
+      lampbase.position.z = -30;
   
       lampbase.name = "player:slide";
       lampshade.name = "parent";
       lamppole.name = "parent";
-      lampbase.userData = new Player(lampbase, 3); 
-                
-      lampbase.position.y += 1;
+      lampbase.userData = new Player(lampbase, 2); //don't raise or the lamp can jump all the way over the bed
   
       let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
       //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
