@@ -161,7 +161,7 @@ class Levels {
     //title
     fontLoader.load(
       // resource URL
-      '../../Models/Font/Barcade_Regular_R.json',
+      '../Models/Font/Barcade_Regular_R.json',
       // onLoad callback
       function ( font ) {
         // do something with the font
