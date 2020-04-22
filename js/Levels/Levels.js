@@ -161,7 +161,7 @@ class Levels {
     //title
     fontLoader.load(
       // resource URL
-      '../Models/Font/Barcade_Regular_R.json',
+      './Models/Font/Barcade_Regular_R.json',
       // onLoad callback
       function ( font ) {
         // do something with the font
@@ -194,7 +194,7 @@ class Levels {
     //start
     fontLoader.load(
       // resource URL
-      '../Models/Font/Barcade_Regular_R.json',
+      './Models/Font/Barcade_Regular_R.json',
     
       // onLoad callback
       function ( font ) {
@@ -246,7 +246,7 @@ class Levels {
     //level select
     fontLoader.load(
       // resource URL
-      '../Models/Font/Barcade_Regular_R.json',
+      './Models/Font/Barcade_Regular_R.json',
 
       // onLoad callback
       function ( font ) {
@@ -313,7 +313,7 @@ class Levels {
     //Level Select Menu
     fontLoader.load(
       // resource URL
-      '../Models/Font/Barcade_Regular_R.json',
+      './Models/Font/Barcade_Regular_R.json',
     
       // onLoad callback
       function ( font ) {
@@ -518,7 +518,7 @@ class Levels {
     //To Zoom in and out use the scroll wheel on your mouse
     fontLoader.load(
       // resource URL
-      '../Models/Font/Barcade_Regular_R.json',
+      './Models/Font/Barcade_Regular_R.json',
       // onLoad callback
       function ( font ) {
         // do something with the font
