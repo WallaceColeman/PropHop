@@ -69,7 +69,7 @@ class Levels {
         
         break;
       case 1: //level 1
-        
+        return this.get_level_1_controls(player);
         break;
       case 2: // you get the point
 
@@ -731,7 +731,7 @@ class Levels {
     }
     //any special controls for the level go here !W!
     //like if we implemented flip gravity
-    //NOT SPECIAL CONTROLLS FOR AN OBJECT! !W! !W!
+    //NOT SPECIAL CONTROLS FOR AN OBJECT! !W! !W!
     return false;//player hasn't finished
   }
 
@@ -1108,6 +1108,19 @@ class Levels {
       scene.add(lampbase);
 
     return scene;
+  }
+
+  get_level_1_controls(player){
+    //buildAndPlaceNightstand(scene, 75,-50,-35);
+    console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+    if ( player.position.y > -50 
+      && player.position.y < -44 
+      && player.position.x > 65 
+      && player.position.x < 85
+      && player.position.z > -45
+      && player.position.z < -25){
+        return true;
+      }
   }
 
   level_1_click_controls(rayCaster, player){
