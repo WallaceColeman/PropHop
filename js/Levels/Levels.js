@@ -192,6 +192,7 @@ class Levels {
     );
 
     //start
+    let self = this;
     fontLoader.load(
       // resource URL
       './Models/Font/Barcade_Regular_R.json',
@@ -199,7 +200,12 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        let shapes = font.generateShapes("<START>", 10);
+        let shapes;
+        if(self.max_level < 1){
+          shapes = font.generateShapes("<START>", 10);
+        }else{
+          shapes = font.generateShapes("<CONTINUE>", 10);
+        }
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
         let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
@@ -480,7 +486,7 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //let lightA = new THREE.AmbientLight( 0x404040 ); // soft white light so entire room isn't super dark. Disable this for dark room!
-    let lightA = new THREE.AmbientLight(0xCCCCCC); // I brightened this up a bit, I hope you dont mind
+    let lightA = new THREE.AmbientLight(0xCCCCCC); // I brightened this up a bit, I hope you don't mind //S'all good
     scene.add(lightA);
 
     let light = new THREE.PointLight( 0x404040, 1, 1000 );
@@ -1119,7 +1125,7 @@ class Levels {
       && player.position.z < -25
       && player.name == "player:slide:lamp")
       {
-        if(this.counter > 100){
+        if(this.counter > 70){
           this.max_level = (this.max_level < 2) ? 2 : this.max_level;//update max level to 2 if it isn't already there or higher
           this.counter = 0;
           return true;
