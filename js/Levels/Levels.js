@@ -7,6 +7,7 @@ class Levels {
     this.last_level = -2;
     this.max_level = -2;
     this.scene = new Physijs.Scene;
+    this.counter = 0;
     //this.modelLoader = new GetPhysiModels(LM);
   }
   
@@ -19,7 +20,6 @@ class Levels {
       case -2:
         this.current_level = -2;
         this.last_level = -2;
-        console.log("HERERERE")
         return this.get_tutorial_scene();
         break;
       case -1:
@@ -199,7 +199,6 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        //console.log("here");
         let shapes = font.generateShapes("<START>", 10);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -251,7 +250,6 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        //console.log("here");
         let shapes = font.generateShapes("<Level Select>", 10);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
@@ -672,7 +670,6 @@ class Levels {
       sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
       sphereMaterial.map.repeat.set( 1, .5 );
       let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      console.log("tennis ball mass: " + sphere.mass);
       sphere.mass = 5;
       sphere.receiveShadow = true;
       sphere.castShadow = true;
@@ -1081,7 +1078,7 @@ class Levels {
       lampbase.position.y = -45;
       lampbase.position.z = -30;
   
-      lampbase.name = "player:slide";
+      lampbase.name = "player:slide:lamp";
       lampshade.name = "parent";
       lamppole.name = "parent";
       lampbase.userData = new Player(lampbase, 2); //don't raise or the lamp can jump all the way over the bed
@@ -1112,14 +1109,25 @@ class Levels {
 
   get_level_1_controls(player){
     //buildAndPlaceNightstand(scene, 75,-50,-35);
-    console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+    
+    //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
     if ( player.position.y > -50 
       && player.position.y < -44 
       && player.position.x > 65 
       && player.position.x < 85
       && player.position.z > -45
-      && player.position.z < -25){
-        return true;
+      && player.position.z < -25
+      && player.name == "player:slide:lamp")
+      {
+        if(this.counter > 100){
+          this.max_level = (this.max_level < 2) ? 2 : this.max_level;//update max level to 2 if it isn't already there or higher
+          this.counter = 0;
+          return true;
+        }
+        else{
+          this.counter++;
+          console.log("count: " + this.counter);
+        }
       }
   }
 
@@ -1345,6 +1353,7 @@ class Levels {
         lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
         
       });
+      
       scene.add(lampbase);
 
       let GLTF_loader = new THREE.GLTFLoader(loadingManager);

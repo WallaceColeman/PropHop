@@ -312,7 +312,6 @@ function renderScene(){
 		levels.new_loading_manager(loadingManager);
 		amount_loaded = 0;
 		
-		
 		player = scene.getObjectByName("player:slide:start").id;
 		
 		jumpCaster.far = scene.getObjectById(player).userData.jumpCasterFar;
