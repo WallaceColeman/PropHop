@@ -234,18 +234,34 @@ function onMouseDown(e){
             player = intersects[0].object.id;
             
         }
-        else if( intersects[0].object.name == "parent"){
-            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
-            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+        // else if( intersects[0].object.name == "parent"){
+        //     scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+        //     scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
             
-            player = intersects[0].object.parent.id;
-        }
-        else if(intersects[0].object.parent.name == "parent"){
-            scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
-            scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+        //     player = intersects[0].object.parent.id;
+        // }
+        // else if(intersects[0].object.parent.name == "parent"){
+        //     scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+        //     scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
             
-            player = intersects[0].object.parent.parent.id;
-        }
+        //     player = intersects[0].object.parent.parent.id;
+		// }
+		let x = intersects[0].object.parent;
+		while(x != undefined){
+			try{
+				if(x.name.split(":")[0] == "player"){
+					scene.getObjectById(player).setLinearVelocity(new THREE.Vector3(0,0,0));
+            		scene.getObjectById(player).setAngularVelocity(new THREE.Vector3(0,0,0));
+            
+					player = x.id;
+					break;
+				}
+				x = x.parent;
+			}
+			catch{
+				break;
+			}
+		}
         jumpCaster.far = scene.getObjectById(player).userData.jumpCasterFar;
 
     }
@@ -296,7 +312,6 @@ function renderScene(){
 		levels.new_loading_manager(loadingManager);
 		amount_loaded = 0;
 		
-		
 		player = scene.getObjectByName("player:slide:start").id;
 		
 		jumpCaster.far = scene.getObjectById(player).userData.jumpCasterFar;
@@ -308,8 +323,12 @@ function renderScene(){
 		scene.simulate();
 		requestAnimationFrame(renderScene);
 		let levelDone = levels.level_controls(scene.getObjectById(player));
-		if(levelDone){
+		if(levelDone == 1){
 			requested_level = 0;
+			go_to_load = true;
+		}
+		else if(levelDone == -1){
+			requested_level = -5;
 			go_to_load = true;
 		}
 		controls();
