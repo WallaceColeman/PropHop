@@ -1136,30 +1136,32 @@ class Levels {
     let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
     sphere.receiveShadow = true;
     sphere.castShadow = true;
-    sphere.position.y = 0;
-    sphere.position.x = 0
+    sphere.position.x = -110;
+    sphere.position.y = -65;
+    sphere.position.z = -35;
+
     sphere.name = "player:slide:start";
     sphere.userData = new Player(sphere, 6.5);
     scene.add(sphere);
 
     
-    sphereGeometry = new THREE.SphereGeometry(3,36,36);
-    sphereMaterial = Physijs.createMaterial(
-    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
-    0.9,
-    0.1
-    );
+    // sphereGeometry = new THREE.SphereGeometry(3,36,36);
+    // sphereMaterial = Physijs.createMaterial(
+    // new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
+    // 0.9,
+    // 0.1
+    // );
 
-    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-    sphereMaterial.map.repeat.set( 1, .5 );
-    sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-    sphere.receiveShadow = true;
-    sphere.castShadow = true;
-    sphere.position.y = 0;
-    sphere.position.x = 25;
-    sphere.name = "player:slide";
-    sphere.userData = new Player(sphere, 3.5);
-    scene.add(sphere);
+    // sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+    // sphereMaterial.map.repeat.set( 1, .5 );
+    // sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+    // sphere.receiveShadow = true;
+    // sphere.castShadow = true;
+    // sphere.position.y = 0;
+    // sphere.position.x = -100;
+    // sphere.name = "player:slide";
+    // sphere.userData = new Player(sphere, 3.5);
+    // scene.add(sphere);
 
     // lamp
     let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
@@ -1215,7 +1217,7 @@ class Levels {
       // onLoad callback
       function ( font ) {
         // do something with the font
-        let shapes = font.generateShapes("(Get the lamp to the)\n(other nightstand)\n(without messing up)\n[the sheets>", 5);
+        let shapes = font.generateShapes("(Get the lamp to the)\n(other nightstand)\n(without messing)\n[up the sheets>", 5);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
         let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
