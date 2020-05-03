@@ -832,11 +832,11 @@ class Levels {
     //  scene.add(spotLight); 
 
     //back wall
-    let cubeGeometry = new THREE.CubeGeometry(300,200,1,1);
+    let cubeGeometry = new THREE.CubeGeometry(300,400,1,1);
     let cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = -2;
+    cube.position.y = 100;
     cube.position.x = 0;
     cube.position.z = -50;
     cube.mass = 0;
@@ -861,7 +861,7 @@ class Levels {
     scene.add(cube);
 
     //right wall
-    cubeGeometry = new THREE.CubeGeometry(3,225,155,1);
+    cubeGeometry = new THREE.CubeGeometry(3,425,155,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial(white1,
         0.8,
@@ -871,14 +871,14 @@ class Levels {
     // cubeMaterial.map.repeat.set( 1, .5 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = 0;
+    cube.position.y = 100;
     cube.position.x = 150;
     cube.position.z = 25;
     cube.mass = 0;
     scene.add(cube);
 
     //left wall
-    cubeGeometry = new THREE.CubeGeometry(3,200,155,1);
+    cubeGeometry = new THREE.CubeGeometry(3,400,155,1);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial(white1,
         0.8,
@@ -886,7 +886,7 @@ class Levels {
     ));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = 0;
+    cube.position.y = 100;
     cube.position.x = -150;
     cube.position.z = 25;
     cube.mass = 0;
