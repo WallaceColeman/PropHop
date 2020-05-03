@@ -323,8 +323,12 @@ function renderScene(){
 		scene.simulate();
 		requestAnimationFrame(renderScene);
 		let levelDone = levels.level_controls(scene.getObjectById(player));
-		if(levelDone){
+		if(levelDone == 1){
 			requested_level = 0;
+			go_to_load = true;
+		}
+		else if(levelDone == -1){
+			requested_level = -5;
 			go_to_load = true;
 		}
 		controls();

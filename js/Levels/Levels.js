@@ -17,6 +17,9 @@ class Levels {
   
   get_level(num){
     switch (parseInt(num)) {
+      case -5:
+        return this.get_lose_scene();
+        break;
       case -2:
         this.current_level = -2;
         this.last_level = -2;
@@ -139,7 +142,77 @@ class Levels {
         break;
     }
   }
+  
+  get_lose_scene(){
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    let fontLoader = new THREE.FontLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,0,0));
+    let lightA = new THREE.AmbientLight(0xCCCCCC);
+    scene.add(lightA);
+
+    let cubeGeometry = new THREE.CubeGeometry(0.1,0.1,0.1);
+    let cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshBasicMaterial(/*{transparent: true, opacity: 0.0}*/ {color: 0x241BB6}),
+      0.5,
+      0.5
+    );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.mass = 0;
+    cube.name = "player:slide:start";
+    cube.userData = new Player(cube,  1);
+    scene.add(cube);
+
+    //title
+    fontLoader.load(
+      // resource URL
+      './Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("<You Lose>", 10);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = 10;
+        scene.add( text );
+
+
+        shapes = font.generateShapes("<esc to return to main menu>", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+
+        text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = -10;
+        scene.add( text );
+      },
     
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    return scene;
+  }
+
   get_main_menu(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -846,7 +919,7 @@ class Levels {
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.mass = 0;
     cube.position.x = 0;
-    cube.position.y = 0;
+    cube.position.y = -5;
     cube.position.z = -50;
     scene.add(cube);
     
@@ -859,8 +932,10 @@ class Levels {
     trophymid.position.y = 2.5;
     trophybase.add(trophycup);
     trophycup.position.y = 7;
-    trophybase.position.y = 2;
+    trophybase.position.y = (2-5);
     trophybase.position.z = -45;
+    trophybase.position.x = -15;
+    trophybase.mass = 1;
     scene.add(trophybase);
 
     //books on shelf
@@ -875,9 +950,10 @@ class Levels {
     cubeMaterial.map.repeat.set( 1, 1 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = 7;
+    cube.position.y = 7-5;
     cube.position.x = 12;
     cube.position.z = -45;
+    cube.mass = 1;
     scene.add(cube);
     
     cubeMaterial = Physijs.createMaterial(
@@ -887,9 +963,10 @@ class Levels {
     );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = 7;
+    cube.position.y = 7-5;
     cube.position.x = 15.2;
     cube.position.z = -45;
+    cube.mass = 1;
     scene.add(cube);
     
     let buildAndPlaceNightstand = function(scene, x,y,z){
@@ -982,13 +1059,13 @@ class Levels {
     cubeMaterial.map.repeat.set( 1, 1 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = -40;
+    cube.position.y = -45;
     cube.position.x = 0;
     cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
     //bed foot
-    cubeGeometry = new THREE.CubeGeometry(100,25,5);
+    cubeGeometry = new THREE.CubeGeometry(100,35,5);
     cubeMaterial = Physijs.createMaterial(
         new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Footboard.png' )}),
         0.9,
@@ -998,7 +1075,7 @@ class Levels {
     cubeMaterial.map.repeat.set( 1, 1 );
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
     cube.receiveShadow = true;
-    cube.position.y = -50;
+    cube.position.y = -55;
     cube.position.x = 0;
     cube.position.z = 15;
     cube.mass = 0;
@@ -1024,6 +1101,27 @@ class Levels {
 
     //bed legs
     
+    //boxybox
+    cubeGeometry = new THREE.CubeGeometry(10,15,10);
+    cubeMaterial = Physijs.createMaterial(
+        new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Crate.png' )}),
+        0.9,
+        0.2
+    );
+    cubeMaterial.map.wrapS = cubeMaterial.map.wrapT = THREE.RepeatWrapping;
+    cubeMaterial.map.repeat.set( 1, 1 );
+    cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.receiveShadow = true;
+    cube.castShadow = true;
+    // lampbase.position.x = -75;
+    // lampbase.position.y = -45;
+    // lampbase.position.z = -30;
+    cube.position.y = -40;
+    cube.position.x = -80;
+    cube.position.z = -38;
+    cube.name = "player:slide"
+    cube.userData = new SlidePlayer(cube, 0);
+    scene.add(cube);
 
     // player
     let sphereGeometry = new THREE.SphereGeometry(6,36,36);
@@ -1033,82 +1131,117 @@ class Levels {
       1.5
     );
 
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 0
-      sphere.name = "player:slide:start";
-      sphere.userData = new Player(sphere, 6.5);
-      scene.add(sphere);
+    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+    sphereMaterial.map.repeat.set( 1, .5 );
+    let sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+    sphere.receiveShadow = true;
+    sphere.castShadow = true;
+    sphere.position.y = 0;
+    sphere.position.x = 0
+    sphere.name = "player:slide:start";
+    sphere.userData = new Player(sphere, 6.5);
+    scene.add(sphere);
 
+    
+    sphereGeometry = new THREE.SphereGeometry(3,36,36);
+    sphereMaterial = Physijs.createMaterial(
+    new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
+    0.9,
+    0.1
+    );
+
+    sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
+    sphereMaterial.map.repeat.set( 1, .5 );
+    sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
+    sphere.receiveShadow = true;
+    sphere.castShadow = true;
+    sphere.position.y = 0;
+    sphere.position.x = 25;
+    sphere.name = "player:slide";
+    sphere.userData = new Player(sphere, 3.5);
+    scene.add(sphere);
+
+    // lamp
+    let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
+    //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
+    //opacity: 0.5, reflectivity:1
+    let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}),0.0,0.5);
+    lampshade.side = THREE.BackSide;
+
+    lampbase.add(lamppole);
+    lampbase.castShadow = true;
+    lamppole.castShadow = true;
+    lamppole.position.y += 14;
+
+    lampbase.add(lampshade);
+    //lampshade.castShadow = true;//commented out to try to get a better working lamp
+    lampshade.position.y += 25;
+
+    lampbase.position.x = -72;
+    lampbase.position.y = -45;
+    lampbase.position.z = -30;
+
+    lampbase.name = "player:slide:lamp";
+    lampshade.name = "parent";
+    lamppole.name = "parent";
+    lampbase.userData = new Player(lampbase, 2); //don't raise or the lamp can jump all the way over the bed
+
+    let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
+    //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
+    pointLight1.castShadow = true;
+    //pointLight2.castShadow = true;//commented out to try to get a better working lamp
+
+    lampshade.add(pointLight1);
+
+    //lampshade.add(pointLight2);//commented out to try to get a better working lamp
+    //pointLight1.position.x += 2;//commented out to try to get a better working lamp
+    pointLight1.position.y += 7;
+    //pointLight2.position.x += -2;//commented out to try to get a better working lamp
+    //pointLight2.position.y += 7;//commented out to try to get a better working lamp
+
+    
+    lampbase.addEventListener("ready", function(){//this will keep the lamp from tipping over
       
-      sphereGeometry = new THREE.SphereGeometry(3,36,36);
-      sphereMaterial = Physijs.createMaterial(
-      new THREE.MeshLambertMaterial({ map: loader.load( 'Models/Images/Tennis_Ball2.png' )}),
-      0.9,
-      0.1
-      );
-
-      sphereMaterial.map.wrapS = sphereMaterial.map.wrapT = THREE.RepeatWrapping;
-      sphereMaterial.map.repeat.set( 1, .5 );
-      sphere = new Physijs.SphereMesh(sphereGeometry, sphereMaterial);
-      sphere.receiveShadow = true;
-      sphere.castShadow = true;
-      sphere.position.y = 0;
-      sphere.position.x = 25;
-      sphere.name = "player:slide";
-      sphere.userData = new Player(sphere, 3.5);
-      scene.add(sphere);
-
-      // lamp
-      let lampbase = new Physijs.CylinderMesh(new THREE.CylinderGeometry(4,4,1,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
-      let lamppole = new Physijs.CylinderMesh(new THREE.CylinderGeometry(0.5,0.5,28,12),new THREE.MeshLambertMaterial({color:'#808080', reflectivity:1}));
-      //let lampshade = new Physijs.ConcaveMesh(new THREE.CylinderGeometry(5,5,8.5,12),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.0 }));
-      //opacity: 0.5, reflectivity:1
-      let lampshade = new Physijs.CylinderMesh(new THREE.CylinderGeometry(5,5,15,12,1,true),new THREE.MeshLambertMaterial({side:THREE.DoubleSide, color:'#204036', emissive:"rgb(220,220,220)", emissiveIntensity:.5}),0.0,0.5);
-      lampshade.side = THREE.BackSide;
-  
-      lampbase.add(lamppole);
-      lampbase.castShadow = true;
-      lamppole.castShadow = true;
-      lamppole.position.y += 14;
-  
-      lampbase.add(lampshade);
-      //lampshade.castShadow = true;//commented out to try to get a better working lamp
-      lampshade.position.y += 25;
-
-      lampbase.position.x = -75;
-      lampbase.position.y = -45;
-      lampbase.position.z = -30;
-  
-      lampbase.name = "player:slide:lamp";
-      lampshade.name = "parent";
-      lamppole.name = "parent";
-      lampbase.userData = new Player(lampbase, 2); //don't raise or the lamp can jump all the way over the bed
-  
-      let pointLight1 = new THREE.PointLight(0x404040, 1, 250);//better lamp maybe
-      //let pointLight2 = new THREE.PointLight(0x404040, 5, 25);//commented out to try to get a better working lamp
-      pointLight1.castShadow = true;
-      //pointLight2.castShadow = true;//commented out to try to get a better working lamp
-  
-      lampshade.add(pointLight1);
-
-      //lampshade.add(pointLight2);//commented out to try to get a better working lamp
-      //pointLight1.position.x += 2;//commented out to try to get a better working lamp
-      pointLight1.position.y += 7;
-      //pointLight2.position.x += -2;//commented out to try to get a better working lamp
-      //pointLight2.position.y += 7;//commented out to try to get a better working lamp
-
+      lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
       
-      lampbase.addEventListener("ready", function(){//this will keep the lamp from tipping over
-        
-        lampbase.setAngularFactor(new THREE.Vector3(0, 0, 0));
-        
-      });
-      scene.add(lampbase);
+    });
+    scene.add(lampbase);
+
+    //goal
+    fontLoader.load(
+      // resource URL
+      './Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("(Get the lamp to the)\n(other nightstand)\n(without messing up)\n[the sheets>", 5);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        text.position.z = -49;
+        text.position.y = -10;
+        text.position.x = -100;
+        scene.add( text );
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
 
     return scene;
   }
@@ -1128,13 +1261,28 @@ class Levels {
         if(this.counter > 70){
           this.max_level = (this.max_level < 2) ? 2 : this.max_level;//update max level to 2 if it isn't already there or higher
           this.counter = 0;
-          return true;
+          return 1;
         }
         else{
           this.counter++;
           console.log("count: " + this.counter);
         }
       }
+    else if(player.position.y < -44 
+      //&& player.position.y > -50
+      && player.position.x < 50 
+      && player.position.x > -50
+      //&& player.position.z > -45
+      && player.position.z < -17.5 + 30){
+        if(this.counter < -40){
+          this.counter = 0;
+          return -1;
+        }
+        else{
+          this.counter--;
+          console.log("count: " + this.counter);
+        }
+    }
   }
 
   level_1_click_controls(rayCaster, player){
