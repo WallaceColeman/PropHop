@@ -2050,7 +2050,7 @@ class Levels {
 
         chairModel.name = "parent";
         base.name = "player:slide";
-
+        base.userData = new Player(base, 3)
         base.add( chairModel );
 
         chairModel.rotation.y = 1.25*Math.PI;
