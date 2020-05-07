@@ -881,20 +881,17 @@ class Levels {
     //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
 
 
-    //if(player.position.x > 96 && player.position.x < 100){//"win" condition !W!
-    // add y-coordinates too (don't think z matters cause you fall off the edge)
-
-     // return -10;
-      // if(this.counter > 0){
-      //   this.max_level = 3; //Should this be -1 because level 4 is -1?
-      //   this.counter = 0;
-      //   return 3;
-      // }
-      // else{
-      //   this.counter++;
-      //   console.log("count: " + this.counter);
-      // }
-    //}
+    if(player.position.x > 96 && player.position.x < 101 && player.position.y > 2 && player.position.y < 23){//"win" condition !W!
+      if(this.counter > 2){
+         this.max_level = -1; 
+         this.counter = 0;
+         return 1;
+       }
+       else{
+         this.counter++;
+         console.log("count: " + this.counter);
+       }
+    }
 
     if(player.position.y < -125) { //lose
         if(this.counter < -40){
