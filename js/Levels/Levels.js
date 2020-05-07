@@ -1302,14 +1302,14 @@ class Levels {
 
   get_level_2_controls(player){
     
-    console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
-    if (player.position.x > 286 
+    //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+    if (player.position.x > 295
       && player.position.x < 306
-      && player.position.z > -6
-      && player.position.z < 8)
+      && player.position.z > -24
+      && player.position.z < -15)
       //&& player.name == "player:slide:mouse")
       {
-        if(this.counter > 70){
+        if(this.counter > 5){
           this.max_level = (this.max_level < 3) ? 3 : this.max_level;//update max level to 3 if it isn't already there or higher
           this.counter = 0;
           return 1;
@@ -1319,7 +1319,7 @@ class Levels {
           console.log("count: " + this.counter);
         }
       }
-    else if(player.position.y < -300){
+    else if(player.position.y < -200){
         if(this.counter < -40){
           this.counter = 0;
           return -1;
@@ -1769,7 +1769,7 @@ class Levels {
           function ( gltf ) {
               let goal = gltf.scene;
               goal.position.x = 303;
-              goal.position.y = -70;
+              goal.position.y = -73;
               goal.rotation.y = .5*Math.PI;
               goal.position.z = -19;
               goal.scale.set(20,25,20);
@@ -1777,6 +1777,42 @@ class Levels {
               scene.add(goal);
   
       });
+
+      //instructions
+      // Credit: Wallace
+    fontLoader.load(
+      // resource URL
+      './Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("[Escape the room!]", 5);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new THREE.Mesh(geometry,material);
+        text.position.z = -45;
+        text.position.y = -25;
+        text.position.x = 0;
+        scene.add( text );
+      },
+
+    // onProgress callback
+    function ( xhr ) {
+      console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+    },
+
+    // onError callback
+    function ( err ) {
+      console.log( err );
+    }
+);
 
     return scene;
   }
