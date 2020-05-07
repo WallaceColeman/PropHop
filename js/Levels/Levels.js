@@ -881,20 +881,17 @@ class Levels {
     //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
 
 
-    //if(player.position.x > 96 && player.position.x < 100){//"win" condition !W!
-    // add y-coordinates too (don't think z matters cause you fall off the edge)
-
-     // return -10;
-      // if(this.counter > 0){
-      //   this.max_level = 3; //Should this be -1 because level 4 is -1?
-      //   this.counter = 0;
-      //   return 3;
-      // }
-      // else{
-      //   this.counter++;
-      //   console.log("count: " + this.counter);
-      // }
-    //}
+    if(player.position.x > 96 && player.position.x < 101 && player.position.y > 2 && player.position.y < 23){//"win" condition !W!
+      if(this.counter > 2){
+         this.max_level = 1; 
+         this.counter = 0;
+         return 1;
+       }
+       else{
+         this.counter++;
+         console.log("count: " + this.counter);
+       }
+    }
 
     if(player.position.y < -125) { //lose
         if(this.counter < -40){
@@ -1832,11 +1829,11 @@ class Levels {
 
           let mouse = new Physijs.BoxMesh(new THREE.BoxGeometry(5,2,8),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0}));
           //let topmouse = new Physijs.ConvexMesh( new THREE.SphereGeometry(3.5,8,8, Math.PI/2, Math.PI*2, 0, 0.5 * Math.PI), new THREE.MeshLambertMaterial({wireframe:true, transparent: true, opacity: 0.9}));
+          let topmouse = new Physijs.BoxMesh( new THREE.BoxGeometry(4,2,2), new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
 
-          // It is difficult to switch to mouse player, not sure why
           mouse.userData = new Player(mouse, 2);
           mouse.name = "player:slide";
-          //topmouse.name = "parent";
+          topmouse.name = "parent";
           //mouseModel.name = "parent";
 
           mouse.add(mouseModel);
@@ -1852,10 +1849,10 @@ class Levels {
           mouse.castShadow = true;
           mouse.receiveShadow = true;
 
-          //mouse.add(topmouse);
-          // topmouse.position.x += 0;
-          // topmouse.position.y += -1;
-          // topmouse.position.z += 0.5;
+          mouse.add(topmouse);
+          topmouse.position.x += 0;
+          topmouse.position.y += 2;
+          topmouse.position.z += 0.5;
           // topmouse.castShadow = true;
           // topmouse.receiveShadow = true;
 
