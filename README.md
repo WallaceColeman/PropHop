@@ -3,6 +3,6 @@
 
 Play here (clear your cache and hard refresh to see updates!): https://wallacecoleman.github.io/PropHop/
 
-Time Log: https://docs.google.com/spreadsheets/d/1XioGAfibD7ioM1gKJUhZcsAv3pQ9Pa3JTFtlGgat_mE/edit?usp=sharing
+Time Log (out of use): https://docs.google.com/spreadsheets/d/1XioGAfibD7ioM1gKJUhZcsAv3pQ9Pa3JTFtlGgat_mE/edit?usp=sharing
 
 Google Drive: https://drive.google.com/drive/folders/1SWlnRd1KORhEBwfog0CyIubG1QeJocRc?usp=sharing
