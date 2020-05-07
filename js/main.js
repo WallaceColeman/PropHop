@@ -324,7 +324,7 @@ function renderScene(){
 		requestAnimationFrame(renderScene);
 		let levelDone = levels.level_controls(scene.getObjectById(player));
 		if(levelDone == 1){
-			requested_level = 0;
+			requested_level = -4;
 			go_to_load = true;
 		}
 		else if(levelDone == -1){

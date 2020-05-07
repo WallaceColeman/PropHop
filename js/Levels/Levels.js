@@ -20,6 +20,9 @@ class Levels {
       case -5:
         return this.get_lose_scene();
         break;
+      case -4:
+        return this.get_win_scene();
+        break;
       case -2:
         this.current_level = -2;
         this.last_level = -2;
@@ -44,16 +47,14 @@ class Levels {
         this.last_level = 2;
         return this.get_level_2_scene();
         break;
-       case 3:
+      case 3:
          this.current_level = 3;
          this.last_level = 3;
          return this.get_level_3_scene();
          break;
-      // case 5:
-      //   day = "Friday";
-      //   break;
-      // case 6:
-      //   day = "Saturday";
+      default:
+        return this.get_main_menu();
+        break;
     }
   }
 
@@ -169,6 +170,76 @@ class Levels {
       function ( font ) {
         // do something with the font
         let shapes = font.generateShapes("<You Lose>", 10);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = 10;
+        scene.add( text );
+
+
+        shapes = font.generateShapes("<esc to return to main menu>", 10);
+        geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+
+        text = new Physijs.BoxMesh(geometry,material);
+        text.position.y = -10;
+        scene.add( text );
+      },
+    
+      // onProgress callback
+      function ( xhr ) {
+        console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+      },
+    
+      // onError callback
+      function ( err ) {
+        console.log( err );
+      }
+    );
+
+    return scene;
+  }
+
+  get_win_scene(){
+    while(this.scene.children.length > 0){ 
+      this.scene.remove(this.scene.children[0]); 
+    }
+    let scene = this.scene;
+    let loader = new THREE.TextureLoader(this.LoadingManager);
+    let fontLoader = new THREE.FontLoader(this.LoadingManager);
+    scene.setGravity(new THREE.Vector3(0,0,0));
+    let lightA = new THREE.AmbientLight(0xCCCCCC);
+    scene.add(lightA);
+
+    let cubeGeometry = new THREE.CubeGeometry(0.1,0.1,0.1);
+    let cubeMaterial = Physijs.createMaterial(
+      new THREE.MeshBasicMaterial(/*{transparent: true, opacity: 0.0}*/ {color: 0x241BB6}),
+      0.5,
+      0.5
+    );
+    let cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    cube.mass = 0;
+    cube.name = "player:slide:start";
+    cube.userData = new Player(cube,  1);
+    scene.add(cube);
+
+    //title
+    fontLoader.load(
+      // resource URL
+      './Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("<You Win!>", 10);
         let geometry = new THREE.ShapeBufferGeometry(shapes);
         geometry.computeBoundingBox();
         let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
