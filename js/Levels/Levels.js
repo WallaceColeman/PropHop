@@ -49,9 +49,6 @@ class Levels {
          this.last_level = 3;
          return this.get_level_3_scene();
          break;
-      // case 4:
-      //   day = "Thursday";
-      //   break;
       // case 5:
       //   day = "Friday";
       //   break;
@@ -63,10 +60,10 @@ class Levels {
   level_controls(player){//!W! this method will find the correct 
     switch (this.current_level) {
       case -2:
-        return this.tutorial_controls(player) //be sure to return the cotrol method call !W!
+        return this.tutorial_controls(player) //be sure to return the control method call !W!
         break;
       case -1: //!W! put demo win conditions here
-        
+        return this.get_demo_controls(player);
         break;
       case 0: //!W! menu here, but they are already in main.js so I'll handle moveing them, or we'll leave them there
         
@@ -74,11 +71,8 @@ class Levels {
       case 1: //level 1
         return this.get_level_1_controls(player);
         break;
-      case 2: // you get the point
-
-        break;
-       case 3:
-         
+      case 2: //level 2
+        return this.get_level_2_controls(player);
         break;
       // case 4:
       //   day = "Thursday";
@@ -107,7 +101,8 @@ class Levels {
         
         break;
       case 2:
-
+        // this was for the lightswitch, it's broken
+        // this.level_2_click_controls(rayCaster, player);
         break;
       // case 3:
       //   day = "Wednesday";
@@ -811,6 +806,37 @@ class Levels {
     return false;//player hasn't finished
   }
 
+  get_demo_controls(player){ //!W! all the comments for this method are important
+    //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+
+
+    //if(player.position.x > 96 && player.position.x < 100){//"win" condition !W!
+    // add y-coordinates too (don't think z matters cause you fall off the edge)
+
+     // return -10;
+      // if(this.counter > 0){
+      //   this.max_level = 3; //Should this be -1 because level 4 is -1?
+      //   this.counter = 0;
+      //   return 3;
+      // }
+      // else{
+      //   this.counter++;
+      //   console.log("count: " + this.counter);
+      // }
+    //}
+
+    if(player.position.y < -125) { //lose
+        if(this.counter < -40){
+          this.counter = 0;
+          return -1;
+        }
+        else{
+          this.counter--;
+          console.log("count: " + this.counter);
+        }
+      }
+  }
+
   get_level_1_scene(){
     while(this.scene.children.length > 0){ 
       this.scene.remove(this.scene.children[0]); 
@@ -818,7 +844,7 @@ class Levels {
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
     let white1 = "rgb(111, 127, 136)";
-    let pink = "rgb(255,192,203)";
+    let pink = "rgb(255,192,203)"; // this isn't actually pink
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
@@ -840,8 +866,7 @@ class Levels {
     cube.position.x = 0;
     cube.position.z = -50;
     cube.mass = 0;
-    scene.add(cube);
-    
+    scene.add(cube);    
 
     //floor
     cubeGeometry = new THREE.CubeGeometry(607,5,160);
@@ -1287,6 +1312,64 @@ class Levels {
     }
   }
 
+
+  get_level_2_controls(player){
+    
+    //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+    if (player.position.x > 295
+      && player.position.x < 306
+      && player.position.z > -24
+      && player.position.z < -15)
+      {
+        if(this.counter > 5){
+          this.max_level = (this.max_level < 3) ? 3 : this.max_level;//update max level to 3 if it isn't already there or higher
+          this.counter = 0;
+          return 1;
+        }
+        else{
+          this.counter++;
+          console.log("count: " + this.counter);
+        }
+      }
+    else if(player.position.y < -200){
+        if(this.counter < -40){
+          this.counter = 0;
+          return -1;
+        }
+        else{
+          this.counter--;
+          console.log("count: " + this.counter);
+        }
+    }
+  }
+
+  // I was going to use this to toggle the lightswitch
+  // this is broken so it is not implemented
+  level_2_click_controls(rayCaster, player){
+    //var sw;
+    let light1 = new THREE.AmbientLight(0x222222);
+    let light2 = new THREE.AmbientLight(0xDDDDDD);
+    let intersects = rayCaster.intersectObjects( scene.children, true );
+    console.log(intersects[0].object.name);
+    //this.scene.add(new THREE.AmbientLight(0xDDDDDD));
+    if (intersects[0].object.name == "lightswitch"){
+      console.log("Switched light");
+      this.scene.add(new THREE.AmbientLight((0x000000)));
+      if (this.get_level_2_scene().sw){
+        //scene.remove(AmbientLight);
+        scene.add(light1);
+        //this.scene.remove(THREE.AmbientLight(0x222222).needsUpdate = true);
+        sw = false;
+      }
+      if (!this.get_level_2_scene().sw){
+        //scene.remove(AmbientLight);
+        scene.add(light2);
+        sw = true;
+      }
+    }
+  }
+
+
   level_1_click_controls(rayCaster, player){
 
   }
@@ -1302,19 +1385,9 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
+    var light = new THREE.AmbientLight(0x303030); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
 
-    //scene.add(light);
-
-    // light for testing:
-    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
-    scene.add(light);
-
-    //  let spotLight = new THREE.SpotLight(0xffffff);
-    //  spotLight.position.set(-50,75,-10);
-    //  spotLight.lookAt(0,0,0);
-    //  spotLight.castShadow = true;
-    //  scene.add(spotLight); 
+    scene.add(light); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,300,1,1);
@@ -1328,7 +1401,6 @@ class Levels {
     scene.add(cube);
 
     // back wall, but above hidden part
-    // not sure why this is so visible??? same z location, same depth
     cubeGeometry = new THREE.CubeGeometry(12.5,300,1,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
@@ -1369,13 +1441,15 @@ class Levels {
     cube2.position.z = -55;
     scene.add(cube2);
     cube2.receiveShadow = true;
+
+
     cubeGeometry = new THREE.CubeGeometry(2,15,13,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube3 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial,0);
     cube3.position.y = -90;
     cube3.position.x = 163;
     cube3.position.z = -50;
-    scene.add(cube3);
+    //scene.add(cube3);
     cube3.receiveShadow = true;
 
     //floor
@@ -1580,7 +1654,7 @@ class Levels {
           let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
           let dcarmR = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
           let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
-          dcbutt.userData = new Player(dcbutt, 2.25);
+          dcbutt.userData = new Player(dcbutt, 1); // Jumping is broken? changed so you cannot jump (raycaster is seeing object)
           dcbutt.position.y += -70;
           dcbutt.castShadow = true;
           dcbutt.receiveShadow = true;
@@ -1718,6 +1792,83 @@ class Levels {
         });
 
         // Possible implemelntation: rope https://github.com/mrdoob/three.js/blob/master/examples/physics_ammo_rope.html
+        // Was gonna do rope for mouse/laptop connection, but won't do that now because it would be too difficult to beat the level
+
+        // Taking goal from demo, thank you Wallace
+        GLTF_loader.load(//goal
+          // resource URL
+          './Models/Static_Models/Goal.glb',
+          // called when the resource is loaded
+          function ( gltf ) {
+              let goal = gltf.scene;
+              goal.position.x = 303;
+              goal.position.y = -73;
+              goal.rotation.y = .5*Math.PI;
+              goal.position.z = -19;
+              goal.scale.set(20,25,20);
+              goal.castShadow = true;
+              scene.add(goal);
+  
+      });
+
+      //instructions
+      // Credit: Wallace
+    fontLoader.load(
+      // resource URL
+      './Models/Font/Barcade_Regular_R.json',
+      // onLoad callback
+      function ( font ) {
+        // do something with the font
+        let shapes = font.generateShapes("[Escape the room!]", 5);
+        let geometry = new THREE.ShapeBufferGeometry(shapes);
+        geometry.computeBoundingBox();
+        let xMid = -0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x);
+        geometry.translate(xMid, 0, 0);
+        let material = new THREE.MeshBasicMaterial({
+          color: "rgb(0,0,0)",
+          side: THREE.DoubleSide
+        });
+
+        let text = new THREE.Mesh(geometry,material);
+        text.position.z = -45;
+        text.position.y = -20;
+        text.position.x = 0;
+        scene.add( text );
+      },
+
+    // onProgress callback
+    function ( xhr ) {
+      console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+    },
+
+    // onError callback
+    function ( err ) {
+      console.log( err );
+    }
+);
+
+  //switch
+  // this broken
+  GLTF_loader.load('./Models/Static_Models/Light-Switch.glb',
+
+        function ( gltf ) {
+          let switchModel = gltf.scene;
+
+          let lightswitch = new Physijs.BoxMesh(new THREE.BoxGeometry(3,3,1),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.9}));
+
+          lightswitch.userData = new Player(lightswitch, 1);
+          lightswitch.name = "player:slide";
+
+          lightswitch.add(switchModel);
+          lightswitch.position.y = 0;
+          lightswitch.position.x = 0;
+          lightswitch.position.z = 0;
+          lightswitch.mass = 0;
+          lightswitch.scale.set(5,5,5);
+          //scene.add(lightswitch);
+  });
+
+
 
 
     return scene;
