@@ -1829,11 +1829,11 @@ class Levels {
 
           let mouse = new Physijs.BoxMesh(new THREE.BoxGeometry(5,2,8),new THREE.MeshLambertMaterial({ transparent: true, opacity: 0.0}));
           //let topmouse = new Physijs.ConvexMesh( new THREE.SphereGeometry(3.5,8,8, Math.PI/2, Math.PI*2, 0, 0.5 * Math.PI), new THREE.MeshLambertMaterial({wireframe:true, transparent: true, opacity: 0.9}));
+          let topmouse = new Physijs.BoxMesh( new THREE.BoxGeometry(4,2,2), new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0}));
 
-          // It is difficult to switch to mouse player, not sure why
           mouse.userData = new Player(mouse, 2);
           mouse.name = "player:slide";
-          //topmouse.name = "parent";
+          topmouse.name = "parent";
           //mouseModel.name = "parent";
 
           mouse.add(mouseModel);
@@ -1849,10 +1849,10 @@ class Levels {
           mouse.castShadow = true;
           mouse.receiveShadow = true;
 
-          //mouse.add(topmouse);
-          // topmouse.position.x += 0;
-          // topmouse.position.y += -1;
-          // topmouse.position.z += 0.5;
+          mouse.add(topmouse);
+          topmouse.position.x += 0;
+          topmouse.position.y += 2;
+          topmouse.position.z += 0.5;
           // topmouse.castShadow = true;
           // topmouse.receiveShadow = true;
 
