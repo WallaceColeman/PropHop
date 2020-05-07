@@ -55,7 +55,7 @@ class Levels {
       default:
         return this.get_main_menu();
         break;
-
+    }
   }
 
   level_controls(player){//!W! this method will find the correct 
