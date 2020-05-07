@@ -883,7 +883,7 @@ class Levels {
 
     if(player.position.x > 96 && player.position.x < 101 && player.position.y > 2 && player.position.y < 23){//"win" condition !W!
       if(this.counter > 2){
-         this.max_level = -1; 
+         this.max_level = 1; 
          this.counter = 0;
          return 1;
        }
