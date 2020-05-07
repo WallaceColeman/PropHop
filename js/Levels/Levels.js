@@ -1360,12 +1360,9 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    var light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
-    
-    // light for testing:
-    //var light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    var light = new THREE.AmbientLight(0x303030); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
 
-    scene.add(light); // Toggle light "off" until switch is pressed;
+    scene.add(light); 
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,300,1,1);
@@ -1419,13 +1416,15 @@ class Levels {
     cube2.position.z = -55;
     scene.add(cube2);
     cube2.receiveShadow = true;
+
+
     cubeGeometry = new THREE.CubeGeometry(2,15,13,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     let cube3 = new Physijs.BoxMesh(cubeGeometry, cubeMaterial,0);
     cube3.position.y = -90;
     cube3.position.x = 163;
     cube3.position.z = -50;
-    scene.add(cube3);
+    //scene.add(cube3);
     cube3.receiveShadow = true;
 
     //floor
@@ -1630,7 +1629,7 @@ class Levels {
           let dcarmL2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // left not-curved arm
           let dcarmR = new Physijs.CylinderMesh(new THREE.CylinderGeometry(6,6,3,0,7),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); //right arm
           let dcarmR2 = new Physijs.BoxMesh(new THREE.BoxGeometry(2.5,1.5,10),new THREE.MeshLambertMaterial({transparent: true, opacity: 0.0})); // right not-curved arm
-          dcbutt.userData = new Player(dcbutt, 2.25);
+          dcbutt.userData = new Player(dcbutt, 1); // Jumping is broken? changed so you cannot jump (raycaster is seeing object)
           dcbutt.position.y += -70;
           dcbutt.castShadow = true;
           dcbutt.receiveShadow = true;
