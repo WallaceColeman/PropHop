@@ -49,9 +49,6 @@ class Levels {
          this.last_level = 3;
          return this.get_level_3_scene();
          break;
-      // case 4:
-      //   day = "Thursday";
-      //   break;
       // case 5:
       //   day = "Friday";
       //   break;
@@ -66,7 +63,7 @@ class Levels {
         return this.tutorial_controls(player) //be sure to return the control method call !W!
         break;
       case -1: //!W! put demo win conditions here
-        
+        return this.get_demo_controls(player);
         break;
       case 0: //!W! menu here, but they are already in main.js so I'll handle moveing them, or we'll leave them there
         
@@ -76,9 +73,6 @@ class Levels {
         break;
       case 2: //level 2
         return this.get_level_2_controls(player);
-        break;
-       case 3:
-         
         break;
       // case 4:
       //   day = "Thursday";
@@ -810,6 +804,37 @@ class Levels {
     //like if we implemented flip gravity
     //NOT SPECIAL CONTROLS FOR AN OBJECT! !W! !W!
     return false;//player hasn't finished
+  }
+
+  get_demo_controls(player){ //!W! all the comments for this method are important
+    //console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+
+
+    //if(player.position.x > 96 && player.position.x < 100){//"win" condition !W!
+    // add y-coordinates too (don't think z matters cause you fall off the edge)
+
+     // return -10;
+      // if(this.counter > 0){
+      //   this.max_level = 3; //Should this be -1 because level 4 is -1?
+      //   this.counter = 0;
+      //   return 3;
+      // }
+      // else{
+      //   this.counter++;
+      //   console.log("count: " + this.counter);
+      // }
+    //}
+
+    if(player.position.y < -125) { //lose
+        if(this.counter < -40){
+          this.counter = 0;
+          return -1;
+        }
+        else{
+          this.counter--;
+          console.log("count: " + this.counter);
+        }
+      }
   }
 
   get_level_1_scene(){
