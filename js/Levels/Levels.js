@@ -107,7 +107,8 @@ class Levels {
         
         break;
       case 2:
-
+        // this was for the lightswitch, it's broken
+        // this.level_2_click_controls(rayCaster, player);
         break;
       // case 3:
       //   day = "Wednesday";
@@ -840,20 +841,7 @@ class Levels {
     cube.position.x = 0;
     cube.position.z = -50;
     cube.mass = 0;
-    scene.add(cube);
-
-    //back wall second room
-    // have to do this separately because otherwise it overlaps the corridor and glitches
-    cubeGeometry = new THREE.CubeGeometry(300,400,1,1);
-    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
-    let secondcube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
-    secondcube.receiveShadow = true;
-    secondcube.position.y = 100;
-    secondcube.position.x = 301;
-    secondcube.position.z = -50;
-    secondcube.mass = 0;
-    scene.add(secondcube);
-    
+    scene.add(cube);    
 
     //floor
     cubeGeometry = new THREE.CubeGeometry(607,5,160);
@@ -1307,7 +1295,6 @@ class Levels {
       && player.position.x < 306
       && player.position.z > -24
       && player.position.z < -15)
-      //&& player.name == "player:slide:mouse")
       {
         if(this.counter > 5){
           this.max_level = (this.max_level < 3) ? 3 : this.max_level;//update max level to 3 if it isn't already there or higher
@@ -1331,6 +1318,33 @@ class Levels {
     }
   }
 
+  // I was going to use this to toggle the lightswitch
+  // this is broken so it is not implemented
+  level_2_click_controls(rayCaster, player){
+    //var sw;
+    let light1 = new THREE.AmbientLight(0x222222);
+    let light2 = new THREE.AmbientLight(0xDDDDDD);
+    let intersects = rayCaster.intersectObjects( scene.children, true );
+    console.log(intersects[0].object.name);
+    //this.scene.add(new THREE.AmbientLight(0xDDDDDD));
+    if (intersects[0].object.name == "lightswitch"){
+      console.log("Switched light");
+      this.scene.add(new THREE.AmbientLight((0x000000)));
+      if (this.get_level_2_scene().sw){
+        //scene.remove(AmbientLight);
+        scene.add(light1);
+        //this.scene.remove(THREE.AmbientLight(0x222222).needsUpdate = true);
+        sw = false;
+      }
+      if (!this.get_level_2_scene().sw){
+        //scene.remove(AmbientLight);
+        scene.add(light2);
+        sw = true;
+      }
+    }
+  }
+
+
   level_1_click_controls(rayCaster, player){
 
   }
@@ -1346,17 +1360,12 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    // let light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
-
+    var light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
+    
     // light for testing:
-    let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
-    scene.add(light);
+    //var light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
 
-    //  let spotLight = new THREE.SpotLight(0xffffff);
-    //  spotLight.position.set(-50,75,-10);
-    //  spotLight.lookAt(0,0,0);
-    //  spotLight.castShadow = true;
-    //  scene.add(spotLight); 
+    scene.add(light); // Toggle light "off" until switch is pressed;
 
     //back wall
     let cubeGeometry = new THREE.CubeGeometry(288,300,1,1);
@@ -1798,7 +1807,7 @@ class Levels {
 
         let text = new THREE.Mesh(geometry,material);
         text.position.z = -45;
-        text.position.y = -25;
+        text.position.y = -20;
         text.position.x = 0;
         scene.add( text );
       },
@@ -1813,6 +1822,30 @@ class Levels {
       console.log( err );
     }
 );
+
+  //switch
+  // this broken
+  GLTF_loader.load('./Models/Static_Models/Light-Switch.glb',
+
+        function ( gltf ) {
+          let switchModel = gltf.scene;
+
+          let lightswitch = new Physijs.BoxMesh(new THREE.BoxGeometry(3,3,1),new THREE.MeshLambertMaterial({ wireframe: true, opacity: 0.9}));
+
+          lightswitch.userData = new Player(lightswitch, 1);
+          lightswitch.name = "player:slide";
+
+          lightswitch.add(switchModel);
+          lightswitch.position.y = 0;
+          lightswitch.position.x = 0;
+          lightswitch.position.z = 0;
+          lightswitch.mass = 0;
+          lightswitch.scale.set(5,5,5);
+          //scene.add(lightswitch);
+  });
+
+
+
 
     return scene;
   }
