@@ -63,7 +63,7 @@ class Levels {
   level_controls(player){//!W! this method will find the correct 
     switch (this.current_level) {
       case -2:
-        return this.tutorial_controls(player) //be sure to return the cotrol method call !W!
+        return this.tutorial_controls(player) //be sure to return the control method call !W!
         break;
       case -1: //!W! put demo win conditions here
         
@@ -74,8 +74,8 @@ class Levels {
       case 1: //level 1
         return this.get_level_1_controls(player);
         break;
-      case 2: // you get the point
-
+      case 2: //level 2
+        return this.get_level_2_controls(player);
         break;
        case 3:
          
@@ -818,7 +818,7 @@ class Levels {
     let scene = this.scene;
     let loader = new THREE.TextureLoader(this.LoadingManager);
     let white1 = "rgb(111, 127, 136)";
-    let pink = "rgb(255,192,203)";
+    let pink = "rgb(255,192,203)"; // this isn't actually pink
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
@@ -841,6 +841,18 @@ class Levels {
     cube.position.z = -50;
     cube.mass = 0;
     scene.add(cube);
+
+    //back wall second room
+    // have to do this separately because otherwise it overlaps the corridor and glitches
+    cubeGeometry = new THREE.CubeGeometry(300,400,1,1);
+    cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
+    let secondcube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
+    secondcube.receiveShadow = true;
+    secondcube.position.y = 100;
+    secondcube.position.x = 301;
+    secondcube.position.z = -50;
+    secondcube.mass = 0;
+    scene.add(secondcube);
     
 
     //floor
@@ -1287,6 +1299,38 @@ class Levels {
     }
   }
 
+
+  get_level_2_controls(player){
+    
+    console.log('X: ' + player.position.x + ' Y: ' + player.position.y + ' Z: ' + player.position.z);
+    if (player.position.x > 286 
+      && player.position.x < 306
+      && player.position.z > -6
+      && player.position.z < 8)
+      //&& player.name == "player:slide:mouse")
+      {
+        if(this.counter > 70){
+          this.max_level = (this.max_level < 3) ? 3 : this.max_level;//update max level to 3 if it isn't already there or higher
+          this.counter = 0;
+          return 1;
+        }
+        else{
+          this.counter++;
+          console.log("count: " + this.counter);
+        }
+      }
+    else if(player.position.y < -300){
+        if(this.counter < -40){
+          this.counter = 0;
+          return -1;
+        }
+        else{
+          this.counter--;
+          console.log("count: " + this.counter);
+        }
+    }
+  }
+
   level_1_click_controls(rayCaster, player){
 
   }
@@ -1302,12 +1346,10 @@ class Levels {
     scene.setGravity(new THREE.Vector3(0,-25,0));
 
     //light
-    let light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
-
-    //scene.add(light);
+    // let light = new THREE.AmbientLight( 0x222222 ); // soft white light so entire room isn't super dark. Disable this for dark room! (slightly lighter than before)
 
     // light for testing:
-    //let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
+    let light = new THREE.AmbientLight( 0xDDDDDD ); // Testing light, this should be commented out normally
     scene.add(light);
 
     //  let spotLight = new THREE.SpotLight(0xffffff);
@@ -1328,7 +1370,6 @@ class Levels {
     scene.add(cube);
 
     // back wall, but above hidden part
-    // not sure why this is so visible??? same z location, same depth
     cubeGeometry = new THREE.CubeGeometry(12.5,300,1,1);
     cubeMaterial = Physijs.createMaterial(new THREE.MeshLambertMaterial(white1, 0.8, 0.2));
     cube = new Physijs.BoxMesh(cubeGeometry, cubeMaterial);
@@ -1718,7 +1759,24 @@ class Levels {
         });
 
         // Possible implemelntation: rope https://github.com/mrdoob/three.js/blob/master/examples/physics_ammo_rope.html
+        // Was gonna do rope for mouse/laptop connection, but won't do that now because it would be too difficult to beat the level
 
+        // Taking goal from demo, thank you Wallace
+        GLTF_loader.load(//goal
+          // resource URL
+          './Models/Static_Models/Goal.glb',
+          // called when the resource is loaded
+          function ( gltf ) {
+              let goal = gltf.scene;
+              goal.position.x = 303;
+              goal.position.y = -70;
+              goal.rotation.y = .5*Math.PI;
+              goal.position.z = -19;
+              goal.scale.set(20,25,20);
+              goal.castShadow = true;
+              scene.add(goal);
+  
+      });
 
     return scene;
   }
